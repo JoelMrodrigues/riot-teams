@@ -20,7 +20,7 @@ export function HeroSection(): React.JSX.Element {
           cardWidth={getCardWidth(game.id)}
           onMouseEnter={() => handleMouseEnter(game.id)}
           onMouseLeave={handleMouseLeave}
-          onCtaClick={() => navigate(`/${game.id}`)}
+          onClick={() => navigate(`/${game.id}`)}
         />
       ))}
     </section>

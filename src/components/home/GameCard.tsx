@@ -10,7 +10,7 @@ interface GameCardProps {
   cardWidth: string;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
-  onCtaClick: () => void;
+  onClick: () => void;
 }
 
 export function GameCard({
@@ -20,15 +20,16 @@ export function GameCard({
   cardWidth,
   onMouseEnter,
   onMouseLeave,
-  onCtaClick,
+  onClick,
 }: GameCardProps): React.JSX.Element {
   return (
     <motion.div
-      className="relative h-full cursor-pointer overflow-hidden flex-shrink-0"
+      className="relative h-full cursor-pointer overflow-hidden flex-shrink-0 select-none"
       animate={{ width: cardWidth }}
       transition={{ type: 'spring', stiffness: 220, damping: 28 }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      onClick={onClick}
     >
       <div
         className="absolute inset-0 transition-transform duration-700"
@@ -54,7 +55,7 @@ export function GameCard({
       <AnimatePresence>
         {isActive && (
           <motion.div
-            className="absolute bottom-0 left-0 right-0 h-1"
+            className="absolute bottom-0 left-0 right-0 h-px"
             style={{ background: game.accentColor }}
             initial={{ scaleX: 0, opacity: 0 }}
             animate={{ scaleX: 1, opacity: 1 }}
@@ -67,7 +68,7 @@ export function GameCard({
       <div className="relative z-10 flex flex-col justify-end h-full p-8">
         <motion.div
           className="mb-4 self-start"
-          animate={{ opacity: isAnyActive && !isActive ? 0.4 : 1 }}
+          animate={{ opacity: isAnyActive && !isActive ? 0.35 : 1 }}
           transition={{ duration: 0.2 }}
         >
           <span
@@ -88,7 +89,7 @@ export function GameCard({
           style={{ fontFamily: 'Rajdhani, sans-serif' }}
           animate={{
             fontSize: isActive ? '3.5rem' : '2rem',
-            opacity: isAnyActive && !isActive ? 0.5 : 1,
+            opacity: isAnyActive && !isActive ? 0.4 : 1,
           }}
           transition={{ type: 'spring', stiffness: 200, damping: 25 }}
         >
@@ -98,15 +99,15 @@ export function GameCard({
         <AnimatePresence>
           {isActive && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.25, delay: 0.05 }}
-              className="flex flex-col gap-5"
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.22, delay: 0.05 }}
+              className="flex flex-col gap-4"
             >
               <p
-                className="text-sm text-white/60 leading-relaxed max-w-xs"
-                style={{ fontFamily: 'Inter, sans-serif' }}
+                className="text-sm leading-relaxed max-w-xs"
+                style={{ fontFamily: 'Inter, sans-serif', color: 'rgba(255,255,255,0.5)' }}
               >
                 {game.description}
               </p>
@@ -116,12 +117,15 @@ export function GameCard({
                   <div key={stat.label} className="flex flex-col gap-0.5">
                     <span
                       className="text-xs uppercase tracking-widest"
-                      style={{ color: `${game.accentColor}99`, fontFamily: 'Rajdhani, sans-serif' }}
+                      style={{
+                        color: `${game.accentColor}90`,
+                        fontFamily: 'Rajdhani, sans-serif',
+                      }}
                     >
                       {stat.label}
                     </span>
                     <span
-                      className="text-sm font-semibold text-white/80"
+                      className="text-sm font-semibold text-white/70"
                       style={{ fontFamily: 'Inter, sans-serif' }}
                     >
                       {stat.value}
@@ -130,18 +134,24 @@ export function GameCard({
                 ))}
               </div>
 
-              <button
-                onClick={(e) => { e.stopPropagation(); onCtaClick(); }}
-                className="self-start mt-2 px-6 py-2.5 text-sm font-semibold tracking-wider uppercase rounded-sm cursor-pointer transition-all duration-150 active:scale-95 hover:opacity-85"
-                style={{
-                  fontFamily: 'Rajdhani, sans-serif',
-                  background: game.accentColor,
-                  color: game.darkColor,
-                  letterSpacing: '0.1em',
-                }}
-              >
-                {game.ctaLabel}
-              </button>
+              <div className="flex items-center gap-2 mt-1">
+                <span
+                  className="text-xs uppercase tracking-widest"
+                  style={{ fontFamily: 'Rajdhani, sans-serif', color: `${game.accentColor}80` }}
+                >
+                  Accéder
+                </span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path
+                    d="M2 6h8M7 3l3 3-3 3"
+                    stroke={game.accentColor}
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    opacity="0.7"
+                  />
+                </svg>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
