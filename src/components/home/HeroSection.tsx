@@ -8,7 +8,7 @@ export function HeroSection(): React.JSX.Element {
   const { activeId, handleMouseEnter, handleMouseLeave, getCardWidth } = useGameAccordion();
 
   return (
-    <section className="flex w-full h-full">
+    <section className="flex w-full h-full overflow-hidden">
       {GAMES_DATA.map((game) => (
         <GameCard
           key={game.id}

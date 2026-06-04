@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 
 import type { Game } from '../../types/game.types';
 
@@ -12,7 +11,10 @@ interface GameCardProps {
   onMouseLeave: () => void;
 }
 
-export function GameCard({
+// Single easing curve — deliberate, fast-in / smooth-out, no bounce
+const E = 'cubic-bezier(0.65, 0, 0.35, 1)';
+
+export const GameCard = React.memo(function GameCard({
   game,
   isActive,
   isAnyActive,
@@ -25,24 +27,49 @@ export function GameCard({
       className="relative h-full overflow-hidden flex-shrink-0 select-none"
       style={{
         width: cardWidth,
-        transition: 'width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        transition: `width 0.55s ${E}`,
+        willChange: 'width',
       }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      {/* Background image */}
+      {/* Background image — GPU layer, slow zoom for depth */}
       <img
         src={game.imagePath}
-        alt={game.name}
+        alt=""
+        fetchPriority="high"
         className="absolute inset-0 w-full h-full object-cover"
         style={{
-          transform: isActive ? 'scale(1.06)' : 'scale(1.01)',
-          transition: 'transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          transform: isActive ? 'scale(1.07)' : 'scale(1.0)',
+          transition: `transform 0.9s ${E}`,
+          willChange: 'transform',
         }}
       />
 
-      {/* Dark gradient overlay */}
+      {/* Gradient overlay */}
       <div className="absolute inset-0" style={{ background: game.gradientStyle }} />
+
+      {/* Accent tint — revealed on hover */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `radial-gradient(ellipse at 50% 110%, ${game.accentColor}28 0%, transparent 60%)`,
+          opacity: isActive ? 1 : 0,
+          transition: `opacity 0.45s ${E}`,
+        }}
+      />
+
+      {/* Bottom accent line */}
+      <div
+        className="absolute bottom-0 left-0 right-0"
+        style={{
+          height: '2px',
+          background: `linear-gradient(to right, transparent, ${game.accentColor}, transparent)`,
+          opacity: isActive ? 1 : 0,
+          transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
+          transition: `opacity 0.35s ${E}, transform 0.45s ${E}`,
+        }}
+      />
 
       {/* Separator */}
       <div
@@ -52,11 +79,13 @@ export function GameCard({
 
       {/* Content */}
       <div className="relative z-10 flex flex-col justify-end h-full p-8 pb-10">
-        <motion.div
+        {/* Tag badge */}
+        <div
           className="mb-4 self-start"
-          initial={{ opacity: 1 }}
-          animate={{ opacity: isAnyActive && !isActive ? 0.3 : 1 }}
-          transition={{ duration: 0.2 }}
+          style={{
+            opacity: isAnyActive && !isActive ? 0.3 : 1,
+            transition: `opacity 0.25s ${E}`,
+          }}
         >
           <span
             className="text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-sm border"
@@ -69,24 +98,22 @@ export function GameCard({
           >
             {game.tag}
           </span>
-        </motion.div>
+        </div>
 
-        <motion.h2
+        {/* Game name */}
+        <h2
           className="font-bold text-white leading-none"
           style={{
             fontFamily: 'Rajdhani, sans-serif',
-            textShadow: '0 2px 20px rgba(0,0,0,0.8)',
-          }}
-          initial={{ fontSize: '2.25rem', opacity: 1 }}
-          animate={{
+            textShadow: '0 2px 24px rgba(0,0,0,0.9)',
             fontSize: isActive ? '3.75rem' : '2.25rem',
             opacity: isAnyActive && !isActive ? 0.35 : 1,
+            transition: `font-size 0.55s ${E}, opacity 0.25s ${E}`,
           }}
-          transition={{ type: 'spring', stiffness: 200, damping: 25 }}
         >
           {game.shortName}
-        </motion.h2>
+        </h2>
       </div>
     </div>
   );
-}
+});

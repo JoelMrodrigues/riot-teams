@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 interface UseGameAccordionReturn {
   activeId: string | null;
@@ -10,13 +10,13 @@ interface UseGameAccordionReturn {
 export function useGameAccordion(): UseGameAccordionReturn {
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  const handleMouseEnter = (id: string) => setActiveId(id);
-  const handleMouseLeave = () => setActiveId(null);
+  const handleMouseEnter = useCallback((id: string) => setActiveId(id), []);
+  const handleMouseLeave = useCallback(() => setActiveId(null), []);
 
-  const getCardWidth = (id: string): string => {
+  const getCardWidth = useCallback((id: string): string => {
     if (!activeId) return '33.333%';
     return activeId === id ? '56%' : '22%';
-  };
+  }, [activeId]);
 
   return { activeId, handleMouseEnter, handleMouseLeave, getCardWidth };
 }
