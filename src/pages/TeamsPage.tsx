@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { TeamCard } from '../components/teams/TeamCard';
 import { CreateTeamModal } from '../components/teams/CreateTeamModal';
+import { ThemeToggle } from '../components/layout/ThemeToggle';
 import { useTeams } from '../hooks/useTeams';
 import type { GameType } from '../types/team.types';
 import { GAMES_DATA } from '../data/games.data';
@@ -28,65 +29,61 @@ export function TeamsPage(): React.JSX.Element {
   return (
     <div
       className="relative w-full h-full flex flex-col overflow-hidden"
-      style={{ background: '#0a0a0a' }}
+      style={{ background: 'var(--bg-base)' }}
     >
+      {/* Subtle brand glow */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            'radial-gradient(ellipse at 50% -10%, rgba(200,155,60,0.07) 0%, transparent 55%)',
-        }}
+        style={{ background: 'radial-gradient(ellipse at 50% -5%, rgba(124,58,237,0.08) 0%, transparent 55%)' }}
       />
 
       {/* Header */}
       <header
-        className="relative z-50 flex items-center justify-between px-8 py-5 flex-shrink-0 border-b"
-        style={{ borderColor: 'rgba(255,255,255,0.05)' }}
+        className="relative z-50 flex items-center justify-between px-8 flex-shrink-0"
+        style={{
+          height: '60px',
+          borderBottom: '1px solid var(--border-subtle)',
+          background: 'var(--bg-surface)',
+        }}
       >
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/')}
-            className="flex items-center gap-2 cursor-pointer group"
+            className="btn btn-text btn-sm flex items-center gap-2"
           >
             <div
-              className="w-7 h-7 rounded-sm flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #C89B3C, #FF4655)' }}
+              className="w-6 h-6 rounded-sm flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, var(--brand), #A78BFA)' }}
             >
-              <span
-                className="text-white text-[9px] font-bold"
-                style={{ fontFamily: 'Rajdhani, sans-serif' }}
-              >
-                RT
-              </span>
+              <span className="text-white text-[9px] font-bold" style={{ fontFamily: 'Rajdhani, sans-serif' }}>RT</span>
             </div>
             <span
-              className="text-white/60 group-hover:text-white/90 text-sm font-semibold tracking-wider uppercase transition-colors duration-150"
-              style={{ fontFamily: 'Rajdhani, sans-serif' }}
+              className="font-semibold tracking-wider uppercase"
+              style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--text-primary)', fontSize: '0.85rem' }}
             >
               Riot Teams
             </span>
           </button>
 
-          <span className="text-white/15 text-xs">/</span>
+          <span style={{ color: 'var(--border-strong)', fontSize: '0.6rem' }}>|</span>
+
           <span
-            className="text-sm font-semibold tracking-wider uppercase text-white/60"
-            style={{ fontFamily: 'Rajdhani, sans-serif' }}
+            className="text-sm font-semibold tracking-wider uppercase"
+            style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--text-muted)' }}
           >
             Équipes
           </span>
         </div>
 
-        <button
-          className="px-5 py-2 text-sm font-medium tracking-widest uppercase text-white/80 border border-white/15 rounded-sm cursor-pointer transition-all duration-200 hover:text-white hover:border-white/40 hover:bg-white/5 active:scale-95"
-          style={{ fontFamily: 'Rajdhani, sans-serif' }}
-        >
-          Sign In
-        </button>
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <button className="btn btn-ghost btn-sm">Sign In</button>
+        </div>
       </header>
 
       {/* Content */}
       <main className="relative z-10 flex-1 flex flex-col px-8 py-8 gap-6 overflow-y-auto">
-        {/* Page title + CTA */}
+        {/* Title + CTA */}
         <motion.div
           className="flex items-center justify-between"
           initial={{ opacity: 0, y: 12 }}
@@ -95,27 +92,19 @@ export function TeamsPage(): React.JSX.Element {
         >
           <div className="flex flex-col gap-0.5">
             <h1
-              className="text-3xl font-bold text-white"
-              style={{ fontFamily: 'Rajdhani, sans-serif' }}
+              className="text-3xl font-bold"
+              style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--text-primary)' }}
             >
               Mes Équipes
             </h1>
-            <p
-              className="text-white/30 text-xs"
-              style={{ fontFamily: 'Inter, sans-serif' }}
-            >
+            <p className="text-xs" style={{ fontFamily: 'Inter, sans-serif', color: 'var(--text-muted)' }}>
               {teams.length} équipe{teams.length !== 1 ? 's' : ''} enregistrée{teams.length !== 1 ? 's' : ''}
             </p>
           </div>
 
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="px-5 py-2.5 text-sm font-bold tracking-widest uppercase rounded-sm cursor-pointer transition-all duration-150 hover:opacity-85 active:scale-95"
-            style={{
-              fontFamily: 'Rajdhani, sans-serif',
-              background: '#C89B3C',
-              color: '#0A1428',
-            }}
+            className="btn btn-solid btn-md"
           >
             + Nouvelle équipe
           </button>
@@ -136,13 +125,15 @@ export function TeamsPage(): React.JSX.Element {
               style={{
                 fontFamily: 'Rajdhani, sans-serif',
                 borderColor: activeFilter === tab.key
-                  ? (tab.color ?? 'rgba(255,255,255,0.5)')
-                  : 'rgba(255,255,255,0.1)',
+                  ? (tab.color ?? 'var(--brand)')
+                  : 'var(--border-default)',
                 color: activeFilter === tab.key
-                  ? (tab.color ?? 'white')
-                  : 'rgba(255,255,255,0.35)',
+                  ? (tab.color ?? 'var(--brand)')
+                  : 'var(--text-muted)',
                 background: activeFilter === tab.key && tab.color
                   ? `${tab.color}15`
+                  : activeFilter === tab.key
+                  ? 'var(--brand-muted)'
                   : 'transparent',
               }}
             >
@@ -161,18 +152,15 @@ export function TeamsPage(): React.JSX.Element {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <p
-                className="text-white/20 text-sm"
-                style={{ fontFamily: 'Inter, sans-serif' }}
-              >
+              <p className="text-sm" style={{ color: 'var(--text-muted)', fontFamily: 'Inter, sans-serif' }}>
                 {activeFilter === 'all'
                   ? 'Aucune équipe créée pour le moment.'
                   : `Aucune équipe ${activeFilter.toUpperCase()} créée.`}
               </p>
               <button
                 onClick={() => setIsCreateModalOpen(true)}
-                className="text-xs uppercase tracking-widest cursor-pointer transition-colors hover:opacity-80"
-                style={{ fontFamily: 'Rajdhani, sans-serif', color: '#C89B3C' }}
+                className="btn btn-text btn-sm"
+                style={{ color: 'var(--brand)' }}
               >
                 Créer une équipe →
               </button>

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { ThemeToggle } from './ThemeToggle';
+
 export function Header(): React.JSX.Element {
   return (
     <header className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-5">
@@ -7,7 +9,7 @@ export function Header(): React.JSX.Element {
       <div className="flex items-center gap-3">
         <div
           className="w-8 h-8 rounded-sm flex items-center justify-center flex-shrink-0"
-          style={{ background: 'linear-gradient(135deg, #C89B3C 0%, #FF4655 100%)' }}
+          style={{ background: 'linear-gradient(135deg, var(--brand) 0%, #A78BFA 100%)' }}
         >
           <span
             className="text-white text-xs font-bold"
@@ -29,10 +31,11 @@ export function Header(): React.JSX.Element {
         </span>
       </div>
 
-      {/* Sign in */}
-      <button className="btn btn-ghost btn-md">
-        Sign In
-      </button>
+      {/* Actions */}
+      <div className="flex items-center gap-3">
+        <ThemeToggle />
+        <button className="btn btn-ghost btn-md">Sign In</button>
+      </div>
     </header>
   );
 }

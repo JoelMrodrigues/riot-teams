@@ -4,32 +4,50 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Design tokens ──────────────────────────────────────────────── */
+/* ─── Dark mode (défaut) ─────────────────────────────────────────── */
 :root {
   --bg-base:        #080808;
   --bg-surface:     #111111;
-  --bg-elevated:    #181818;
+  --bg-elevated:    #1a1a1a;
+  --bg-modal:       #141414;
 
-  --border-subtle:  rgba(255, 255, 255, 0.06);
-  --border-default: rgba(255, 255, 255, 0.11);
+  --border-subtle:  rgba(255, 255, 255, 0.05);
+  --border-default: rgba(255, 255, 255, 0.10);
   --border-strong:  rgba(255, 255, 255, 0.22);
 
   --text-primary:   #FFFFFF;
-  --text-secondary: rgba(255, 255, 255, 0.5);
+  --text-secondary: rgba(255, 255, 255, 0.50);
   --text-muted:     rgba(255, 255, 255, 0.25);
 
   /* Brand */
-  --brand-gold:   #C89B3C;
-  --brand-red:    #FF4655;
-  --brand-purple: #9B72CF;
+  --brand:          #7C3AED;
+  --brand-hover:    #6D28D9;
+  --brand-muted:    rgba(124, 58, 237, 0.15);
 
-  /* Per-game */
+  /* Per-game (invariants) */
   --lol-accent:       #C89B3C;
-  --lol-dark:         #0A1428;
   --valorant-accent:  #FF4655;
-  --valorant-dark:    #0F0E0E;
   --tft-accent:       #9B72CF;
-  --tft-dark:         #0D0B1A;
+}
+
+/* ─── Light mode ─────────────────────────────────────────────────── */
+:root[data-theme="light"] {
+  --bg-base:        #F2F2F4;
+  --bg-surface:     #FFFFFF;
+  --bg-elevated:    #F8F8FA;
+  --bg-modal:       #FFFFFF;
+
+  --border-subtle:  rgba(0, 0, 0, 0.06);
+  --border-default: rgba(0, 0, 0, 0.10);
+  --border-strong:  rgba(0, 0, 0, 0.20);
+
+  --text-primary:   #0D0D0D;
+  --text-secondary: rgba(13, 13, 13, 0.55);
+  --text-muted:     rgba(13, 13, 13, 0.30);
+
+  --brand:          #7C3AED;
+  --brand-hover:    #6D28D9;
+  --brand-muted:    rgba(124, 58, 237, 0.10);
 }
 
 /* ─── Reset ──────────────────────────────────────────────────────── */
@@ -50,11 +68,11 @@ body {
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 /* ─── Button system ──────────────────────────────────────────────── */
 @layer components {
-  /* Solid — filled with accent color */
   .btn {
     @apply inline-flex items-center justify-center gap-2 cursor-pointer select-none
            transition-all duration-150 active:scale-95;
@@ -64,34 +82,44 @@ body {
     text-transform: uppercase;
   }
 
-  .btn-sm  { @apply text-xs  px-4  py-2; }
+  .btn-sm  { @apply text-xs  px-4  py-2;   }
   .btn-md  { @apply text-sm  px-5  py-2.5; }
-  .btn-lg  { @apply text-sm  px-7  py-3; }
+  .btn-lg  { @apply text-sm  px-7  py-3;   }
 
+  /* Solid — brand violet */
   .btn-solid {
     @apply rounded-sm hover:opacity-85;
+    background: var(--brand);
+    color: #fff;
   }
 
   /* Ghost — border only */
   .btn-ghost {
-    @apply rounded-sm border hover:bg-white/5;
-    border-color: var(--border-default);
-    color: rgba(255,255,255,0.7);
+    @apply rounded-sm;
+    border: 1px solid var(--border-default);
+    color: var(--text-secondary);
+    background: transparent;
   }
-  .btn-ghost:hover { border-color: var(--border-strong); color: #fff; }
+  .btn-ghost:hover {
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+    background: rgba(255,255,255,0.04);
+  }
 
   /* Text only */
   .btn-text {
-    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
   }
-  .btn-text:hover { color: var(--text-primary); }
+  .btn-text:hover { color: var(--text-secondary); }
 }
 
 /* ─── Scrollbar ──────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.1);
+  background: var(--border-default);
   border-radius: 2px;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }

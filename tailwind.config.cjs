@@ -4,25 +4,27 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        brand: {
+          DEFAULT: '#7C3AED',
+          light:   '#A78BFA',
+          dark:    '#5B21B6',
+        },
         lol: {
           gold: '#C89B3C',
           dark: '#0A1428',
-          mid: '#0D2748',
         },
         valorant: {
-          red: '#FF4655',
+          red:  '#FF4655',
           dark: '#0F0E0E',
-          mid: '#200A0F',
         },
         tft: {
           purple: '#9B72CF',
-          dark: '#0D0B1A',
-          mid: '#1A1535',
+          dark:   '#0D0B1A',
         },
       },
       fontFamily: {
         display: ['Rajdhani', 'sans-serif'],
-        body: ['Inter', 'sans-serif'],
+        body:    ['Inter', 'sans-serif'],
       },
     },
   },

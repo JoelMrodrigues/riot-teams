@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { ThemeToggle } from './ThemeToggle';
 import type { Game } from '../../types/game.types';
 import type { GameTab } from '../../types/gameTab.types';
 
@@ -29,34 +30,25 @@ export function GameLandingHeader({
       style={{
         height: '60px',
         borderBottom: '1px solid rgba(255,255,255,0.07)',
-        background: 'rgba(0,0,0,0.35)',
+        background: 'rgba(0,0,0,0.40)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
       }}
     >
-      {/* Left — back + game tag */}
+      {/* Left */}
       <div className="flex items-center gap-3 w-44">
         <button
           onClick={() => navigate('/')}
           className="btn btn-text btn-sm flex items-center gap-2"
         >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <path
-              d="M10 3L5 8L10 13"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+            <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           <div
             className="w-5 h-5 rounded-sm flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #C89B3C, #FF4655)' }}
+            style={{ background: 'linear-gradient(135deg, var(--brand), #A78BFA)' }}
           >
-            <span
-              className="text-white font-bold"
-              style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '7px' }}
-            >
+            <span className="text-white font-bold" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '7px' }}>
               RT
             </span>
           </div>
@@ -99,11 +91,10 @@ export function GameLandingHeader({
         })}
       </nav>
 
-      {/* Right — sign in */}
-      <div className="flex justify-end w-44">
-        <button className="btn btn-ghost btn-sm">
-          Sign In
-        </button>
+      {/* Right */}
+      <div className="flex items-center justify-end gap-3 w-44">
+        <ThemeToggle />
+        <button className="btn btn-ghost btn-sm">Sign In</button>
       </div>
     </header>
   );

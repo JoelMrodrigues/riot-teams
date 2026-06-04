@@ -17,9 +17,9 @@ export function CreateTeamModal({ isOpen, onClose, onCreate }: CreateTeamModalPr
 
   useEffect(() => {
     if (!isOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, [isOpen, onClose]);
 
   useEffect(() => {
@@ -40,7 +40,8 @@ export function CreateTeamModal({ isOpen, onClose, onCreate }: CreateTeamModalPr
       {isOpen && (
         <>
           <motion.div
-            className="fixed inset-0 z-[90] bg-black/70 backdrop-blur-sm"
+            className="fixed inset-0 z-[90]"
+            style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(6px)' }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -55,20 +56,23 @@ export function CreateTeamModal({ isOpen, onClose, onCreate }: CreateTeamModalPr
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           >
             <div
-              className="w-full max-w-md rounded-sm border p-7 flex flex-col gap-6"
-              style={{ background: '#141414', borderColor: 'rgba(255,255,255,0.1)' }}
+              className="w-full max-w-md rounded-sm p-7 flex flex-col gap-6"
+              style={{
+                background: 'var(--bg-modal)',
+                border: '1px solid var(--border-default)',
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between">
                 <h2
-                  className="text-xl font-bold text-white"
-                  style={{ fontFamily: 'Rajdhani, sans-serif' }}
+                  className="text-xl font-bold"
+                  style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--text-primary)' }}
                 >
                   Créer une équipe
                 </h2>
                 <button
                   onClick={onClose}
-                  className="text-white/30 hover:text-white/70 transition-colors cursor-pointer text-lg leading-none"
+                  className="btn btn-text btn-sm text-lg leading-none"
                 >
                   ✕
                 </button>
@@ -76,8 +80,8 @@ export function CreateTeamModal({ isOpen, onClose, onCreate }: CreateTeamModalPr
 
               <div className="flex flex-col gap-2">
                 <label
-                  className="text-xs uppercase tracking-widest text-white/40"
-                  style={{ fontFamily: 'Rajdhani, sans-serif' }}
+                  className="text-xs uppercase tracking-widest"
+                  style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--text-muted)' }}
                 >
                   Nom de l'équipe
                 </label>
@@ -88,8 +92,15 @@ export function CreateTeamModal({ isOpen, onClose, onCreate }: CreateTeamModalPr
                   onKeyDown={(e) => { if (e.key === 'Enter') handleSubmit(); }}
                   placeholder="ex: Team Soleil"
                   autoFocus
-                  className="bg-white/5 border border-white/10 rounded-sm px-4 py-3 text-white text-sm placeholder-white/20 outline-none focus:border-white/25 transition-colors"
-                  style={{ fontFamily: 'Inter, sans-serif' }}
+                  className="rounded-sm px-4 py-3 text-sm outline-none transition-colors"
+                  style={{
+                    background: 'var(--bg-elevated)',
+                    border: '1px solid var(--border-default)',
+                    color: 'var(--text-primary)',
+                    fontFamily: 'Inter, sans-serif',
+                  }}
+                  onFocus={(e) => (e.target.style.borderColor = 'var(--border-strong)')}
+                  onBlur={(e) => (e.target.style.borderColor = 'var(--border-default)')}
                 />
                 {error && (
                   <p className="text-xs text-red-400" style={{ fontFamily: 'Inter, sans-serif' }}>
@@ -100,8 +111,8 @@ export function CreateTeamModal({ isOpen, onClose, onCreate }: CreateTeamModalPr
 
               <div className="flex flex-col gap-2">
                 <label
-                  className="text-xs uppercase tracking-widest text-white/40"
-                  style={{ fontFamily: 'Rajdhani, sans-serif' }}
+                  className="text-xs uppercase tracking-widest"
+                  style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--text-muted)' }}
                 >
                   Jeu
                 </label>
@@ -114,8 +125,8 @@ export function CreateTeamModal({ isOpen, onClose, onCreate }: CreateTeamModalPr
                       style={{
                         fontFamily: 'Rajdhani, sans-serif',
                         background: selectedGame === game.id ? `${game.accentColor}18` : 'transparent',
-                        borderColor: selectedGame === game.id ? game.accentColor : 'rgba(255,255,255,0.1)',
-                        color: selectedGame === game.id ? game.accentColor : 'rgba(255,255,255,0.4)',
+                        borderColor: selectedGame === game.id ? game.accentColor : 'var(--border-default)',
+                        color: selectedGame === game.id ? game.accentColor : 'var(--text-muted)',
                       }}
                     >
                       {game.tag}
@@ -126,12 +137,8 @@ export function CreateTeamModal({ isOpen, onClose, onCreate }: CreateTeamModalPr
 
               <button
                 onClick={handleSubmit}
-                className="w-full py-3 text-sm font-bold tracking-widest uppercase rounded-sm cursor-pointer transition-all duration-150 hover:opacity-85 active:scale-95"
-                style={{
-                  fontFamily: 'Rajdhani, sans-serif',
-                  background: activeGame.accentColor,
-                  color: activeGame.darkColor,
-                }}
+                className="btn btn-solid btn-md w-full justify-center"
+                style={{ background: activeGame.accentColor, color: activeGame.darkColor }}
               >
                 Créer l'équipe
               </button>
