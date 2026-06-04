@@ -12,39 +12,30 @@ export function GamePageHeader({ game }: GamePageHeaderProps): React.JSX.Element
 
   return (
     <header
-      className="relative z-50 flex items-center justify-between px-8 py-5 flex-shrink-0"
+      className="relative z-50 flex items-center justify-between px-8 flex-shrink-0"
       style={{
-        background: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%)',
+        height: '60px',
+        borderBottom: '1px solid rgba(255,255,255,0.07)',
+        background: 'rgba(0,0,0,0.35)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
       }}
     >
-      <div className="flex items-center gap-3">
-        <button
-          onClick={() => navigate(`/${game.id}`)}
-          className="flex items-center gap-2 text-white/40 hover:text-white/80 transition-colors duration-200 cursor-pointer group"
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            className="transition-transform duration-200 group-hover:-translate-x-0.5"
-          >
-            <path
-              d="M10 3L5 8L10 13"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span
-            className="text-xs uppercase tracking-widest"
-            style={{ fontFamily: 'Rajdhani, sans-serif' }}
-          >
-            {game.shortName}
-          </span>
-        </button>
-      </div>
+      <button
+        onClick={() => navigate(`/${game.id}`)}
+        className="btn btn-text btn-sm flex items-center gap-2"
+      >
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path
+            d="M10 3L5 8L10 13"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <span style={{ letterSpacing: '0.08em' }}>{game.shortName}</span>
+      </button>
 
       <div className="flex items-center gap-3">
         <div
@@ -52,17 +43,13 @@ export function GamePageHeader({ game }: GamePageHeaderProps): React.JSX.Element
           style={{ background: 'linear-gradient(135deg, #C89B3C, #FF4655)' }}
         >
           <span
-            className="text-white text-[8px] font-bold"
-            style={{ fontFamily: 'Rajdhani, sans-serif' }}
+            className="text-white font-bold"
+            style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '8px' }}
           >
             RT
           </span>
         </div>
-
-        <button
-          className="px-5 py-2 text-sm font-medium tracking-widest uppercase text-white/70 border border-white/15 rounded-sm cursor-pointer transition-all duration-200 hover:text-white hover:border-white/35 hover:bg-white/5 active:scale-95"
-          style={{ fontFamily: 'Rajdhani, sans-serif' }}
-        >
+        <button className="btn btn-ghost btn-sm">
           Sign In
         </button>
       </div>

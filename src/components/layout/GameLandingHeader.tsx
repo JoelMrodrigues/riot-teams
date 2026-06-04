@@ -5,9 +5,9 @@ import type { Game } from '../../types/game.types';
 import type { GameTab } from '../../types/gameTab.types';
 
 const TABS: { key: GameTab; label: string }[] = [
-  { key: 'solo', label: 'Solo' },
+  { key: 'solo',  label: 'Solo'    },
   { key: 'teams', label: 'Équipes' },
-  { key: 'stats', label: 'Stats' },
+  { key: 'stats', label: 'Stats'   },
 ];
 
 interface GameLandingHeaderProps {
@@ -25,22 +25,22 @@ export function GameLandingHeader({
 
   return (
     <header
-      className="relative z-50 flex items-center justify-between px-8 py-4 flex-shrink-0 border-b"
-      style={{ borderColor: 'rgba(255,255,255,0.06)' }}
+      className="relative z-50 flex items-center justify-between px-8 flex-shrink-0"
+      style={{
+        height: '60px',
+        borderBottom: '1px solid rgba(255,255,255,0.07)',
+        background: 'rgba(0,0,0,0.35)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+      }}
     >
-      {/* Left — back + logo */}
-      <div className="flex items-center gap-4 w-48">
+      {/* Left — back + game tag */}
+      <div className="flex items-center gap-3 w-44">
         <button
           onClick={() => navigate('/')}
-          className="flex items-center gap-2 text-white/35 hover:text-white/70 transition-colors duration-200 cursor-pointer group"
+          className="btn btn-text btn-sm flex items-center gap-2"
         >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 16 16"
-            fill="none"
-            className="transition-transform duration-200 group-hover:-translate-x-0.5"
-          >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
             <path
               d="M10 3L5 8L10 13"
               stroke="currentColor"
@@ -50,22 +50,22 @@ export function GameLandingHeader({
             />
           </svg>
           <div
-            className="w-6 h-6 rounded-sm flex items-center justify-center"
+            className="w-5 h-5 rounded-sm flex items-center justify-center"
             style={{ background: 'linear-gradient(135deg, #C89B3C, #FF4655)' }}
           >
             <span
-              className="text-white text-[8px] font-bold"
-              style={{ fontFamily: 'Rajdhani, sans-serif' }}
+              className="text-white font-bold"
+              style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '7px' }}
             >
               RT
             </span>
           </div>
         </button>
 
-        <span className="text-white/15 text-xs">/</span>
+        <span style={{ color: 'rgba(255,255,255,0.12)', fontSize: '0.65rem' }}>|</span>
 
         <span
-          className="text-sm font-bold tracking-wider uppercase"
+          className="text-sm font-bold tracking-widest uppercase"
           style={{ fontFamily: 'Rajdhani, sans-serif', color: game.accentColor }}
         >
           {game.tag}
@@ -73,34 +73,35 @@ export function GameLandingHeader({
       </div>
 
       {/* Center — tabs */}
-      <nav className="flex items-center gap-1">
-        {TABS.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => onTabChange(tab.key)}
-            className="relative px-5 py-2 text-sm font-semibold tracking-wider uppercase cursor-pointer transition-colors duration-150"
-            style={{
-              fontFamily: 'Rajdhani, sans-serif',
-              color: activeTab === tab.key ? 'white' : 'rgba(255,255,255,0.3)',
-            }}
-          >
-            {tab.label}
-            {activeTab === tab.key && (
-              <span
-                className="absolute bottom-0 left-3 right-3 h-px"
-                style={{ background: game.accentColor }}
-              />
-            )}
-          </button>
-        ))}
+      <nav className="flex items-stretch" style={{ height: '60px' }}>
+        {TABS.map((tab) => {
+          const isActive = activeTab === tab.key;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => onTabChange(tab.key)}
+              className="relative px-6 flex items-center text-sm font-semibold tracking-wider uppercase cursor-pointer transition-colors duration-150"
+              style={{
+                fontFamily: 'Rajdhani, sans-serif',
+                color: isActive ? '#fff' : 'rgba(255,255,255,0.32)',
+                letterSpacing: '0.1em',
+              }}
+            >
+              {tab.label}
+              {isActive && (
+                <span
+                  className="absolute bottom-0 left-3 right-3"
+                  style={{ height: '2px', background: game.accentColor, borderRadius: '1px 1px 0 0' }}
+                />
+              )}
+            </button>
+          );
+        })}
       </nav>
 
       {/* Right — sign in */}
-      <div className="flex justify-end w-48">
-        <button
-          className="px-5 py-2 text-sm font-medium tracking-widest uppercase text-white/70 border border-white/15 rounded-sm cursor-pointer transition-all duration-200 hover:text-white hover:border-white/35 hover:bg-white/5 active:scale-95"
-          style={{ fontFamily: 'Rajdhani, sans-serif' }}
-        >
+      <div className="flex justify-end w-44">
+        <button className="btn btn-ghost btn-sm">
           Sign In
         </button>
       </div>

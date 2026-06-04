@@ -11,7 +11,8 @@ export const GAMES_DATA: Game[] = [
     darkColor: '#0A1428',
     midColor: '#0D2748',
     gradientStyle:
-      'radial-gradient(ellipse at 80% 50%, rgba(200,155,60,0.25) 0%, rgba(13,39,72,0.6) 50%, rgba(10,20,40,0.95) 100%)',
+      'linear-gradient(to top, rgba(10,20,40,0.97) 0%, rgba(10,20,40,0.6) 50%, rgba(10,20,40,0.15) 100%)',
+    imagePath: '/images/lol-bg.jpg',
     ctaLabel: 'Explore LoL Stats',
     previewStats: [
       { label: 'Ranked', value: 'Solo / Flex' },
@@ -29,7 +30,8 @@ export const GAMES_DATA: Game[] = [
     darkColor: '#0F0E0E',
     midColor: '#200A0F',
     gradientStyle:
-      'radial-gradient(ellipse at 50% 80%, rgba(255,70,85,0.3) 0%, rgba(32,10,15,0.6) 50%, rgba(15,14,14,0.95) 100%)',
+      'linear-gradient(to top, rgba(15,14,14,0.97) 0%, rgba(15,14,14,0.55) 50%, rgba(15,14,14,0.1) 100%)',
+    imagePath: '/images/valorant-bg.jpg',
     ctaLabel: 'Explore Valorant Stats',
     previewStats: [
       { label: 'Ranked', value: 'Competitive' },
@@ -47,7 +49,8 @@ export const GAMES_DATA: Game[] = [
     darkColor: '#0D0B1A',
     midColor: '#1A1535',
     gradientStyle:
-      'radial-gradient(ellipse at 20% 50%, rgba(155,114,207,0.3) 0%, rgba(26,21,53,0.6) 50%, rgba(13,11,26,0.95) 100%)',
+      'linear-gradient(to top, rgba(13,11,26,0.97) 0%, rgba(13,11,26,0.55) 50%, rgba(13,11,26,0.1) 100%)',
+    imagePath: '/images/tft-bg.jpg',
     ctaLabel: 'Explore TFT Stats',
     previewStats: [
       { label: 'Ranked', value: 'Hyper Roll' },

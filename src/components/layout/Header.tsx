@@ -2,36 +2,35 @@ import React from 'react';
 
 export function Header(): React.JSX.Element {
   return (
-    <header
-      className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-5"
-      style={{
-        background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)',
-      }}
-    >
+    <header className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-5">
+      {/* Logo */}
       <div className="flex items-center gap-3">
         <div
-          className="w-8 h-8 rounded-sm flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg, #C89B3C, #FF4655)' }}
+          className="w-8 h-8 rounded-sm flex items-center justify-center flex-shrink-0"
+          style={{ background: 'linear-gradient(135deg, #C89B3C 0%, #FF4655 100%)' }}
         >
           <span
             className="text-white text-xs font-bold"
-            style={{ fontFamily: 'Rajdhani, sans-serif' }}
+            style={{ fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.05em' }}
           >
             RT
           </span>
         </div>
         <span
-          className="text-white text-lg font-semibold tracking-wider uppercase"
-          style={{ fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.15em' }}
+          className="text-white font-bold tracking-widest uppercase"
+          style={{
+            fontFamily: 'Rajdhani, sans-serif',
+            fontSize: '1.05rem',
+            letterSpacing: '0.18em',
+            textShadow: '0 1px 12px rgba(0,0,0,0.6)',
+          }}
         >
           Riot Teams
         </span>
       </div>
 
-      <button
-        className="px-5 py-2 text-sm font-medium tracking-widest uppercase text-white/80 border border-white/15 rounded-sm cursor-pointer transition-all duration-200 hover:text-white hover:border-white/40 hover:bg-white/5 active:scale-95"
-        style={{ fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.12em' }}
-      >
+      {/* Sign in */}
+      <button className="btn btn-ghost btn-md">
         Sign In
       </button>
     </header>

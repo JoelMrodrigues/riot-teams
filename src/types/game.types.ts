@@ -13,6 +13,7 @@ export interface Game {
   darkColor: string;
   midColor: string;
   gradientStyle: string;
+  imagePath: string;
   ctaLabel: string;
   previewStats: GameStat[];
 }
