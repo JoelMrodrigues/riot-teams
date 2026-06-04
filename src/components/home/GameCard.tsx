@@ -54,6 +54,7 @@ export function GameCard({
       <div className="relative z-10 flex flex-col justify-end h-full p-8 pb-10">
         <motion.div
           className="mb-4 self-start"
+          initial={{ opacity: 1 }}
           animate={{ opacity: isAnyActive && !isActive ? 0.3 : 1 }}
           transition={{ duration: 0.2 }}
         >
@@ -76,6 +77,7 @@ export function GameCard({
             fontFamily: 'Rajdhani, sans-serif',
             textShadow: '0 2px 20px rgba(0,0,0,0.8)',
           }}
+          initial={{ fontSize: '2.25rem', opacity: 1 }}
           animate={{
             fontSize: isActive ? '3.75rem' : '2.25rem',
             opacity: isAnyActive && !isActive ? 0.35 : 1,
