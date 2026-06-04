@@ -14,7 +14,7 @@ export function useGameAccordion(): UseGameAccordionReturn {
   const handleMouseLeave = () => setActiveId(null);
 
   const getCardWidth = (id: string): string => {
-    if (activeId === null) return '33.333%';
+    if (!activeId) return '33.333%';
     return activeId === id ? '56%' : '22%';
   };
 

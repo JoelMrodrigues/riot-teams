@@ -21,10 +21,12 @@ export function GameCard({
   onMouseLeave,
 }: GameCardProps): React.JSX.Element {
   return (
-    <motion.div
+    <div
       className="relative h-full overflow-hidden flex-shrink-0 select-none"
-      animate={{ width: cardWidth }}
-      transition={{ type: 'spring', stiffness: 220, damping: 28 }}
+      style={{
+        width: cardWidth,
+        transition: 'width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+      }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
@@ -83,6 +85,6 @@ export function GameCard({
           {game.shortName}
         </motion.h2>
       </div>
-    </motion.div>
+    </div>
   );
 }
