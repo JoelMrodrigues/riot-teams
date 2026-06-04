@@ -24,7 +24,22 @@ Il est formellement interdit de créer des fichiers "monolithes" (ex: une page e
 
 ---
 
-## 2. Structure et Logique du Code
+## 2. Limite de Taille des Fichiers
+
+**Aucun fichier ne doit dépasser 150 lignes.** C'est une règle stricte, pas une recommandation.
+
+* Si un fichier approche les 150 lignes, c'est le signal qu'il doit être découpé.
+* Extraire des sous-composants, des hooks, des utilitaires ou des constantes dans leurs propres fichiers dédiés.
+* Un fichier long est toujours le symptôme d'un manque de séparation des responsabilités.
+
+### Exemples de découpe obligatoire
+* Un composant de 200 lignes avec un formulaire → extraire le formulaire dans `MyForm.tsx`
+* Un hook de 180 lignes avec plusieurs logiques → extraire en `useFeatureA.ts` + `useFeatureB.ts`
+* Une page de 160 lignes avec des sections distinctes → extraire chaque section en composant
+
+---
+
+## 3. Structure et Logique du Code
 
 Tu dois maintenir une cohérence parfaite à travers tout le projet. Applique toujours la même logique de construction :
 
@@ -43,7 +58,7 @@ Tu dois maintenir une cohérence parfaite à travers tout le projet. Applique to
 
 ---
 
-## 3. Qualité du Code & Bonnes Pratiques
+## 4. Qualité du Code & Bonnes Pratiques
 
 * **Pas de duplication (DRY) :** Si tu écris deux fois la même logique, extrait-la dans un utilitaire ou un hook personnalisé.
 * **Fonctions pures et courtes :** Une fonction fait **une seule chose** et la fait bien (Single Responsibility Principle). Si une fonction dépasse 25 lignes, demande-toi comment la découper.
@@ -52,15 +67,16 @@ Tu dois maintenir une cohérence parfaite à travers tout le projet. Applique to
 
 ---
 
-## 4. Format des Réponses de l'IA
+## 5. Format des Réponses de l'IA
 
 * **Avant de coder :** Si une modification impacte plusieurs fichiers, liste d'abord l'arborescence cible et explique brièvement ton plan d'attaque.
 * **Pas de code partiel :** Quand tu crées ou modifies un fichier, fournis **le code complet** du fichier. Évite les commentaires du type `// ... reste du code inchangé`.
 * **Explications concises :** Va droit au but. Concentre-toi sur le *pourquoi* des choix architecturaux plutôt que de paraphraser le code fourni.
+* **Une tâche à la fois :** Ne jamais passer à une nouvelle fonctionnalité tant que celle en cours n'est pas validée par l'utilisateur comme parfaite.
 
 ---
 
-## 5. Persistance & Base de Données (Supabase)
+## 6. Persistance & Base de Données (Supabase)
 
 Le projet utilise Supabase. Pour éviter l'éparpillement et garantir la cohérence des données, l'IA doit respecter une politique stricte de centralisation et de modélisation.
 
