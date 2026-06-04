@@ -10,7 +10,6 @@ interface GameCardProps {
   cardWidth: string;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
-  onClick: () => void;
 }
 
 export function GameCard({
@@ -20,16 +19,14 @@ export function GameCard({
   cardWidth,
   onMouseEnter,
   onMouseLeave,
-  onClick,
 }: GameCardProps): React.JSX.Element {
   return (
     <motion.div
-      className="relative h-full cursor-pointer overflow-hidden flex-shrink-0 select-none"
+      className="relative h-full overflow-hidden flex-shrink-0 select-none"
       animate={{ width: cardWidth }}
       transition={{ type: 'spring', stiffness: 220, damping: 28 }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      onClick={onClick}
     >
       {/* Background image */}
       <img
