@@ -5,7 +5,7 @@ import { useGameAccordion } from '../../hooks/useGameAccordion';
 import { GAMES_DATA } from '../../data/games.data';
 
 export function HeroSection(): React.JSX.Element {
-  const { activeId, handleMouseEnter, handleMouseLeave, getCardWidth } = useGameAccordion();
+  const { activeId, handleMouseEnter, handleMouseLeave, getFlexGrow } = useGameAccordion();
 
   return (
     <section className="flex w-full h-full overflow-hidden">
@@ -15,7 +15,7 @@ export function HeroSection(): React.JSX.Element {
           game={game}
           isActive={activeId === game.id}
           isAnyActive={activeId !== null}
-          cardWidth={getCardWidth(game.id)}
+          flexGrow={getFlexGrow(game.id)}
           onMouseEnter={() => handleMouseEnter(game.id)}
           onMouseLeave={handleMouseLeave}
         />

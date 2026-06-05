@@ -4,7 +4,7 @@ interface UseGameAccordionReturn {
   activeId: string | null;
   handleMouseEnter: (id: string) => void;
   handleMouseLeave: () => void;
-  getCardWidth: (id: string) => string;
+  getFlexGrow: (id: string) => number;
 }
 
 export function useGameAccordion(): UseGameAccordionReturn {
@@ -13,10 +13,11 @@ export function useGameAccordion(): UseGameAccordionReturn {
   const handleMouseEnter = useCallback((id: string) => setActiveId(id), []);
   const handleMouseLeave = useCallback(() => setActiveId(null), []);
 
-  const getCardWidth = useCallback((id: string): string => {
-    if (!activeId) return '33.333%';
-    return activeId === id ? '56%' : '22%';
+  // 2.55 / (2.55 + 1 + 1) ≈ 56%  |  1 / 4.55 ≈ 22%  |  1/3 = 33% (rest)
+  const getFlexGrow = useCallback((id: string): number => {
+    if (!activeId) return 1;
+    return activeId === id ? 2.55 : 1;
   }, [activeId]);
 
-  return { activeId, handleMouseEnter, handleMouseLeave, getCardWidth };
+  return { activeId, handleMouseEnter, handleMouseLeave, getFlexGrow };
 }

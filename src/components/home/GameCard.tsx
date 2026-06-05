@@ -6,34 +6,35 @@ interface GameCardProps {
   game: Game;
   isActive: boolean;
   isAnyActive: boolean;
-  cardWidth: string;
+  flexGrow: number;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
 }
 
-// Single easing curve — deliberate, fast-in / smooth-out, no bounce
 const E = 'cubic-bezier(0.65, 0, 0.35, 1)';
 
 export const GameCard = React.memo(function GameCard({
   game,
   isActive,
   isAnyActive,
-  cardWidth,
+  flexGrow,
   onMouseEnter,
   onMouseLeave,
 }: GameCardProps): React.JSX.Element {
   return (
     <div
-      className="relative h-full overflow-hidden flex-shrink-0 select-none"
+      className="relative h-full overflow-hidden select-none"
       style={{
-        width: cardWidth,
-        transition: `width 0.55s ${E}`,
-        willChange: 'width',
+        flexGrow,
+        flexShrink: 1,
+        flexBasis: 0,
+        minWidth: 0,
+        transition: `flex-grow 0.55s ${E}`,
       }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      {/* Background image — GPU layer, slow zoom for depth */}
+      {/* Background image */}
       <img
         src={game.imagePath}
         alt=""
@@ -49,7 +50,7 @@ export const GameCard = React.memo(function GameCard({
       {/* Gradient overlay */}
       <div className="absolute inset-0" style={{ background: game.gradientStyle }} />
 
-      {/* Accent tint — revealed on hover */}
+      {/* Accent tint on hover */}
       <div
         className="absolute inset-0"
         style={{
@@ -79,7 +80,6 @@ export const GameCard = React.memo(function GameCard({
 
       {/* Content */}
       <div className="relative z-10 flex flex-col justify-end h-full p-8 pb-10">
-        {/* Tag badge */}
         <div
           className="mb-4 self-start"
           style={{
@@ -100,7 +100,6 @@ export const GameCard = React.memo(function GameCard({
           </span>
         </div>
 
-        {/* Game name */}
         <h2
           className="font-bold text-white leading-none"
           style={{
