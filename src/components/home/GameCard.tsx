@@ -1,5 +1,7 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { LolSplash } from './lol-splash/LolSplash';
 import type { Game } from '../../types/game.types';
 
 interface GameCardProps {
@@ -21,9 +23,11 @@ export const GameCard = React.memo(function GameCard({
   onMouseEnter,
   onMouseLeave,
 }: GameCardProps): React.JSX.Element {
+  const navigate = useNavigate();
+
   return (
     <div
-      className="relative h-full overflow-hidden select-none"
+      className="relative h-full overflow-hidden select-none cursor-pointer"
       style={{
         flexGrow,
         flexShrink: 1,
@@ -33,19 +37,24 @@ export const GameCard = React.memo(function GameCard({
       }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      onClick={() => navigate(`/${game.id}`)}
     >
-      {/* Background image */}
-      <img
-        src={game.imagePath}
-        alt=""
-        fetchPriority="high"
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{
-          transform: isActive ? 'scale(1.07)' : 'scale(1.0)',
-          transition: `transform 0.9s ${E}`,
-          willChange: 'transform',
-        }}
-      />
+      {/* Background — animated splash for LoL, static image otherwise */}
+      {game.id === 'lol' ? (
+        <LolSplash active={isActive} />
+      ) : (
+        <img
+          src={game.imagePath}
+          alt=""
+          fetchPriority="high"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{
+            transform: isActive ? 'scale(1.07)' : 'scale(1.0)',
+            transition: `transform 0.9s ${E}`,
+            willChange: 'transform',
+          }}
+        />
+      )}
 
       {/* Gradient overlay */}
       <div className="absolute inset-0" style={{ background: game.gradientStyle }} />

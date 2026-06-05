@@ -4,7 +4,10 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HomePage } from '../pages/HomePage';
 import { TeamsPage } from '../pages/TeamsPage';
 
+import { LolLayout } from '../components/lol/layout/LolLayout';
 import { LolHomePage } from '../pages/lol/LolHomePage';
+import { LolSearchPage } from '../pages/lol/LolSearchPage';
+import { LolTeamsHomePage } from '../pages/lol/LolTeamsHomePage';
 import { LolPlayerPage } from '../pages/lol/LolPlayerPage';
 import { LolTeamPage } from '../pages/lol/LolTeamPage';
 
@@ -23,7 +26,12 @@ export function AppRouter(): React.JSX.Element {
         <Route path="/" element={<HomePage />} />
         <Route path="/teams" element={<TeamsPage />} />
 
-        <Route path="/lol" element={<LolHomePage />} />
+        {/* Écosystème LoL dédié — header/layout persistant via Outlet */}
+        <Route path="/lol" element={<LolLayout />}>
+          <Route index element={<LolHomePage />} />
+          <Route path="search" element={<LolSearchPage />} />
+          <Route path="teams" element={<LolTeamsHomePage />} />
+        </Route>
         <Route path="/lol/player/:gameName/:tagLine" element={<LolPlayerPage />} />
         <Route path="/lol/team/:teamId" element={<LolTeamPage />} />
 

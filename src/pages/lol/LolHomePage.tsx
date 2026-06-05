@@ -1,22 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { GameLandingLayout } from '../../components/layout/GameLandingLayout';
-import { GameSoloTab } from '../../components/game/GameSoloTab';
-import { GameTeamsTab } from '../../components/game/GameTeamsTab';
-import { GameStatsTab } from '../../components/game/GameStatsTab';
-import { GAMES_DATA } from '../../data/games.data';
-import type { GameTab } from '../../types/gameTab.types';
+import { LolHero } from '../../components/lol/home/LolHero';
+import { LolFeatureGrid } from '../../components/lol/home/LolFeatureGrid';
 
-const game = GAMES_DATA.find((g) => g.id === 'lol')!;
-
+/** Page d'accueil vitrine de l'écosystème LoL (rendue dans LolLayout). */
 export function LolHomePage(): React.JSX.Element {
-  const [activeTab, setActiveTab] = useState<GameTab>('solo');
-
   return (
-    <GameLandingLayout game={game} activeTab={activeTab} onTabChange={setActiveTab}>
-      {activeTab === 'solo' && <GameSoloTab game={game} />}
-      {activeTab === 'teams' && <GameTeamsTab game={game} />}
-      {activeTab === 'stats' && <GameStatsTab game={game} />}
-    </GameLandingLayout>
+    <div className="mx-auto w-full max-w-6xl px-8 pb-20">
+      <LolHero />
+      <LolFeatureGrid />
+    </div>
   );
 }
