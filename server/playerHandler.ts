@@ -21,7 +21,7 @@ export async function playerHandler(req: Request, res: Response): Promise<void> 
     res.json(profile);
   } catch (err) {
     if (err instanceof RiotError) {
-      res.status(err.status).json({ error: err.message });
+      res.status(err.status).json({ error: err.message, detail: err.detail });
       return;
     }
     console.error('[player] erreur inattendue:', err);
