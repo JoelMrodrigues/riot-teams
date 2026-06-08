@@ -12,7 +12,7 @@ export function LolHeader(): React.JSX.Element {
       style={{
         height: '60px',
         borderBottom: '1px solid var(--lol-border)',
-        background: 'rgba(7, 3, 9, 0.55)',
+        background: 'var(--lol-header)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
       }}

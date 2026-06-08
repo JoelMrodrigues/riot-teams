@@ -8,6 +8,8 @@ export interface LolFeature {
   icon: LolFeatureIcon;
   to: string;
   badge?: string;
+  /** Accent coloré (clé de LOL_ACCENTS). */
+  accent: 'solo' | 'team' | 'stats';
   /** Taille dans la bento grid. */
   span: 'wide' | 'tall' | 'normal';
 }
@@ -21,6 +23,7 @@ export const LOL_FEATURES: LolFeature[] = [
     icon: 'search',
     to: '/lol/search',
     badge: 'Solo',
+    accent: 'solo',
     span: 'wide',
   },
   {
@@ -31,6 +34,7 @@ export const LOL_FEATURES: LolFeature[] = [
     icon: 'scrim',
     to: '/lol/teams',
     badge: 'Équipe',
+    accent: 'team',
     span: 'tall',
   },
   {
@@ -39,6 +43,7 @@ export const LOL_FEATURES: LolFeature[] = [
     description: 'Métriques détaillées : dégâts, vision, gold@15 et écarts par rôle.',
     icon: 'stats',
     to: '/lol/search',
+    accent: 'stats',
     span: 'normal',
   },
   {
@@ -47,6 +52,7 @@ export const LOL_FEATURES: LolFeature[] = [
     description: 'Trois profils au choix : Scrim, Flex ou Fun, adaptés à ton ambition.',
     icon: 'team',
     to: '/lol/teams',
+    accent: 'team',
     span: 'normal',
   },
 ];

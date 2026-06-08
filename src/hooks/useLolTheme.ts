@@ -20,6 +20,7 @@ export function useLolTheme(): UseLolThemeReturn {
   const vars = {
     '--lol-bg': palette.bg,
     '--lol-bg-elevated': palette.bgElevated,
+    '--lol-header': palette.headerBg,
     '--lol-surface': palette.surface,
     '--lol-border': palette.border,
     '--lol-violet': palette.violet,

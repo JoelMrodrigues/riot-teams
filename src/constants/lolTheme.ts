@@ -2,6 +2,7 @@
 export interface LolPalette {
   bg: string;
   bgElevated: string;
+  headerBg: string;
   surface: string;
   border: string;
   violet: string;
@@ -13,10 +14,40 @@ export interface LolPalette {
   heroGradient: string;
 }
 
+/** Accents vifs par section, déclinés autour du violet (gradients dynamiques). */
+export interface LolAccent {
+  color: string;
+  soft: string;
+  gradient: string;
+  glow: string;
+}
+
+export const LOL_ACCENTS: Record<'solo' | 'team' | 'stats', LolAccent> = {
+  solo: {
+    color: '#22D3EE',
+    soft: '#67E8F9',
+    gradient: 'linear-gradient(135deg, #22D3EE 0%, #7C3AED 100%)',
+    glow: 'rgba(34, 211, 238, 0.35)',
+  },
+  team: {
+    color: '#F472B6',
+    soft: '#F9A8D4',
+    gradient: 'linear-gradient(135deg, #F472B6 0%, #7C3AED 100%)',
+    glow: 'rgba(244, 114, 182, 0.35)',
+  },
+  stats: {
+    color: '#FBBF24',
+    soft: '#FCD34D',
+    gradient: 'linear-gradient(135deg, #FBBF24 0%, #7C3AED 100%)',
+    glow: 'rgba(251, 191, 36, 0.32)',
+  },
+};
+
 export const LOL_PALETTE: Record<'dark' | 'light', LolPalette> = {
   dark: {
     bg: '#070309',
     bgElevated: '#0E0714',
+    headerBg: 'rgba(7, 3, 9, 0.55)',
     surface: 'rgba(139, 92, 246, 0.06)',
     border: 'rgba(139, 92, 246, 0.18)',
     violet: '#8B5CF6',
@@ -31,6 +62,7 @@ export const LOL_PALETTE: Record<'dark' | 'light', LolPalette> = {
   light: {
     bg: '#FBFAFF',
     bgElevated: '#FFFFFF',
+    headerBg: 'rgba(255, 255, 255, 0.72)',
     surface: 'rgba(124, 58, 237, 0.05)',
     border: 'rgba(124, 58, 237, 0.16)',
     violet: '#7C3AED',
