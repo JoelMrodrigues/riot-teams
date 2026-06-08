@@ -2,26 +2,41 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
 import { RankBadge } from './RankBadge';
-import { profileIcon } from '../../../utils/lolAssets';
+import { profileIcon, bigChampionImage } from '../../../utils/lolAssets';
 import type { LolProfile } from '../../../types/lolApi.types';
 
 interface ProfileHeaderProps {
   profile: LolProfile;
 }
 
-/** En-tête : icône, Riot ID, niveau et classements Solo/Flex. */
+/** En-tête : bannière champion + icône, Riot ID, niveau et classements. */
 export function ProfileHeader({ profile }: ProfileHeaderProps): React.JSX.Element {
   const [iconOk, setIconOk] = useState(true);
+  const [bannerOk, setBannerOk] = useState(true);
+  const bannerChampion = profile.matches[0]?.champion;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="flex flex-col gap-6 rounded-3xl p-6 lg:flex-row lg:items-center"
+      className="relative flex flex-col gap-6 overflow-hidden rounded-3xl p-6 lg:flex-row lg:items-center"
       style={{ background: 'var(--lol-bg-elevated)', border: '1px solid var(--lol-border)' }}
     >
-      <div className="flex items-center gap-4">
+      {bannerChampion && bannerOk && (
+        <>
+          <img
+            src={bigChampionImage(bannerChampion)}
+            alt=""
+            onError={() => setBannerOk(false)}
+            className="pointer-events-none absolute right-0 top-0 h-full w-1/2 object-cover"
+            style={{ maskImage: 'linear-gradient(to left, #000 10%, transparent 95%)', WebkitMaskImage: 'linear-gradient(to left, #000 10%, transparent 95%)', opacity: 0.35 }}
+          />
+          <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(to right, var(--lol-bg-elevated) 30%, transparent)' }} />
+        </>
+      )}
+
+      <div className="relative z-10 flex items-center gap-4">
         <div className="h-20 w-20 overflow-hidden rounded-2xl" style={{ border: '2px solid var(--lol-violet)' }}>
           {iconOk ? (
             <img src={profileIcon(profile.profileIconId)} alt="" onError={() => setIconOk(false)} className="h-full w-full object-cover" />
@@ -39,7 +54,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps): React.JSX.Elemen
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-4 lg:ml-auto">
+      <div className="relative z-10 flex flex-wrap gap-4 lg:ml-auto">
         {profile.ranks.length > 0 ? (
           profile.ranks.map((r) => <RankBadge key={r.queue} entry={r} />)
         ) : (
