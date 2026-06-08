@@ -1,6 +1,7 @@
 import { Router, type Request } from 'express';
 
 import { resolvePuuid } from '../_core/resolvePuuid';
+import { buildLolProfile } from '../lol/profile/buildLolProfile';
 import { getSummonerByPuuid } from '../lol/profile/getSummonerByPuuid';
 import { getLeagueByPuuid } from '../lol/ranked/getLeagueByPuuid';
 import { getMatchIds } from '../lol/matches/getMatchIds';
@@ -16,6 +17,18 @@ const puuidOf = (req: Request): Promise<string> =>
     String(req.query.gameName ?? '').trim(),
     String(req.query.tagLine ?? '').trim(),
   );
+
+// Profil agrégé (compte + rangs + matchs + maîtrise) — /api/lol/profile
+router.get('/profile', async (req, res) => {
+  const gameName = String(req.query.gameName ?? '').trim();
+  const tagLine = String(req.query.tagLine ?? '').trim();
+  if (!gameName || !tagLine) {
+    res.status(400).json({ error: 'gameName et tagLine requis.' });
+    return;
+  }
+  const count = Math.min(Math.max(Number(req.query.count ?? 8), 1), 20);
+  res.json(await buildLolProfile(gameName, tagLine, count));
+});
 
 // SUMMONER-V4 — /api/lol/summoner
 router.get('/summoner', async (req, res) => {

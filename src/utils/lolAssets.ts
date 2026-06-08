@@ -13,3 +13,8 @@ export function championIcon(key: string): string {
 export function profileIcon(iconId: number): string {
   return `https://cdn.communitydragon.org/latest/profile-icon/${iconId}`;
 }
+
+/** Carré d'un champion par son ID numérique (CDN Community Dragon). */
+export function championSquareById(championId: number): string {
+  return `https://cdn.communitydragon.org/latest/champion/${championId}/square`;
+}

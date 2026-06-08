@@ -1,12 +1,12 @@
 import React from 'react';
 
 import { RiotIdSearch } from '../../components/lol/search/RiotIdSearch';
-import { SummonerCard } from '../../components/lol/search/SummonerCard';
-import { useSummonerSearch } from '../../hooks/useSummonerSearch';
+import { ProfileView } from '../../components/lol/search/ProfileView';
+import { useLolProfile } from '../../hooks/useLolProfile';
 
-/** Recherche Solo (Étape 3) : Riot ID -> profil via le proxy du site. */
+/** Recherche Solo (Étape 3) : Riot ID -> profil complet via le proxy du site. */
 export function LolSearchPage(): React.JSX.Element {
-  const { profile, label, loading, error, search } = useSummonerSearch();
+  const { profile, loading, error, search } = useLolProfile();
 
   return (
     <div className="mx-auto w-full max-w-5xl px-8 py-12">
@@ -15,7 +15,7 @@ export function LolSearchPage(): React.JSX.Element {
           Recherche de joueur
         </h1>
         <p className="text-sm" style={{ color: 'var(--lol-text-muted)' }}>
-          Entre un Riot ID (pseudo#tag) pour récupérer le profil d'invocateur.
+          Entre un Riot ID (pseudo#tag) pour voir rang, historique et maîtrise.
         </p>
         <RiotIdSearch onSearch={search} loading={loading} />
       </div>
@@ -26,9 +26,9 @@ export function LolSearchPage(): React.JSX.Element {
         </p>
       )}
 
-      {loading && <p className="py-12 text-center text-sm" style={{ color: 'var(--lol-text-muted)' }}>Chargement…</p>}
+      {loading && <p className="py-12 text-center text-sm" style={{ color: 'var(--lol-text-muted)' }}>Chargement du profil…</p>}
 
-      {!loading && profile && <SummonerCard profile={profile} label={label} />}
+      {!loading && profile && <ProfileView profile={profile} />}
     </div>
   );
 }

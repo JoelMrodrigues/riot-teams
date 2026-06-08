@@ -1,4 +1,4 @@
-/** Contrat de données du profil LoL renvoyé par /api/lol/profile. */
+/** Profil LoL agrégé renvoyé par /api/lol/profile (contrat front ↔ back). */
 export type QueueKind = 'solo' | 'flex' | 'normal' | 'aram' | 'other';
 export type RoleKind = 'TOP' | 'JUNGLE' | 'MIDDLE' | 'BOTTOM' | 'UTILITY' | 'UNKNOWN';
 
