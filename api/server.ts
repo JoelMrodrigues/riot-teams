@@ -6,8 +6,8 @@ import cors from 'cors';
 
 import { CONFIG } from './_core/config';
 import { RiotError } from './_core/riotClient';
-import { getAccountByRiotId } from './shared/account/getAccountByRiotId';
-import { getSummonerByPuuid } from './lol/profile/getSummonerByPuuid';
+import accountRoutes from './routes/accountRoutes';
+import lolRoutes from './routes/lolRoutes';
 
 const app = express();
 app.use(cors());
@@ -16,34 +16,8 @@ app.get('/api/health', (_req, res) => {
   res.json({ ok: true, keyMode: CONFIG.keyMode, platform: CONFIG.defaultPlatform });
 });
 
-// ACCOUNT-V1 — GET /api/account?gameName=...&tagLine=...
-app.get('/api/account', async (req, res) => {
-  const gameName = String(req.query.gameName ?? '').trim();
-  const tagLine = String(req.query.tagLine ?? '').trim();
-  if (!gameName || !tagLine) {
-    res.status(400).json({ error: 'gameName et tagLine requis.' });
-    return;
-  }
-  res.json(await getAccountByRiotId(gameName, tagLine));
-});
-
-// SUMMONER-V4 — GET /api/lol/summoner?puuid=...  OU  ?gameName=...&tagLine=...
-// (le PUUID doit provenir de la MÊME clé : on le résout ici si besoin)
-app.get('/api/lol/summoner', async (req, res) => {
-  let puuid = String(req.query.puuid ?? '').trim();
-  const gameName = String(req.query.gameName ?? '').trim();
-  const tagLine = String(req.query.tagLine ?? '').trim();
-
-  if (!puuid && gameName && tagLine) {
-    const account = await getAccountByRiotId(gameName, tagLine);
-    puuid = account.puuid;
-  }
-  if (!puuid) {
-    res.status(400).json({ error: 'puuid, ou gameName + tagLine, requis.' });
-    return;
-  }
-  res.json(await getSummonerByPuuid(puuid));
-});
+app.use('/api', accountRoutes);
+app.use('/api/lol', lolRoutes);
 
 // Production (Railway) : sert le front buildé + fallback SPA, même origine que l'API.
 const distDir = resolve(process.cwd(), 'dist');
