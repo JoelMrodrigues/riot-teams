@@ -27,11 +27,19 @@ app.get('/api/account', async (req, res) => {
   res.json(await getAccountByRiotId(gameName, tagLine));
 });
 
-// SUMMONER-V4 — GET /api/lol/summoner?puuid=...
+// SUMMONER-V4 — GET /api/lol/summoner?puuid=...  OU  ?gameName=...&tagLine=...
+// (le PUUID doit provenir de la MÊME clé : on le résout ici si besoin)
 app.get('/api/lol/summoner', async (req, res) => {
-  const puuid = String(req.query.puuid ?? '').trim();
+  let puuid = String(req.query.puuid ?? '').trim();
+  const gameName = String(req.query.gameName ?? '').trim();
+  const tagLine = String(req.query.tagLine ?? '').trim();
+
+  if (!puuid && gameName && tagLine) {
+    const account = await getAccountByRiotId(gameName, tagLine);
+    puuid = account.puuid;
+  }
   if (!puuid) {
-    res.status(400).json({ error: 'puuid requis.' });
+    res.status(400).json({ error: 'puuid, ou gameName + tagLine, requis.' });
     return;
   }
   res.json(await getSummonerByPuuid(puuid));
