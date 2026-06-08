@@ -8,3 +8,8 @@ export function championIcon(key: string): string {
   const slug = key.toLowerCase().replace(/[^a-z0-9]/g, '');
   return `/images/champions/${slug}.jpg`;
 }
+
+/** Icône de profil d'invocateur (CDN Community Dragon, URL "latest" stable). */
+export function profileIcon(iconId: number): string {
+  return `https://cdn.communitydragon.org/latest/profile-icon/${iconId}`;
+}
