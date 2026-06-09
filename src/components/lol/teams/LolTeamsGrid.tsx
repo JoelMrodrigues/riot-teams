@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import { TeamCard } from '../../teams/TeamCard';
+import { LolTeamCard } from './LolTeamCard';
 import { LolMyTeamsEmptyState } from '../home/LolMyTeamsEmptyState';
 import type { Team } from '../../../types/team.types';
 
@@ -44,7 +44,7 @@ export function LolTeamsGrid({ teams, onCreateEmpty }: LolTeamsGridProps): React
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.22, delay: i * 0.04 }}
             >
-              <TeamCard team={team} />
+              <LolTeamCard team={team} />
             </motion.div>
           ))}
         </motion.div>

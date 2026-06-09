@@ -6,14 +6,22 @@ interface BaseModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  /** Classe Tailwind max-w-* pour la largeur interne. Défaut : 'max-w-md'. */
+  maxWidth?: string;
+  /** Si true, supprime le padding p-7 et gap-6 internes — utile pour les modals gérant leur propre layout. */
+  noPadding?: boolean;
+  /** Styles appliqués au panneau — sert à réinjecter un thème scopé (ex. vars `--lol-*`) dans le portal. */
+  panelStyle?: React.CSSProperties;
 }
 
 /**
  * Shell de modale partagé : rendu via `createPortal` sur `document.body`
  * (indispensable pour échapper aux `transform` des parents animés), overlay
  * cliquable, animation d'entrée/sortie et fermeture au clavier (Escape).
+ * `panelStyle` permet de réinjecter des variables CSS de thème (le portal est
+ * hors de l'arbre DOM d'origine, donc ne les hérite pas).
  */
-export function BaseModal({ isOpen, onClose, children }: BaseModalProps): React.JSX.Element {
+export function BaseModal({ isOpen, onClose, children, maxWidth = 'max-w-md', noPadding = false, panelStyle }: BaseModalProps): React.JSX.Element {
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -42,10 +50,11 @@ export function BaseModal({ isOpen, onClose, children }: BaseModalProps): React.
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           >
             <div
-              className="w-full max-w-md rounded-sm p-7 flex flex-col gap-6"
+              className={`w-full ${maxWidth} rounded-sm ${noPadding ? 'overflow-hidden' : 'p-7 flex flex-col gap-6'}`}
               style={{
                 background: 'var(--bg-modal)',
                 border: '1px solid var(--border-default)',
+                ...panelStyle,
               }}
               onClick={(e) => e.stopPropagation()}
             >

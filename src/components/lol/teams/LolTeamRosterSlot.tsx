@@ -83,11 +83,13 @@ export function LolTeamRosterSlot({
         <button
           type="button"
           onClick={onRemove}
-          title="Retirer du roster"
-          className="flex h-6 w-6 flex-shrink-0 cursor-pointer items-center justify-center opacity-0 transition-all duration-150 group-hover:opacity-100"
+          aria-label={`Retirer ${member.gameName} du roster`}
+          className="flex h-6 w-6 flex-shrink-0 cursor-pointer items-center justify-center rounded-sm opacity-0 transition-all duration-150 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100"
           style={{ color: 'var(--lol-text-muted)' }}
           onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.color = 'var(--danger)')}
           onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.color = 'var(--lol-text-muted)')}
+          onFocus={(e)      => ((e.currentTarget as HTMLButtonElement).style.color = 'var(--danger)')}
+          onBlur={(e)       => ((e.currentTarget as HTMLButtonElement).style.color = 'var(--lol-text-muted)')}
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
             <path d="M2 2L10 10M10 2L2 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />

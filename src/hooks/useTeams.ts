@@ -1,7 +1,16 @@
 import { useState, useCallback } from 'react';
 
 import { teamsStorage } from '../storage/teamsStorage';
-import type { Team, TeamMember, GameType } from '../types/team.types';
+import type { Team, TeamMember, GameType, LolTeamIcon, LolRegion } from '../types/team.types';
+
+/** Champs optionnels supplémentaires acceptés par createTeam pour le contexte LoL. */
+interface LolTeamExtras {
+  tag?:         string;
+  region?:      LolRegion;
+  accentColor?: string;
+  description?: string;
+  icon?:        LolTeamIcon;
+}
 
 const STORAGE_ERROR_MESSAGE =
   "Impossible d'enregistrer vos modifications (stockage indisponible ou plein). Vos changements seront perdus au rechargement de la page.";
@@ -10,7 +19,7 @@ interface UseTeamsReturn {
   teams: Team[];
   storageError: string | null;
   dismissStorageError: () => void;
-  createTeam: (name: string, game: GameType) => Team;
+  createTeam: (name: string, game: GameType, extras?: LolTeamExtras) => Team;
   deleteTeam: (teamId: string) => void;
   addMember: (teamId: string, gameName: string, tagLine: string) => void;
   removeMember: (teamId: string, memberId: string) => void;
@@ -30,7 +39,7 @@ export function useTeams(): UseTeamsReturn {
   const dismissStorageError = useCallback(() => setStorageError(null), []);
 
   const createTeam = useCallback(
-    (name: string, game: GameType): Team => {
+    (name: string, game: GameType, extras?: LolTeamExtras): Team => {
       const now = new Date().toISOString();
       const newTeam: Team = {
         id: crypto.randomUUID(),
@@ -39,6 +48,7 @@ export function useTeams(): UseTeamsReturn {
         members: [],
         createdAt: now,
         updatedAt: now,
+        ...extras,
       };
       persist([...teams, newTeam]);
       return newTeam;

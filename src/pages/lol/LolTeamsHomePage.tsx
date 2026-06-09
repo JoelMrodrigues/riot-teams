@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 import { LolTeamsGrid } from '../../components/lol/teams/LolTeamsGrid';
-import { CreateTeamModal } from '../../components/teams/CreateTeamModal';
+import { LolCreateTeamModal } from '../../components/lol/teams/LolCreateTeamModal';
 import { StorageErrorBanner } from '../../components/feedback/StorageErrorBanner';
 import { useTeams } from '../../hooks/useTeams';
 import { LOL_ACCENTS } from '../../constants/lolTheme';
 import { GAMES_DATA } from '../../data/games.data';
+import type { Team } from '../../types/team.types';
 
 /**
  * /lol/teams — liste complète des équipes LoL, rendue dans LolLayout.
@@ -22,9 +23,9 @@ export function LolTeamsHomePage(): React.JSX.Element {
   const lolTeams = teams.filter((t) => t.game === 'lol');
   const accent = LOL_ACCENTS.team;
 
-  const handleCreate = (name: string, _game: string) => {
-    // On force le jeu à 'lol' — le sélecteur de jeu de la modale est ignoré ici
-    const team = createTeam(name, 'lol');
+  const handleCreate = (data: Omit<Team, 'id' | 'members' | 'createdAt' | 'updatedAt'>) => {
+    const { name, tag, region, accentColor, description, icon } = data;
+    const team = createTeam(name, 'lol', { tag, region, accentColor, description, icon });
     navigate(`/lol/team/${team.id}`);
   };
 
@@ -83,7 +84,7 @@ export function LolTeamsHomePage(): React.JSX.Element {
         </motion.div>
       </div>
 
-      <CreateTeamModal
+      <LolCreateTeamModal
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
         onCreate={handleCreate}

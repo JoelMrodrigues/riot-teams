@@ -21,6 +21,7 @@ export function RiotIdSearch({ onSearch, loading }: RiotIdSearchProps): React.JS
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder="Pseudo#TAG  (ex: Marcel le Zgeg#BACK)"
+        aria-label="Rechercher un joueur par Riot ID (pseudo#tag)"
         className="flex-1 rounded-md px-4 py-3 text-sm outline-none"
         style={{
           fontFamily: 'Rajdhani, sans-serif',

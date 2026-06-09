@@ -36,6 +36,7 @@ const PATHS: Record<IconKey, React.ReactNode> = {
 export function LolFeatureIcon({ icon }: LolFeatureIconProps): React.JSX.Element {
   return (
     <svg
+      aria-hidden="true"
       width="26"
       height="26"
       viewBox="0 0 24 24"
