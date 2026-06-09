@@ -3,8 +3,13 @@ import { useState, useCallback } from 'react';
 import { teamsStorage } from '../storage/teamsStorage';
 import type { Team, TeamMember, GameType } from '../types/team.types';
 
+const STORAGE_ERROR_MESSAGE =
+  "Impossible d'enregistrer vos modifications (stockage indisponible ou plein). Vos changements seront perdus au rechargement de la page.";
+
 interface UseTeamsReturn {
   teams: Team[];
+  storageError: string | null;
+  dismissStorageError: () => void;
   createTeam: (name: string, game: GameType) => Team;
   deleteTeam: (teamId: string) => void;
   addMember: (teamId: string, gameName: string, tagLine: string) => void;
@@ -14,11 +19,15 @@ interface UseTeamsReturn {
 
 export function useTeams(): UseTeamsReturn {
   const [teams, setTeams] = useState<Team[]>(() => teamsStorage.getAll());
+  const [storageError, setStorageError] = useState<string | null>(null);
 
   const persist = useCallback((updated: Team[]) => {
-    teamsStorage.save(updated);
     setTeams(updated);
+    const ok = teamsStorage.save(updated);
+    setStorageError(ok ? null : STORAGE_ERROR_MESSAGE);
   }, []);
+
+  const dismissStorageError = useCallback(() => setStorageError(null), []);
 
   const createTeam = useCallback(
     (name: string, game: GameType): Team => {
@@ -83,5 +92,14 @@ export function useTeams(): UseTeamsReturn {
     [teams],
   );
 
-  return { teams, createTeam, deleteTeam, addMember, removeMember, getTeamById };
+  return {
+    teams,
+    storageError,
+    dismissStorageError,
+    createTeam,
+    deleteTeam,
+    addMember,
+    removeMember,
+    getTeamById,
+  };
 }

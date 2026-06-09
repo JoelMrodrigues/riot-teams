@@ -19,7 +19,7 @@ export function RankBadge({ entry }: RankBadgeProps): React.JSX.Element {
 
   return (
     <div
-      className="flex items-center gap-3 rounded-2xl p-4"
+      className="flex items-center gap-3 rounded-md p-4"
       style={{ background: 'var(--lol-surface)', border: `1px solid ${accent.color}33`, minWidth: '230px' }}
     >
       {crest && crestOk && (

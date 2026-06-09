@@ -24,7 +24,7 @@ export function LolHomePage(): React.JSX.Element {
             eyebrow="Tout-en-un"
             title="Un écosystème pensé pour grimper."
             subtitle="Des outils précis, un design clair, une seule plateforme pour ta progression solo et collective."
-            accent="#8B5CF6"
+            accent="var(--lol-violet)"
             align="center"
           />
           <div className="mt-12 w-full">

@@ -29,7 +29,7 @@ export function LolFeatureCard({ feature }: LolFeatureCardProps): React.JSX.Elem
     >
       <Link
         to={feature.to}
-        className="group relative flex h-full flex-col overflow-hidden rounded-2xl p-6"
+        className="group relative flex h-full flex-col overflow-hidden rounded-md p-6"
         style={{
           background: 'var(--lol-surface)',
           border: `1px solid ${accent.color}33`,
@@ -43,7 +43,7 @@ export function LolFeatureCard({ feature }: LolFeatureCardProps): React.JSX.Elem
 
         <div className="relative z-10 mb-4 flex items-center justify-between">
           <span
-            className="flex h-11 w-11 items-center justify-center rounded-xl text-white"
+            className="flex h-11 w-11 items-center justify-center rounded-md text-white"
             style={{ background: accent.gradient }}
           >
             <LolFeatureIcon icon={feature.icon} />

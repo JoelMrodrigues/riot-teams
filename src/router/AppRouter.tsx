@@ -8,16 +8,10 @@ import { LolLayout } from '../components/lol/layout/LolLayout';
 import { LolHomePage } from '../pages/lol/LolHomePage';
 import { LolSearchPage } from '../pages/lol/LolSearchPage';
 import { LolTeamsHomePage } from '../pages/lol/LolTeamsHomePage';
-import { LolPlayerPage } from '../pages/lol/LolPlayerPage';
-import { LolTeamPage } from '../pages/lol/LolTeamPage';
 
-import { ValorantHomePage } from '../pages/valorant/ValorantHomePage';
-import { ValorantPlayerPage } from '../pages/valorant/ValorantPlayerPage';
-import { ValorantTeamPage } from '../pages/valorant/ValorantTeamPage';
-
-import { TftHomePage } from '../pages/tft/TftHomePage';
-import { TftPlayerPage } from '../pages/tft/TftPlayerPage';
-import { TftTeamPage } from '../pages/tft/TftTeamPage';
+import { GameLandingPage } from '../pages/game/GameLandingPage';
+import { GamePlayerPage } from '../pages/game/GamePlayerPage';
+import { GameTeamPage } from '../pages/game/GameTeamPage';
 
 export function AppRouter(): React.JSX.Element {
   return (
@@ -32,16 +26,16 @@ export function AppRouter(): React.JSX.Element {
           <Route path="search" element={<LolSearchPage />} />
           <Route path="teams" element={<LolTeamsHomePage />} />
         </Route>
-        <Route path="/lol/player/:gameName/:tagLine" element={<LolPlayerPage />} />
-        <Route path="/lol/team/:teamId" element={<LolTeamPage />} />
+        <Route path="/lol/player/:gameName/:tagLine" element={<GamePlayerPage gameId="lol" phaseLabel="Phase 4" />} />
+        <Route path="/lol/team/:teamId" element={<GameTeamPage gameId="lol" />} />
 
-        <Route path="/valorant" element={<ValorantHomePage />} />
-        <Route path="/valorant/player/:gameName/:tagLine" element={<ValorantPlayerPage />} />
-        <Route path="/valorant/team/:teamId" element={<ValorantTeamPage />} />
+        <Route path="/valorant" element={<GameLandingPage gameId="valorant" />} />
+        <Route path="/valorant/player/:gameName/:tagLine" element={<GamePlayerPage gameId="valorant" phaseLabel="Phase 4/5" />} />
+        <Route path="/valorant/team/:teamId" element={<GameTeamPage gameId="valorant" />} />
 
-        <Route path="/tft" element={<TftHomePage />} />
-        <Route path="/tft/player/:gameName/:tagLine" element={<TftPlayerPage />} />
-        <Route path="/tft/team/:teamId" element={<TftTeamPage />} />
+        <Route path="/tft" element={<GameLandingPage gameId="tft" />} />
+        <Route path="/tft/player/:gameName/:tagLine" element={<GamePlayerPage gameId="tft" phaseLabel="Phase 6" />} />
+        <Route path="/tft/team/:teamId" element={<GameTeamPage gameId="tft" />} />
       </Routes>
     </BrowserRouter>
   );

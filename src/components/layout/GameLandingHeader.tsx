@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ThemeToggle } from './ThemeToggle';
+import { BrandLogo } from './BrandLogo';
+import { HeaderActions } from './HeaderActions';
 import type { Game } from '../../types/game.types';
 import type { GameTab } from '../../types/gameTab.types';
 
@@ -44,14 +45,7 @@ export function GameLandingHeader({
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
             <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          <div
-            className="w-5 h-5 rounded-sm flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, var(--brand), #A78BFA)' }}
-          >
-            <span className="text-white font-bold" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '7px' }}>
-              RT
-            </span>
-          </div>
+          <BrandLogo size={20} />
         </button>
 
         <span style={{ color: 'rgba(255,255,255,0.12)', fontSize: '0.65rem' }}>|</span>
@@ -93,8 +87,7 @@ export function GameLandingHeader({
 
       {/* Right */}
       <div className="flex items-center justify-end gap-3 w-44">
-        <ThemeToggle />
-        <button className="btn btn-ghost btn-sm">Sign In</button>
+        <HeaderActions />
       </div>
     </header>
   );

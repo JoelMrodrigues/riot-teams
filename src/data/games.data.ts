@@ -14,6 +14,7 @@ export const GAMES_DATA: Game[] = [
       'linear-gradient(to top, rgba(10,20,40,0.97) 0%, rgba(10,20,40,0.6) 50%, rgba(10,20,40,0.15) 100%)',
     imagePath: '/images/lol-bg.jpg',
     ctaLabel: 'Explore LoL Stats',
+    maxMembers: 5,
     previewStats: [
       { label: 'Ranked', value: 'Solo / Flex' },
       { label: 'Champions', value: '165+' },
@@ -33,6 +34,7 @@ export const GAMES_DATA: Game[] = [
       'linear-gradient(to top, rgba(15,14,14,0.97) 0%, rgba(15,14,14,0.55) 50%, rgba(15,14,14,0.1) 100%)',
     imagePath: '/images/valorant-bg.jpg',
     ctaLabel: 'Explore Valorant Stats',
+    maxMembers: 5,
     previewStats: [
       { label: 'Ranked', value: 'Competitive' },
       { label: 'Agents', value: '25+' },
@@ -52,6 +54,7 @@ export const GAMES_DATA: Game[] = [
       'linear-gradient(to top, rgba(13,11,26,0.97) 0%, rgba(13,11,26,0.55) 50%, rgba(13,11,26,0.1) 100%)',
     imagePath: '/images/tft-bg.jpg',
     ctaLabel: 'Explore TFT Stats',
+    maxMembers: 8,
     previewStats: [
       { label: 'Ranked', value: 'Hyper Roll' },
       { label: 'Traits', value: '50+' },

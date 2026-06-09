@@ -18,12 +18,12 @@ export function MasteryStrip({ mastery }: MasteryStripProps): React.JSX.Element 
   if (mastery.length === 0) return null;
 
   return (
-    <div className="rounded-2xl p-4" style={{ background: 'var(--lol-surface)', border: '1px solid var(--lol-border)' }}>
+    <div className="rounded-md p-4" style={{ background: 'var(--lol-surface)', border: '1px solid var(--lol-border)' }}>
       <p className="mb-3 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--lol-text-muted)' }}>Maîtrise</p>
       <div className="flex flex-wrap gap-3">
         {mastery.map((m) => (
           <div key={m.championId} className="flex w-16 flex-col items-center gap-1">
-            <div className="h-12 w-12 overflow-hidden rounded-lg" style={{ border: '1px solid var(--lol-border)' }}>
+            <div className="h-12 w-12 overflow-hidden rounded-md" style={{ border: '1px solid var(--lol-border)' }}>
               <MasteryIcon championId={m.championId} />
             </div>
             <span className="text-[10px] font-bold" style={{ color: 'var(--lol-violet-soft)' }}>Niv. {m.level}</span>

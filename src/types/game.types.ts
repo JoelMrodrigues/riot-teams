@@ -16,4 +16,6 @@ export interface Game {
   imagePath: string;
   ctaLabel: string;
   previewStats: GameStat[];
+  /** Nombre maximum de joueurs titulaires dans un roster pour ce jeu. */
+  maxMembers: number;
 }

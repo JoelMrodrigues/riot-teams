@@ -4,17 +4,24 @@ import { motion } from 'framer-motion';
 
 import { GamePageLayout } from '../../components/layout/GamePageLayout';
 import { GAMES_DATA } from '../../data/games.data';
+import type { GameType } from '../../types/team.types';
 
-const game = GAMES_DATA.find((g) => g.id === 'lol')!;
+interface GamePlayerPageProps {
+  gameId: GameType;
+  /** Phase d'intégration de l'API Riot affichée dans le placeholder. */
+  phaseLabel: string;
+}
 
-interface LolPlayerParams {
+interface PlayerParams {
   gameName: string;
   tagLine: string;
   [key: string]: string | undefined;
 }
 
-export function LolPlayerPage(): React.JSX.Element {
-  const { gameName, tagLine } = useParams<LolPlayerParams>();
+/** Profil joueur (placeholder commun aux 3 jeux en attendant l'API Riot). */
+export function GamePlayerPage({ gameId, phaseLabel }: GamePlayerPageProps): React.JSX.Element {
+  const game = GAMES_DATA.find((g) => g.id === gameId)!;
+  const { gameName, tagLine } = useParams<PlayerParams>();
 
   const decodedName = decodeURIComponent(gameName ?? '');
   const decodedTag = decodeURIComponent(tagLine ?? '');
@@ -39,7 +46,7 @@ export function LolPlayerPage(): React.JSX.Element {
             className="text-white/30 text-xs uppercase tracking-widest"
             style={{ fontFamily: 'Rajdhani, sans-serif' }}
           >
-            League of Legends · Profil joueur
+            {game.name} · Profil joueur
           </p>
         </motion.div>
 
@@ -67,11 +74,8 @@ export function LolPlayerPage(): React.JSX.Element {
                 />
               </svg>
             </div>
-            <p
-              className="text-white/50 text-sm"
-              style={{ fontFamily: 'Inter, sans-serif' }}
-            >
-              Intégration API Riot Games — Phase 4
+            <p className="text-white/50 text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
+              Intégration API Riot Games — {phaseLabel}
             </p>
             <p
               className="text-white/20 text-xs max-w-xs leading-relaxed"

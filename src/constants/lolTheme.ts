@@ -22,6 +22,12 @@ export interface LolAccent {
   glow: string;
 }
 
+/** Couleur « défaite » (pendant des accents de victoire), centralisée pour tout le hub LoL. */
+export const LOL_LOSS = {
+  color: '#FB7185',
+  ring: 'rgba(244, 63, 94, 0.8)',
+};
+
 export const LOL_ACCENTS: Record<'solo' | 'team' | 'stats', LolAccent> = {
   solo: {
     color: '#22D3EE',

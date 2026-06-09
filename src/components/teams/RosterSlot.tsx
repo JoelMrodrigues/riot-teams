@@ -84,7 +84,7 @@ export function RosterSlot({
       {onRemove && (
         <button
           onClick={onRemove}
-          className="flex-shrink-0 w-6 h-6 flex items-center justify-center text-white/20 hover:text-red-400 transition-colors duration-150 cursor-pointer opacity-0 group-hover:opacity-100"
+          className="flex-shrink-0 w-6 h-6 flex items-center justify-center text-white/20 hover:text-[color:var(--danger)] transition-colors duration-150 cursor-pointer opacity-0 group-hover:opacity-100"
           title="Retirer du roster"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">

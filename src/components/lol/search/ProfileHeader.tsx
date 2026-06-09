@@ -20,7 +20,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps): React.JSX.Elemen
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="relative flex flex-col gap-6 overflow-hidden rounded-3xl p-6 lg:flex-row lg:items-center"
+      className="relative flex flex-col gap-6 overflow-hidden rounded-md p-6 lg:flex-row lg:items-center"
       style={{ background: 'var(--lol-bg-elevated)', border: '1px solid var(--lol-border)' }}
     >
       {bannerChampion && bannerOk && (
@@ -37,7 +37,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps): React.JSX.Elemen
       )}
 
       <div className="relative z-10 flex items-center gap-4">
-        <div className="h-20 w-20 overflow-hidden rounded-2xl" style={{ border: '2px solid var(--lol-violet)' }}>
+        <div className="h-20 w-20 overflow-hidden rounded-md" style={{ border: '2px solid var(--lol-violet)' }}>
           {iconOk ? (
             <img src={profileIcon(profile.profileIconId)} alt="" onError={() => setIconOk(false)} className="h-full w-full object-cover" />
           ) : (

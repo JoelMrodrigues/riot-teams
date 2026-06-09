@@ -1,6 +1,6 @@
 import type { Team } from '../types/team.types';
 
-const STORAGE_KEY = 'riot-teams:teams';
+const STORAGE_KEY = 'void-pro:teams';
 
 export const teamsStorage = {
   getAll(): Team[] {
@@ -12,7 +12,14 @@ export const teamsStorage = {
     }
   },
 
-  save(teams: Team[]): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(teams));
+  /** Renvoie `true` si la persistance a réussi, `false` sinon (quota dépassé, mode privé…). */
+  save(teams: Team[]): boolean {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(teams));
+      return true;
+    } catch (err) {
+      console.error('[teamsStorage] Échec de la sauvegarde locale :', err);
+      return false;
+    }
   },
 };
