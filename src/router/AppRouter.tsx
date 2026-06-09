@@ -9,6 +9,7 @@ import { LolHomePage } from '../pages/lol/LolHomePage';
 import { LolSearchPage } from '../pages/lol/LolSearchPage';
 import { LolTeamsHomePage } from '../pages/lol/LolTeamsHomePage';
 import { LolStatsPage } from '../pages/lol/LolStatsPage';
+import { LolPlayerRedirect } from '../components/lol/LolPlayerRedirect';
 
 import { GameLandingPage } from '../pages/game/GameLandingPage';
 import { GamePlayerPage } from '../pages/game/GamePlayerPage';
@@ -27,8 +28,13 @@ export function AppRouter(): React.JSX.Element {
           <Route path="search" element={<LolSearchPage />} />
           <Route path="teams" element={<LolTeamsHomePage />} />
           <Route path="stats" element={<LolStatsPage />} />
+          {/*
+           * /lol/player/:gameName/:tagLine est maintenant DANS LolLayout.
+           * LolPlayerRedirect fait un <Navigate> vers /lol/search?riotId=...
+           * → une seule expérience profil, cohérente, dans la coquille LoL.
+           */}
+          <Route path="player/:gameName/:tagLine" element={<LolPlayerRedirect />} />
         </Route>
-        <Route path="/lol/player/:gameName/:tagLine" element={<GamePlayerPage gameId="lol" phaseLabel="Phase 4" />} />
         <Route path="/lol/team/:teamId" element={<GameTeamPage gameId="lol" />} />
 
         <Route path="/valorant" element={<GameLandingPage gameId="valorant" />} />
