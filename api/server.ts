@@ -8,14 +8,18 @@ import { CONFIG } from './_core/config';
 import { RiotError } from './_core/riotClient';
 import accountRoutes from './routes/accountRoutes';
 import lolRoutes from './routes/lolRoutes';
+import authRoutes from './routes/authRoutes';
 
 const app = express();
 app.use(cors());
+// Parsing JSON global — nécessaire pour les routes auth (et futures routes métier).
+app.use(express.json());
 
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, keyMode: CONFIG.keyMode, platform: CONFIG.defaultPlatform });
 });
 
+app.use('/api/auth', authRoutes);
 app.use('/api', accountRoutes);
 app.use('/api/lol', lolRoutes);
 

@@ -15,9 +15,12 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^25.9.2",
+    "@types/pg": "^8.11.14",
     "@types/react": "^19.2.16",
     "@types/react-dom": "^19.2.3",
     "@types/react-router-dom": "^5.3.3",
@@ -30,12 +33,16 @@
     "vite": "^8.0.12"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "framer-motion": "^12.40.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.16.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.16.0",
-    "tsx": "^4.22.4"
+    "tsx": "^4.22.4",
+    "zod": "^3.25.64"
   }
 }
