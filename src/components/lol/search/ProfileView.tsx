@@ -1,58 +1,81 @@
 import React, { useState } from 'react';
 
 import { ProfileHeader } from './ProfileHeader';
-import { MasteryStrip } from './MasteryStrip';
+import { RankCard } from './RankCard';
+import { RecentChampionsCard } from './RecentChampionsCard';
+import { MasteryCard } from './MasteryCard';
+import { WinrateLast7Card } from './WinrateLast7Card';
 import { MatchFilters } from './MatchFilters';
 import { MatchRow } from './MatchRow';
 import { TopChampionsModal } from './TopChampionsModal';
-import { MatchDetailModal } from './MatchDetailModal';
 import { useMatchFilters } from '../../../hooks/useMatchFilters';
-import type { LolProfile, MatchInfo } from '../../../types/lolApi.types';
+import type { LolProfile } from '../../../types/lolApi.types';
 
 interface ProfileViewProps {
   profile: LolProfile;
 }
 
-/** Vue profil complète : en-tête + maîtrise + historique filtrable + modals. */
+/**
+ * Vue profil LoL — layout 2 colonnes (lg) / 1 colonne (mobile) :
+ * - Gauche (320 px) : classement, champions récents, maîtrise, winrate 7j.
+ * - Droite : historique filtrable des 20 dernières parties.
+ */
 export function ProfileView({ profile }: ProfileViewProps): React.JSX.Element {
   const { filters, setFilter, filtered, champions } = useMatchFilters(profile.matches);
   const [topChampionsOpen, setTopChampionsOpen] = useState(false);
-  const [selectedMatch, setSelectedMatch] = useState<MatchInfo | null>(null);
 
   return (
     <div className="flex flex-col gap-4">
+      {/* En-tête pleine largeur */}
       <ProfileHeader profile={profile} />
 
-      <MasteryStrip
-        mastery={profile.mastery}
-        onTopChampionsClick={() => setTopChampionsOpen(true)}
-      />
+      {/* Grille principale */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[320px_1fr]">
 
-      <div className="flex flex-col gap-3">
-        <MatchFilters filters={filters} setFilter={setFilter} champions={champions} />
+        {/* ── Colonne gauche : stats ── */}
+        <aside className="flex flex-col gap-4">
+          <RankCard ranks={profile.ranks} />
+          <RecentChampionsCard
+            matches={profile.matches}
+            onShowMore={() => setTopChampionsOpen(true)}
+          />
+          <MasteryCard mastery={profile.mastery} />
+          <WinrateLast7Card matches={profile.matches} />
+        </aside>
 
-        <div className="flex flex-col gap-2">
-          {filtered.length > 0 ? (
-            filtered.map((m) => (
-              <MatchRow key={m.matchId} match={m} onClick={setSelectedMatch} />
-            ))
-          ) : (
-            <p className="py-12 text-center text-sm" style={{ color: 'var(--lol-text-muted)' }}>
-              Aucune partie ne correspond à ces filtres.
-            </p>
-          )}
-        </div>
+        {/* ── Colonne droite : historique ── */}
+        <section className="flex flex-col gap-3" aria-label="Parties récentes">
+          <p
+            className="text-xs font-bold uppercase tracking-widest"
+            style={{ color: 'var(--lol-text-muted)' }}
+          >
+            Parties récentes
+            <span className="ml-2 normal-case font-normal" style={{ color: 'var(--lol-text-muted)' }}>
+              ({profile.matches.length} chargées)
+            </span>
+          </p>
+
+          <MatchFilters filters={filters} setFilter={setFilter} champions={champions} />
+
+          <div className="flex flex-col gap-2">
+            {filtered.length > 0 ? (
+              filtered.map((m) => <MatchRow key={m.matchId} match={m} />)
+            ) : (
+              <p
+                className="py-12 text-center text-sm"
+                style={{ color: 'var(--lol-text-muted)' }}
+              >
+                Aucune partie ne correspond à ces filtres.
+              </p>
+            )}
+          </div>
+        </section>
       </div>
 
       <TopChampionsModal
         isOpen={topChampionsOpen}
         onClose={() => setTopChampionsOpen(false)}
         matches={profile.matches}
-      />
-
-      <MatchDetailModal
-        match={selectedMatch}
-        onClose={() => setSelectedMatch(null)}
       />
     </div>
   );

@@ -21,10 +21,21 @@ const ROLES: { v: RoleKind | 'all'; l: string }[] = [
   { v: 'MIDDLE', l: 'Mid' }, { v: 'BOTTOM', l: 'ADC' }, { v: 'UTILITY', l: 'Support' },
 ];
 
+/**
+ * Fond SOLIDE (pas translucide) pour que le menu natif ne soit pas illisible
+ * en mode sombre. colorScheme: 'dark' + style inline sur <option> couvrent
+ * Chrome, Firefox et Safari.
+ */
 const selectStyle: React.CSSProperties = {
   fontFamily: 'Rajdhani, sans-serif',
-  background: 'var(--lol-surface)',
+  background: 'var(--lol-bg-elevated)',
   border: '1px solid var(--lol-border)',
+  color: 'var(--lol-text)',
+  colorScheme: 'dark',
+};
+
+const optionStyle: React.CSSProperties = {
+  background: 'var(--lol-bg-elevated)',
   color: 'var(--lol-text)',
 };
 
@@ -39,7 +50,7 @@ export function MatchFilters({ filters, setFilter, champions }: MatchFiltersProp
         style={selectStyle}
         aria-label="Filtrer par file"
       >
-        {QUEUES.map((q) => <option key={q.v} value={q.v}>{q.l}</option>)}
+        {QUEUES.map((q) => <option key={q.v} value={q.v} style={optionStyle}>{q.l}</option>)}
       </select>
 
       <select
@@ -49,7 +60,7 @@ export function MatchFilters({ filters, setFilter, champions }: MatchFiltersProp
         style={selectStyle}
         aria-label="Filtrer par résultat"
       >
-        {RESULTS.map((r) => <option key={r.v} value={r.v}>{r.l}</option>)}
+        {RESULTS.map((r) => <option key={r.v} value={r.v} style={optionStyle}>{r.l}</option>)}
       </select>
 
       <select
@@ -59,7 +70,7 @@ export function MatchFilters({ filters, setFilter, champions }: MatchFiltersProp
         style={selectStyle}
         aria-label="Filtrer par rôle"
       >
-        {ROLES.map((r) => <option key={r.v} value={r.v}>{r.l}</option>)}
+        {ROLES.map((r) => <option key={r.v} value={r.v} style={optionStyle}>{r.l}</option>)}
       </select>
 
       <select
@@ -69,8 +80,8 @@ export function MatchFilters({ filters, setFilter, champions }: MatchFiltersProp
         style={selectStyle}
         aria-label="Filtrer par champion"
       >
-        <option value="all">Tous champions</option>
-        {champions.map((c) => <option key={c} value={c}>{c}</option>)}
+        <option value="all" style={optionStyle}>Tous champions</option>
+        {champions.map((c) => <option key={c} value={c} style={optionStyle}>{c}</option>)}
       </select>
     </div>
   );
