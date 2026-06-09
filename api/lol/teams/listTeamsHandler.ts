@@ -1,13 +1,13 @@
 // GET /api/lol/teams
-// Liste les équipes où l'utilisateur authentifié est owner ou captain.
+// Liste les équipes où l'utilisateur authentifié est membre (tous rôles confondus).
 
 import type { Request, Response } from 'express';
 
 import { query } from '../../_core/db.js';
-import type { TeamRow } from './types.js';
+import type { TeamRow, MemberRole } from './types.js';
 
 interface TeamWithRole extends TeamRow {
-  my_role: 'owner' | 'captain';
+  my_role: MemberRole;
 }
 
 export async function listTeamsHandler(req: Request, res: Response): Promise<void> {
@@ -16,7 +16,7 @@ export async function listTeamsHandler(req: Request, res: Response): Promise<voi
   const { rows } = await query<TeamWithRole>(
     `SELECT t.*, m.role AS my_role
      FROM lol_teams t
-     INNER JOIN lol_team_managers m
+     INNER JOIN lol_team_members m
        ON m.team_id = t.id AND m.user_id = $1
      ORDER BY t.created_at DESC`,
     [userId],

@@ -1,8 +1,12 @@
 // POST   /api/lol/teams/:teamId/captains — nommer un capitaine
 // DELETE /api/lol/teams/:teamId/captains/:userId — révoquer un capitaine
 //
-// Règles verrouillées :
-//   - Un captain peut nommer/révoquer d'autres captains (MAIS pas le propriétaire).
+// @deprecated Ces routes sont remplacées par /members (POST/DELETE).
+// Conservées pour la compatibilité le temps de la migration front (Lot C).
+// Elles délèguent désormais sur la table lol_team_members.
+//
+// Règles :
+//   - Un capitaine peut nommer/révoquer d'autres capitaines (MAIS pas le propriétaire).
 //   - Refus si la cible est le propriétaire (owner).
 //   - Un capitaine peut se révoquer lui-même.
 
@@ -31,14 +35,14 @@ export async function addCaptainHandler(req: Request, res: Response): Promise<vo
     return;
   }
 
-  // Interdit de nommer le propriétaire comme capitaine (il est déjà owner).
+  // Interdit de nommer le propriétaire comme capitaine.
   if (teamRows[0].owner_id === targetUserId) {
     res.status(409).json({ error: 'Le propriétaire ne peut pas être nommé capitaine.' });
     return;
   }
 
   // Vérifie que l'utilisateur cible existe.
-  const { rows: userRows } = await query(
+  const { rows: userRows } = await query<{ id: string }>(
     'SELECT id FROM profiles WHERE id = $1 LIMIT 1',
     [targetUserId],
   );
@@ -47,9 +51,8 @@ export async function addCaptainHandler(req: Request, res: Response): Promise<vo
     return;
   }
 
-  // Express 5 capture les rejets async → le gestionnaire d'erreurs global s'en charge.
   await query(
-    `INSERT INTO lol_team_managers (team_id, user_id, role)
+    `INSERT INTO lol_team_members (team_id, user_id, role)
      VALUES ($1, $2, 'captain')
      ON CONFLICT (team_id, user_id) DO NOTHING`,
     [teamId, targetUserId],
@@ -77,7 +80,7 @@ export async function removeCaptainHandler(req: Request, res: Response): Promise
   }
 
   const { rowCount } = await query(
-    `DELETE FROM lol_team_managers
+    `DELETE FROM lol_team_members
      WHERE team_id = $1 AND user_id = $2 AND role = 'captain'`,
     [teamId, targetUserId],
   );

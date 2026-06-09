@@ -38,9 +38,9 @@ export async function createTeamHandler(req: Request, res: Response): Promise<vo
     );
     const newTeam = rows[0];
 
-    // 2. Inscrire le créateur comme propriétaire dans lol_team_managers.
+    // 2. Inscrire le créateur comme propriétaire dans lol_team_members.
     await q(
-      `INSERT INTO lol_team_managers (team_id, user_id, role)
+      `INSERT INTO lol_team_members (team_id, user_id, role)
        VALUES ($1, $2, 'owner')`,
       [newTeam.id, userId],
     );

@@ -9,6 +9,13 @@ const LOL_REGIONS = [
 
 const LOL_ROLES = ['Top', 'Jungle', 'Mid', 'ADC', 'Support', 'Fill'] as const;
 
+/**
+ * Rôles assignables via POST/PATCH /members.
+ * 'owner' est interdit (géré exclusivement via /transfer).
+ * 'player' est interdit ici (réservé à l'auto-lien roster — Lot D2).
+ */
+const ASSIGNABLE_MEMBER_ROLES = ['captain', 'manager', 'coach', 'staff'] as const;
+
 const iconSchema = z
   .object({
     kind: z.enum(['champion', 'emblem']),
@@ -66,7 +73,25 @@ export const addRosterSchema = z.object({
   role_in_game: z.enum(LOL_ROLES).optional(),
 });
 
-/** Corps attendu pour POST /api/lol/teams/:teamId/captains. */
+/** Corps attendu pour POST /api/lol/teams/:teamId/members. */
+export const addMemberSchema = z.object({
+  user_id: z.string().uuid('user_id doit être un UUID valide.'),
+  role: z.enum(ASSIGNABLE_MEMBER_ROLES, {
+    errorMap: () => ({ message: 'Rôle invalide. Valeurs acceptées : captain, manager, coach, staff.' }),
+  }),
+});
+
+/** Corps attendu pour PATCH /api/lol/teams/:teamId/members/:userId. */
+export const patchMemberSchema = z.object({
+  role: z.enum(ASSIGNABLE_MEMBER_ROLES, {
+    errorMap: () => ({ message: 'Rôle invalide. Valeurs acceptées : captain, manager, coach, staff.' }),
+  }),
+});
+
+/**
+ * Corps attendu pour POST /api/lol/teams/:teamId/captains.
+ * @deprecated Préférer addMemberSchema via /members.
+ */
 export const addCaptainSchema = z.object({
   user_id: z.string().uuid('user_id doit être un UUID valide.'),
 });
@@ -79,5 +104,6 @@ export const transferOwnerSchema = z.object({
 export type CreateTeamInput = z.infer<typeof createTeamSchema>;
 export type PatchTeamInput = z.infer<typeof patchTeamSchema>;
 export type AddRosterInput = z.infer<typeof addRosterSchema>;
-export type AddCaptainInput = z.infer<typeof addCaptainSchema>;
+export type AddMemberInput = z.infer<typeof addMemberSchema>;
+export type PatchMemberInput = z.infer<typeof patchMemberSchema>;
 export type TransferOwnerInput = z.infer<typeof transferOwnerSchema>;

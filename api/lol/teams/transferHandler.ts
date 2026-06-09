@@ -5,13 +5,10 @@
 // Stratégie de transfert (atomique) :
 //   1. Vérifier que la cible est un utilisateur existant.
 //   2. Mettre à jour lol_teams.owner_id vers le nouvel owner.
-//   3. Changer le rôle de l'ancien owner en 'captain' dans lol_team_managers.
-//   4. Upsert le nouvel owner dans lol_team_managers avec role 'owner'
-//      (il peut déjà être captain ou absent).
+//   3. Changer le rôle de l'ancien owner en 'captain' dans lol_team_members.
+//   4. Upsert le nouvel owner dans lol_team_members avec role 'owner'.
 //
-// Choix : l'ancien propriétaire devient capitaine (pas retiré) — c'est le plus sûr,
-// il reste manager et garde la visibilité sur l'équipe. Le nouveau propriétaire
-// peut le révoquer après si souhaité.
+// L'ancien propriétaire devient capitaine (pas retiré).
 
 import type { Request, Response } from 'express';
 
@@ -34,7 +31,7 @@ export async function transferHandler(req: Request, res: Response): Promise<void
     return;
   }
 
-  // Vérifie que la cible existe.
+  // Vérifie que la cible existe dans un premier accès hors transaction.
   const { rows: userRows } = await withTransaction(async (q) => {
     return q<{ id: string }>(
       'SELECT id FROM profiles WHERE id = $1 LIMIT 1',
@@ -56,14 +53,14 @@ export async function transferHandler(req: Request, res: Response): Promise<void
 
     // 2. Ancien propriétaire : passe de 'owner' à 'captain'.
     await q(
-      `UPDATE lol_team_managers SET role = 'captain'
+      `UPDATE lol_team_members SET role = 'captain'
        WHERE team_id = $1 AND user_id = $2 AND role = 'owner'`,
       [teamId, currentOwnerId],
     );
 
-    // 3. Nouvel owner : upsert (peut être captain existant ou nouvel entrant).
+    // 3. Nouvel owner : upsert (peut être membre existant ou nouvel entrant).
     await q(
-      `INSERT INTO lol_team_managers (team_id, user_id, role)
+      `INSERT INTO lol_team_members (team_id, user_id, role)
        VALUES ($1, $2, 'owner')
        ON CONFLICT (team_id, user_id) DO UPDATE SET role = 'owner'`,
       [teamId, newOwnerId],

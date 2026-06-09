@@ -1,6 +1,9 @@
 // Types partagés du module équipes LoL.
 // Utilisés par les handlers, le middleware teamAuth et les schémas de validation.
 
+/** Rôles possibles d'un membre d'équipe. */
+export type MemberRole = 'owner' | 'captain' | 'manager' | 'coach' | 'staff' | 'player';
+
 /** Ligne brute de la table lol_teams. */
 export interface TeamRow {
   id: string;
@@ -16,11 +19,11 @@ export interface TeamRow {
   updated_at: Date;
 }
 
-/** Ligne brute de la table lol_team_managers. */
-export interface ManagerRow {
+/** Ligne brute de la table lol_team_members. */
+export interface MemberRow {
   team_id: string;
   user_id: string;
-  role: 'owner' | 'captain';
+  role: MemberRole;
   created_at: Date;
   updated_at: Date;
 }
@@ -40,10 +43,28 @@ export interface RosterRow {
 
 /**
  * Rôle effectif de l'utilisateur courant sur une équipe.
- * 'none' = authentifié mais aucun lien de gestion.
+ * 'none' = authentifié mais aucun lien de membre.
  * null  = non authentifié (pour GET public).
  */
-export type TeamRole = 'owner' | 'captain' | 'none' | null;
+export type TeamRole = MemberRole | 'none' | null;
+
+/** Représentation publique d'un membre (avec pseudo via JOIN profiles). */
+export interface MemberPublic {
+  userId: string;
+  pseudo: string;
+  role: MemberRole;
+}
+
+/** Représentation publique d'une entrée roster. */
+export interface RosterPublic {
+  id: string;
+  gameName: string;
+  tagLine: string;
+  puuid: string | null;
+  roleInGame: string | null;
+  userId: string | null;
+  addedAt: string;
+}
 
 /** Réponse détail équipe renvoyée au client. */
 export interface TeamDetailResponse {
@@ -57,25 +78,8 @@ export interface TeamDetailResponse {
   ownerId: string;
   createdAt: string;
   updatedAt: string;
-  managers: ManagerPublic[];
+  members: MemberPublic[];
   roster: RosterPublic[];
   /** Rôle de l'utilisateur courant sur l'équipe. null si non authentifié. */
   myRole: TeamRole;
-}
-
-/** Représentation publique d'un manager. */
-export interface ManagerPublic {
-  userId: string;
-  role: 'owner' | 'captain';
-}
-
-/** Représentation publique d'une entrée roster. */
-export interface RosterPublic {
-  id: string;
-  gameName: string;
-  tagLine: string;
-  puuid: string | null;
-  roleInGame: string | null;
-  userId: string | null;
-  addedAt: string;
 }

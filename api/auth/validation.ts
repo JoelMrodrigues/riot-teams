@@ -9,7 +9,14 @@ const passwordSchema = z
   .min(8, 'Le mot de passe doit contenir au moins 8 caractères.')
   .max(128, 'Le mot de passe ne peut pas dépasser 128 caractères.');
 
-/** Corps attendu pour POST /api/auth/register. */
+/**
+ * Corps attendu pour POST /api/auth/register.
+ *
+ * Champs Riot ID (optionnels) :
+ *  - riotId    : chaîne "gameName#tagLine" (ex: Faker#KR1). Ignoré si noRiotId=true.
+ *  - noRiotId  : case "staff / je ne renseigne pas mon Riot ID". Si true → pas de
+ *                vérification ni de user_connection créée.
+ */
 export const registerSchema = z.object({
   email: z
     .string()
@@ -22,6 +29,12 @@ export const registerSchema = z.object({
     .min(2, 'Le pseudo doit contenir au moins 2 caractères.')
     .max(32, 'Le pseudo ne peut pas dépasser 32 caractères.')
     .trim(),
+  riotId: z
+    .string()
+    .max(100, 'Riot ID trop long.')
+    .trim()
+    .optional(),
+  noRiotId: z.boolean().optional(),
 });
 
 /** Corps attendu pour POST /api/auth/login. */

@@ -1,12 +1,18 @@
 // GET /api/lol/teams/:teamId
-// Lecture publique : renvoie l'équipe, ses managers et son roster.
+// Lecture publique : renvoie l'équipe, ses membres (avec pseudo) et son roster.
 // Si l'utilisateur est authentifié, renvoie aussi son rôle effectif (myRole).
 
 import type { Request, Response } from 'express';
 
 import { query } from '../../_core/db.js';
 import { getTeamRole } from './teamAuth.js';
-import type { TeamRow, ManagerRow, RosterRow, TeamDetailResponse } from './types.js';
+import type { TeamRow, MemberRole, RosterRow, TeamDetailResponse } from './types.js';
+
+interface MemberWithPseudo {
+  user_id: string;
+  pseudo: string;
+  role: MemberRole;
+}
 
 export async function getTeamHandler(req: Request, res: Response): Promise<void> {
   const teamId = String(req.params['teamId'] ?? '');
@@ -22,9 +28,14 @@ export async function getTeamHandler(req: Request, res: Response): Promise<void>
   }
   const team = teamRows[0];
 
-  const [{ rows: managers }, { rows: roster }] = await Promise.all([
-    query<ManagerRow>(
-      'SELECT * FROM lol_team_managers WHERE team_id = $1 ORDER BY created_at',
+  const [{ rows: members }, { rows: roster }] = await Promise.all([
+    // JOIN profiles pour récupérer le pseudo — ne renvoie jamais l'email.
+    query<MemberWithPseudo>(
+      `SELECT m.user_id, p.pseudo, m.role
+       FROM lol_team_members m
+       INNER JOIN profiles p ON p.id = m.user_id
+       WHERE m.team_id = $1
+       ORDER BY m.created_at`,
       [teamId],
     ),
     query<RosterRow>(
@@ -48,7 +59,7 @@ export async function getTeamHandler(req: Request, res: Response): Promise<void>
     ownerId: team.owner_id,
     createdAt: team.created_at.toISOString(),
     updatedAt: team.updated_at.toISOString(),
-    managers: managers.map((m) => ({ userId: m.user_id, role: m.role })),
+    members: members.map((m) => ({ userId: m.user_id, pseudo: m.pseudo, role: m.role })),
     roster: roster.map((r) => ({
       id: r.id,
       gameName: r.game_name,

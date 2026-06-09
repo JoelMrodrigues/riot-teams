@@ -10,6 +10,7 @@ import accountRoutes from './routes/accountRoutes';
 import lolRoutes from './routes/lolRoutes';
 import authRoutes from './routes/authRoutes';
 import lolTeamsRoutes from './routes/lolTeamsRoutes';
+import usersRoutes from './routes/usersRoutes';
 
 const app = express();
 app.use(cors());
@@ -24,6 +25,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api', accountRoutes);
 app.use('/api/lol', lolRoutes);
 app.use('/api/lol/teams', lolTeamsRoutes);
+app.use('/api/users', usersRoutes);
 
 // Production (Railway) : sert le front buildé + fallback SPA, même origine que l'API.
 const distDir = resolve(process.cwd(), 'dist');
