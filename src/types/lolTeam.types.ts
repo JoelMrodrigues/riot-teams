@@ -122,3 +122,12 @@ export interface UserSearchResult {
   pseudo: string;
   riotId: string | null;
 }
+
+// Re-export pour compatibilité (player stats + logo dans leur propre fichier).
+export type {
+  LolPlayerRank,
+  LolTopChampion,
+  LolPlayerStat,
+  LolPlayerStatsResponse,
+  LolTeamLogoBody,
+} from './lolPlayerStats.types';

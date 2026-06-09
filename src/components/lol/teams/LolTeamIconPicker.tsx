@@ -3,7 +3,9 @@ import React, { useState, useRef, useCallback } from 'react';
 import { LolChampionPicker } from './LolChampionPicker';
 import { LolEmblemPicker } from './LolEmblemPicker';
 import { LolUploadPickerDisabled } from './LolUploadPickerDisabled';
+import { LolUploadPickerActive } from './LolUploadPickerActive';
 import type { LolTeamIcon } from '../../../types/team.types';
+import type { UseTeamLogoReturn } from '../../../hooks/useTeamLogo';
 
 type IconTab = 'champion' | 'emblem' | 'upload';
 const TABS: { id: IconTab; label: string }[] = [
@@ -16,15 +18,26 @@ interface LolTeamIconPickerProps {
   value:       LolTeamIcon | null;
   accentColor: string;
   onChange:    (icon: LolTeamIcon | null) => void;
+  /**
+   * Si fourni (contexte édition/détail), l'onglet Upload est activé.
+   * Absent (création) → onglet désactivé avec mention "après création".
+   */
+  logoHook?:   UseTeamLogoReturn;
 }
 
 /** Segmented control 3 onglets pour choisir l'icône d'équipe LoL. */
-export function LolTeamIconPicker({ value, accentColor, onChange }: LolTeamIconPickerProps): React.JSX.Element {
-  const [activeTab, setActiveTab] = useState<Exclude<IconTab, 'upload'>>('champion');
+export function LolTeamIconPicker({
+  value,
+  accentColor,
+  onChange,
+  logoHook,
+}: LolTeamIconPickerProps): React.JSX.Element {
+  const uploadEnabled = logoHook !== undefined;
+  const [activeTab, setActiveTab] = useState<IconTab>('champion');
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent, idx: number) => {
-    const activeTabs = [0, 1]; // indices champion + emblem seulement
+    const activeTabs = uploadEnabled ? [0, 1, 2] : [0, 1];
     const pos = activeTabs.indexOf(idx);
     if (pos === -1) return;
     if (e.key === 'ArrowRight') {
@@ -34,10 +47,15 @@ export function LolTeamIconPicker({ value, accentColor, onChange }: LolTeamIconP
       const prev = activeTabs[(pos - 1 + activeTabs.length) % activeTabs.length];
       tabRefs.current[prev]?.focus();
     }
-  }, []);
+  }, [uploadEnabled]);
 
   const handleChampionChange = (key: string) => onChange({ kind: 'champion', value: key });
   const handleEmblemChange   = (id: string)  => onChange({ kind: 'emblem',   value: id  });
+
+  const handleUpload = async (dataBase64: string, mime: 'image/jpeg') => {
+    if (!logoHook) return;
+    await logoHook.upload({ dataBase64, mime });
+  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -55,8 +73,9 @@ export function LolTeamIconPicker({ value, accentColor, onChange }: LolTeamIconP
         style={{ background: 'var(--bg-elevated)' }}
       >
         {TABS.map((tab, idx) => {
-          const isUpload   = tab.id === 'upload';
-          const isActive   = !isUpload && activeTab === tab.id;
+          const isUploadTab  = tab.id === 'upload';
+          const isDisabled   = isUploadTab && !uploadEnabled;
+          const isActive     = !isDisabled && activeTab === tab.id;
           return (
             <button
               key={tab.id}
@@ -65,11 +84,11 @@ export function LolTeamIconPicker({ value, accentColor, onChange }: LolTeamIconP
               role="tab"
               aria-selected={isActive}
               aria-controls={`icon-panel-${tab.id}`}
-              aria-disabled={isUpload ? 'true' : undefined}
-              tabIndex={isUpload ? -1 : isActive ? 0 : -1}
-              title={isUpload ? 'Disponible avec la base de données' : undefined}
-              disabled={isUpload}
-              onClick={() => !isUpload && setActiveTab(tab.id as Exclude<IconTab, 'upload'>)}
+              aria-disabled={isDisabled ? 'true' : undefined}
+              tabIndex={isDisabled ? -1 : isActive ? 0 : -1}
+              title={isDisabled ? 'Disponible après création de l\'équipe' : undefined}
+              disabled={isDisabled}
+              onClick={() => !isDisabled && setActiveTab(tab.id)}
               onKeyDown={(e) => handleKeyDown(e, idx)}
               className="flex flex-1 items-center justify-center gap-1.5 rounded-sm px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-150"
               style={{
@@ -77,12 +96,12 @@ export function LolTeamIconPicker({ value, accentColor, onChange }: LolTeamIconP
                 background: isActive ? 'var(--lol-surface)' : 'transparent',
                 border: isActive ? '1px solid var(--lol-border)' : '1px solid transparent',
                 color: isActive ? 'var(--lol-text)' : 'var(--lol-text-muted)',
-                opacity: isUpload ? 0.5 : 1,
-                cursor: isUpload ? 'not-allowed' : 'pointer',
+                opacity: isDisabled ? 0.5 : 1,
+                cursor: isDisabled ? 'not-allowed' : 'pointer',
               }}
             >
               {tab.label}
-              {isUpload && (
+              {isDisabled && (
                 <span
                   className="rounded-sm px-1 text-[10px] uppercase tracking-wider"
                   style={{ background: 'var(--lol-surface)', color: 'var(--lol-text-muted)' }}
@@ -115,11 +134,16 @@ export function LolTeamIconPicker({ value, accentColor, onChange }: LolTeamIconP
             onChange={handleEmblemChange}
           />
         )}
-      </div>
-
-      {/* Panneau upload visible uniquement si l'onglet upload était cliquable — état de repli */}
-      <div id="icon-panel-upload" role="tabpanel" hidden>
-        <LolUploadPickerDisabled />
+        {activeTab === 'upload' && uploadEnabled && logoHook && (
+          <LolUploadPickerActive
+            onUpload={handleUpload}
+            uploading={logoHook.uploading}
+            uploadError={logoHook.uploadError}
+          />
+        )}
+        {activeTab === 'upload' && !uploadEnabled && (
+          <LolUploadPickerDisabled />
+        )}
       </div>
     </div>
   );

@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-import { ChampionAvatar } from '../shared/ChampionAvatar';
-import { LOL_EMBLEMS } from '../../../data/lolEmblems.data';
+import { LolTeamDetailIcon } from './LolTeamDetailIcon';
+import { LolTeamLogoUpload } from './LolTeamLogoUpload';
 import type { LolApiTeam } from '../../../types/lolTeam.types';
+import type { UseTeamLogoReturn } from '../../../hooks/useTeamLogo';
 
 interface LolTeamDetailHeaderProps {
   team:            LolApiTeam;
@@ -11,11 +12,13 @@ interface LolTeamDetailHeaderProps {
   maxMembers:      number;
   resolvedAccent:  string;
   isManager:       boolean;
+  logoHook:        UseTeamLogoReturn;
   onDeleteRequest: () => void;
 }
 
 /**
  * En-tête de la page détail d'équipe LoL.
+ * Affiche le logo uploadé (via LolTeamDetailIcon) + contrôle upload si manager.
  * Bouton supprimer visible uniquement si isManager === true.
  */
 export function LolTeamDetailHeader({
@@ -24,42 +27,9 @@ export function LolTeamDetailHeader({
   maxMembers,
   resolvedAccent,
   isManager,
+  logoHook,
   onDeleteRequest,
 }: LolTeamDetailHeaderProps): React.JSX.Element {
-  const renderIcon = () => {
-    if (team.icon?.kind === 'champion') {
-      return <ChampionAvatar champKey={team.icon.value} label={team.icon.value} size={56} ring={resolvedAccent} />;
-    }
-    if (team.icon?.kind === 'emblem') {
-      const emblem = LOL_EMBLEMS.find((e) => e.id === team.icon!.value);
-      if (emblem) {
-        return (
-          <div
-            className="flex h-14 w-14 items-center justify-center rounded-sm"
-            style={{ background: `${resolvedAccent}15`, border: `1px solid ${resolvedAccent}40` }}
-          >
-            <svg width="30" height="30" viewBox="0 0 24 24" fill={resolvedAccent} aria-hidden="true">
-              <path d={emblem.path} />
-            </svg>
-          </div>
-        );
-      }
-    }
-    return (
-      <div
-        className="flex h-14 w-14 items-center justify-center rounded-sm text-2xl font-bold"
-        style={{
-          background: `${resolvedAccent}18`,
-          border: `1px solid ${resolvedAccent}30`,
-          fontFamily: 'Rajdhani, sans-serif',
-          color: resolvedAccent,
-        }}
-      >
-        {team.name.charAt(0).toUpperCase()}
-      </div>
-    );
-  };
-
   return (
     <motion.div
       className="flex items-start justify-between gap-4"
@@ -68,7 +38,13 @@ export function LolTeamDetailHeader({
       transition={{ duration: 0.3, ease: 'easeOut' }}
     >
       <div className="flex items-start gap-3">
-        <div className="flex-shrink-0">{renderIcon()}</div>
+        <div className="flex-shrink-0">
+          <LolTeamDetailIcon
+            team={team}
+            resolvedAccent={resolvedAccent}
+            logoUrl={logoHook.logoUrl}
+          />
+        </div>
 
         <div className="flex min-w-0 flex-col gap-1">
           <p
@@ -104,6 +80,12 @@ export function LolTeamDetailHeader({
           >
             LoL · {rosterCount}/{maxMembers} joueurs
           </p>
+
+          {isManager && (
+            <div className="mt-1">
+              <LolTeamLogoUpload logoHook={logoHook} />
+            </div>
+          )}
         </div>
       </div>
 

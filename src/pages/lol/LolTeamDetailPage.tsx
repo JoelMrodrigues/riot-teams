@@ -3,21 +3,23 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 import { LolTeamDetailHeader } from '../../components/lol/teams/LolTeamDetailHeader';
-import { LolTeamRoster } from '../../components/lol/teams/LolTeamRoster';
+import { LolRosterGrid } from '../../components/lol/teams/LolRosterGrid';
 import { LolMembersPanel } from '../../components/lol/teams/LolMembersPanel';
 import { LolDeleteTeamModal } from '../../components/lol/teams/LolDeleteTeamModal';
 import { LolAddRosterMemberModal } from '../../components/lol/teams/LolAddRosterMemberModal';
 import { ApiErrorBanner } from '../../components/feedback/ApiErrorBanner';
 import { LolTeamDetailSkeleton } from '../../components/lol/teams/LolTeamDetailSkeleton';
 import { useLolTeam } from '../../hooks/useLolTeam';
+import { useTeamPlayerStats } from '../../hooks/useTeamPlayerStats';
+import { useTeamLogo } from '../../hooks/useTeamLogo';
 import { useAuth } from '../../hooks/useAuth';
 import { getMyRole, isManager as checkIsManager } from '../../utils/lolTeamRole';
 import { resolveAccent } from '../../data/lolTeamAccents.data';
 import { GAMES_DATA } from '../../data/games.data';
 
 /**
- * /lol/team/:teamId — page détail d'une équipe LoL, branchée sur l'API backend.
- * Résout le rôle courant via managers[] + userId, gate les actions de gestion.
+ * /lol/team/:teamId — page détail d'une équipe LoL.
+ * Intègre les cartes joueurs enrichies (rang + top champions) + logo d'équipe.
  */
 export function LolTeamDetailPage(): React.JSX.Element {
   const { teamId }  = useParams<{ teamId: string }>();
@@ -28,6 +30,9 @@ export function LolTeamDetailPage(): React.JSX.Element {
     addRosterMember, removeRosterMember, deleteTeam,
     addMember, updateMemberRole, removeMember, transferOwnership,
   } = useLolTeam(teamId);
+
+  const { statsByRosterId, loading: statsLoading } = useTeamPlayerStats(teamId);
+  const logoHook = useTeamLogo(teamId);
 
   const [isAddModalOpen, setIsAddModalOpen]       = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -41,7 +46,7 @@ export function LolTeamDetailPage(): React.JSX.Element {
 
   if (error || !team) {
     return (
-      <div className="mx-auto w-full max-w-3xl px-4 pb-8 pt-8 md:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-4xl px-4 pb-8 pt-8 md:px-6 lg:px-8">
         <ApiErrorBanner message={error ?? 'Équipe introuvable.'} onRetry={refresh} />
       </div>
     );
@@ -78,7 +83,7 @@ export function LolTeamDetailPage(): React.JSX.Element {
   return (
     <>
       <motion.div
-        className="mx-auto w-full max-w-3xl px-4 pb-8 pt-8 md:px-6 lg:px-8"
+        className="mx-auto w-full max-w-4xl px-4 pb-8 pt-8 md:px-6 lg:px-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.25 }}
@@ -92,6 +97,7 @@ export function LolTeamDetailPage(): React.JSX.Element {
             maxMembers={game.maxMembers}
             resolvedAccent={resolvedAccent}
             isManager={managerAccess}
+            logoHook={logoHook}
             onDeleteRequest={() => setIsDeleteModalOpen(true)}
           />
           <LolMembersPanel
@@ -103,10 +109,13 @@ export function LolTeamDetailPage(): React.JSX.Element {
             onRemoveMember={removeMember}
             onTransfer={transferOwnership}
           />
-          <LolTeamRoster
+          <LolRosterGrid
             roster={roster}
             maxMembers={game.maxMembers}
             isManager={managerAccess}
+            statsLoading={statsLoading}
+            statsByRosterId={statsByRosterId}
+            resolvedAccent={resolvedAccent}
             onAddPlayer={() => setIsAddModalOpen(true)}
             onRemoveMember={handleRemoveMember}
           />
