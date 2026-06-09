@@ -4,6 +4,7 @@ export interface LolPalette {
   bgElevated: string;
   headerBg: string;
   surface: string;
+  surfaceHover: string;
   border: string;
   violet: string;
   violetStrong: string;
@@ -55,6 +56,7 @@ export const LOL_PALETTE: Record<'dark' | 'light', LolPalette> = {
     bgElevated: '#0E0714',
     headerBg: 'rgba(7, 3, 9, 0.55)',
     surface: 'rgba(139, 92, 246, 0.06)',
+    surfaceHover: 'rgba(139, 92, 246, 0.10)',
     border: 'rgba(139, 92, 246, 0.18)',
     violet: '#8B5CF6',
     violetStrong: '#7C3AED',
@@ -70,6 +72,7 @@ export const LOL_PALETTE: Record<'dark' | 'light', LolPalette> = {
     bgElevated: '#FFFFFF',
     headerBg: 'rgba(255, 255, 255, 0.72)',
     surface: 'rgba(124, 58, 237, 0.05)',
+    surfaceHover: 'rgba(124, 58, 237, 0.08)',
     border: 'rgba(124, 58, 237, 0.16)',
     violet: '#7C3AED',
     violetStrong: '#6D28D9',

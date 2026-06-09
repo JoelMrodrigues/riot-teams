@@ -22,6 +22,7 @@ export function useLolTheme(): UseLolThemeReturn {
     '--lol-bg-elevated': palette.bgElevated,
     '--lol-header': palette.headerBg,
     '--lol-surface': palette.surface,
+    '--lol-surface-hover': palette.surfaceHover,
     '--lol-border': palette.border,
     '--lol-violet': palette.violet,
     '--lol-violet-strong': palette.violetStrong,

@@ -1,38 +1,52 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { LolAuroraBackground } from '../../components/lol/home/LolAuroraBackground';
-import { LolHero } from '../../components/lol/home/LolHero';
-import { LolSoloShowcase } from '../../components/lol/home/LolSoloShowcase';
-import { LolTeamShowcase } from '../../components/lol/home/LolTeamShowcase';
-import { LolSectionHeading } from '../../components/lol/home/LolSectionHeading';
-import { LolFeatureGrid } from '../../components/lol/home/LolFeatureGrid';
-import { LolCtaBanner } from '../../components/lol/home/LolCtaBanner';
+import { LolSearchHero } from '../../components/lol/home/LolSearchHero';
+import { LolQuickAccess } from '../../components/lol/home/LolQuickAccess';
+import { LolMyTeamsPreview } from '../../components/lol/home/LolMyTeamsPreview';
+import { LolRecentSearches } from '../../components/lol/home/LolRecentSearches';
+import { LolUpcomingBanner } from '../../components/lol/home/LolUpcomingBanner';
+import { useTeams } from '../../hooks/useTeams';
+import { useRecentSearches } from '../../hooks/useRecentSearches';
+import type { RecentSearch } from '../../hooks/useRecentSearches';
 
-/** Page d'accueil vitrine de l'écosystème LoL (rendue dans LolLayout). */
+/**
+ * Hub LoL — conteneur/layout uniquement.
+ * Compose les 5 zones (A→E) définies dans docs/lol-accueil-spec.md.
+ */
 export function LolHomePage(): React.JSX.Element {
+  const navigate = useNavigate();
+  const { teams } = useTeams();
+  const { searches, addSearch, clearAll } = useRecentSearches();
+
+  const lolTeams = teams.filter((t) => t.game === 'lol');
+
+  const handleSearch = (riotId: string, tagLine: string): void => {
+    addSearch(riotId, tagLine);
+  };
+
+  const handleSelectRecent = (s: RecentSearch): void => {
+    addSearch(s.riotId, s.tagLine);
+    const encoded = encodeURIComponent(`${s.riotId}#${s.tagLine}`);
+    navigate(`/lol/search?riotId=${encoded}`);
+  };
+
+  const handleCreateTeam = (): void => {
+    navigate('/lol/teams');
+  };
+
   return (
-    <div className="relative">
-      <LolAuroraBackground />
-
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-8 pb-20">
-        <LolHero />
-        <LolSoloShowcase />
-        <LolTeamShowcase />
-
-        <div className="flex flex-col items-center py-12">
-          <LolSectionHeading
-            eyebrow="Tout-en-un"
-            title="Un écosystème pensé pour grimper."
-            subtitle="Des outils précis, un design clair, une seule plateforme pour ta progression solo et collective."
-            accent="var(--lol-violet)"
-            align="center"
-          />
-          <div className="mt-12 w-full">
-            <LolFeatureGrid />
-          </div>
-        </div>
-
-        <LolCtaBanner />
+    <div className="mx-auto w-full max-w-5xl px-4 pb-8 md:px-6 lg:px-8">
+      <div className="flex flex-col gap-6">
+        <LolSearchHero onSearch={handleSearch} />
+        <LolQuickAccess />
+        <LolMyTeamsPreview teams={lolTeams} onCreate={handleCreateTeam} />
+        <LolRecentSearches
+          searches={searches}
+          onSelect={handleSelectRecent}
+          onClear={clearAll}
+        />
+        <LolUpcomingBanner />
       </div>
     </div>
   );
