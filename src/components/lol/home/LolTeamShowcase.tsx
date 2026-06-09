@@ -36,7 +36,7 @@ export function LolTeamShowcase(): React.JSX.Element {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.6 }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
-              className="rounded-2xl p-4 text-center"
+              className="rounded-md p-4 text-center"
               style={{ background: 'var(--lol-surface)', border: `1px solid ${A.color}33` }}
             >
               <p className="text-sm font-bold uppercase" style={{ fontFamily: 'Rajdhani, sans-serif', color: A.soft }}>{p.name}</p>
@@ -46,7 +46,7 @@ export function LolTeamShowcase(): React.JSX.Element {
         </div>
         <Link
           to="/lol/teams"
-          className="w-fit rounded-lg px-6 py-3 text-sm font-bold uppercase tracking-wider text-white transition-transform hover:scale-[1.04]"
+          className="w-fit rounded-md px-6 py-3 text-sm font-bold uppercase tracking-wider text-white transition-transform hover:scale-[1.04]"
           style={{ fontFamily: 'Rajdhani, sans-serif', background: A.gradient, boxShadow: `0 10px 30px ${A.glow}` }}
         >
           Créer mon équipe

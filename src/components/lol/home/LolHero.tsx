@@ -3,6 +3,10 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 import { LolHeroPreview } from './LolHeroPreview';
+import { LOL_ACCENTS } from '../../../constants/lolTheme';
+
+const TITLE_GRADIENT =
+  `linear-gradient(120deg, ${LOL_ACCENTS.solo.color}, var(--lol-violet), ${LOL_ACCENTS.team.color})`;
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -35,7 +39,7 @@ export function LolHero(): React.JSX.Element {
         >
           Maîtrise ta SoloQ.
           <br />
-          <span style={{ background: 'linear-gradient(120deg, #22D3EE, var(--lol-violet), #F472B6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <span style={{ background: TITLE_GRADIENT, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             Pilote tes scrims.
           </span>
         </motion.h1>
@@ -48,14 +52,14 @@ export function LolHero(): React.JSX.Element {
         <motion.div custom={3} variants={fadeUp} initial="hidden" animate="show" className="mt-9 flex flex-wrap gap-4">
           <Link
             to="/lol/search"
-            className="rounded-lg px-7 py-3 text-sm font-bold uppercase tracking-wider text-white transition-transform hover:scale-[1.03]"
+            className="rounded-md px-7 py-3 text-sm font-bold uppercase tracking-wider text-white transition-transform hover:scale-[1.03]"
             style={{ fontFamily: 'Rajdhani, sans-serif', background: 'var(--lol-violet-strong)', boxShadow: '0 8px 30px var(--lol-glow)' }}
           >
             Rechercher des stats
           </Link>
           <Link
             to="/lol/teams"
-            className="rounded-lg px-7 py-3 text-sm font-bold uppercase tracking-wider transition-colors"
+            className="rounded-md px-7 py-3 text-sm font-bold uppercase tracking-wider transition-colors"
             style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-text)', border: '1px solid var(--lol-border)', background: 'var(--lol-surface)' }}
           >
             Gérer mon équipe

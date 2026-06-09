@@ -6,10 +6,15 @@ import { GameTeamsTab } from '../../components/game/GameTeamsTab';
 import { GameStatsTab } from '../../components/game/GameStatsTab';
 import { GAMES_DATA } from '../../data/games.data';
 import type { GameTab } from '../../types/gameTab.types';
+import type { GameType } from '../../types/team.types';
 
-const game = GAMES_DATA.find((g) => g.id === 'tft')!;
+interface GameLandingPageProps {
+  gameId: GameType;
+}
 
-export function TftHomePage(): React.JSX.Element {
+/** Landing d'un jeu avec onglets Solo / Équipes / Stats (Valorant, TFT). */
+export function GameLandingPage({ gameId }: GameLandingPageProps): React.JSX.Element {
+  const game = GAMES_DATA.find((g) => g.id === gameId)!;
   const [activeTab, setActiveTab] = useState<GameTab>('solo');
 
   return (

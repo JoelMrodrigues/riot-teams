@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 
 import { RosterSlot } from './RosterSlot';
 import { AddPlayerModal } from './AddPlayerModal';
+import { StorageErrorBanner } from '../feedback/StorageErrorBanner';
 import { useTeams } from '../../hooks/useTeams';
 import type { Game } from '../../types/game.types';
 import type { GameType } from '../../types/team.types';
@@ -13,20 +14,14 @@ interface TeamDetailViewProps {
   teamId: string;
 }
 
-const GAME_MAX_MEMBERS: Record<GameType, number> = {
-  lol: 5,
-  valorant: 5,
-  tft: 8,
-};
-
 export function TeamDetailView({ game, teamId }: TeamDetailViewProps): React.JSX.Element {
   const navigate = useNavigate();
-  const { getTeamById, addMember, removeMember, deleteTeam } = useTeams();
+  const { getTeamById, addMember, removeMember, deleteTeam, storageError, dismissStorageError } = useTeams();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const team = getTeamById(teamId);
-  const maxMembers = GAME_MAX_MEMBERS[game.id as GameType];
+  const maxMembers = game.maxMembers;
 
   if (!team) {
     return (
@@ -49,6 +44,8 @@ export function TeamDetailView({ game, teamId }: TeamDetailViewProps): React.JSX
   return (
     <>
       <div className="flex-1 flex flex-col px-8 py-8 gap-8 overflow-y-auto">
+        <StorageErrorBanner message={storageError} onDismiss={dismissStorageError} />
+
         <motion.div
           className="flex items-start justify-between gap-4"
           initial={{ opacity: 0, y: 16 }}
@@ -75,9 +72,9 @@ export function TeamDetailView({ game, teamId }: TeamDetailViewProps): React.JSX
             className="flex-shrink-0 px-4 py-2 text-xs uppercase tracking-widest rounded-sm border cursor-pointer transition-all duration-150"
             style={{
               fontFamily: 'Rajdhani, sans-serif',
-              borderColor: confirmDelete ? '#ef4444' : 'rgba(255,255,255,0.1)',
-              color: confirmDelete ? '#ef4444' : 'rgba(255,255,255,0.3)',
-              background: confirmDelete ? 'rgba(239,68,68,0.1)' : 'transparent',
+              borderColor: confirmDelete ? 'var(--danger)' : 'rgba(255,255,255,0.1)',
+              color: confirmDelete ? 'var(--danger)' : 'rgba(255,255,255,0.3)',
+              background: confirmDelete ? 'var(--danger-muted)' : 'transparent',
             }}
             onMouseLeave={() => setConfirmDelete(false)}
           >

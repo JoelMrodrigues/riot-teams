@@ -38,7 +38,7 @@ export function LolSoloShowcase(): React.JSX.Element {
         </ul>
         <Link
           to="/lol/search"
-          className="w-fit rounded-lg px-6 py-3 text-sm font-bold uppercase tracking-wider text-white transition-transform hover:scale-[1.04]"
+          className="w-fit rounded-md px-6 py-3 text-sm font-bold uppercase tracking-wider text-white transition-transform hover:scale-[1.04]"
           style={{ fontFamily: 'Rajdhani, sans-serif', background: A.gradient, boxShadow: `0 10px 30px ${A.glow}` }}
         >
           Lancer une recherche

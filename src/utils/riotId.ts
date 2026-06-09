@@ -1,5 +1,8 @@
 import type { ParsedRiotId } from '../types/player.types';
 
+/** Message affiché quand un Riot ID saisi est invalide (format attendu : NomJoueur#TAG). */
+export const RIOT_ID_ERROR = 'Format invalide — utilisez : NomJoueur#TAG (ex: Faker#KR1)';
+
 export function parseRiotId(input: string): ParsedRiotId | null {
   const trimmed = input.trim();
   const hashIndex = trimmed.lastIndexOf('#');

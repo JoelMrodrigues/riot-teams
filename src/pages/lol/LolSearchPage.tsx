@@ -21,7 +21,7 @@ export function LolSearchPage(): React.JSX.Element {
       </div>
 
       {error && (
-        <p className="mb-6 rounded-lg px-4 py-3 text-sm" style={{ background: 'rgba(244,63,94,0.12)', color: '#fb7185', border: '1px solid rgba(244,63,94,0.3)' }}>
+        <p className="mb-6 rounded-md px-4 py-3 text-sm" style={{ background: 'var(--danger-muted)', color: 'var(--danger)', border: '1px solid var(--danger)' }}>
           {error}
         </p>
       )}

@@ -34,7 +34,7 @@ function Group({ label, children }: { label: string; children: React.ReactNode }
 /** Barre de filtres de l'historique. */
 export function MatchFilters({ filters, setFilter, champions }: MatchFiltersProps): React.JSX.Element {
   return (
-    <div className="flex flex-col gap-3 rounded-2xl p-4" style={{ background: 'var(--lol-surface)', border: '1px solid var(--lol-border)' }}>
+    <div className="flex flex-col gap-3 rounded-md p-4" style={{ background: 'var(--lol-surface)', border: '1px solid var(--lol-border)' }}>
       <Group label="File">
         {QUEUES.map((q) => <FilterChip key={q.v} label={q.l} active={filters.queue === q.v} onClick={() => setFilter('queue', q.v)} />)}
       </Group>
@@ -48,7 +48,7 @@ export function MatchFilters({ filters, setFilter, champions }: MatchFiltersProp
         <select
           value={filters.champion}
           onChange={(e) => setFilter('champion', e.target.value)}
-          className="rounded-lg px-3 py-1.5 text-xs outline-none"
+          className="rounded-md px-3 py-1.5 text-xs outline-none"
           style={{ fontFamily: 'Rajdhani, sans-serif', background: 'var(--lol-bg-elevated)', border: '1px solid var(--lol-border)', color: 'var(--lol-text)' }}
         >
           <option value="all">Tous</option>

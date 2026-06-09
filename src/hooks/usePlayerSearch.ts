@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { parseRiotId } from '../utils/riotId';
+import { parseRiotId, RIOT_ID_ERROR } from '../utils/riotId';
 import type { PlayerSearchState } from '../types/player.types';
 
 type GameRoute = 'lol' | 'valorant' | 'tft';
@@ -23,10 +23,7 @@ export function usePlayerSearch(gameRoute: GameRoute): UsePlayerSearchReturn {
   const handleSearch = () => {
     const parsed = parseRiotId(state.input);
     if (!parsed) {
-      setState((prev) => ({
-        ...prev,
-        error: 'Format invalide — utilisez : NomJoueur#TAG (ex: Faker#KR1)',
-      }));
+      setState((prev) => ({ ...prev, error: RIOT_ID_ERROR }));
       return;
     }
     navigate(

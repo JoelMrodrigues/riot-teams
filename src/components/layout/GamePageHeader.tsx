@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ThemeToggle } from './ThemeToggle';
+import { BrandLogo } from './BrandLogo';
+import { HeaderActions } from './HeaderActions';
 import type { Game } from '../../types/game.types';
 
 interface GamePageHeaderProps {
@@ -33,16 +34,8 @@ export function GamePageHeader({ game }: GamePageHeaderProps): React.JSX.Element
       </button>
 
       <div className="flex items-center gap-3">
-        <div
-          className="w-6 h-6 rounded-sm flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg, var(--brand), #A78BFA)' }}
-        >
-          <span className="text-white font-bold" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '8px' }}>
-            RT
-          </span>
-        </div>
-        <ThemeToggle />
-        <button className="btn btn-ghost btn-sm">Sign In</button>
+        <BrandLogo size={24} />
+        <HeaderActions />
       </div>
     </header>
   );

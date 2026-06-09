@@ -23,6 +23,11 @@
   --brand:          #7C3AED;
   --brand-hover:    #6D28D9;
   --brand-muted:    rgba(124, 58, 237, 0.15);
+  --brand-soft:     #A78BFA;
+
+  /* Feedback */
+  --danger:         #EF4444;
+  --danger-muted:   rgba(239, 68, 68, 0.12);
 
   /* Per-game (invariants) */
   --lol-accent:       #C89B3C;
@@ -48,6 +53,10 @@
   --brand:          #7C3AED;
   --brand-hover:    #6D28D9;
   --brand-muted:    rgba(124, 58, 237, 0.10);
+  --brand-soft:     #A78BFA;
+
+  --danger:         #DC2626;
+  --danger-muted:   rgba(220, 38, 38, 0.10);
 }
 
 /* ─── Reset ──────────────────────────────────────────────────────── */

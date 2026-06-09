@@ -21,7 +21,7 @@ export function RiotIdSearch({ onSearch, loading }: RiotIdSearchProps): React.JS
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder="Pseudo#TAG  (ex: Marcel le Zgeg#BACK)"
-        className="flex-1 rounded-lg px-4 py-3 text-sm outline-none"
+        className="flex-1 rounded-md px-4 py-3 text-sm outline-none"
         style={{
           fontFamily: 'Rajdhani, sans-serif',
           background: 'var(--lol-surface)',
@@ -32,7 +32,7 @@ export function RiotIdSearch({ onSearch, loading }: RiotIdSearchProps): React.JS
       <button
         type="submit"
         disabled={loading}
-        className="rounded-lg px-6 py-3 text-sm font-bold uppercase tracking-wider text-white transition-transform hover:scale-[1.03] disabled:opacity-50"
+        className="rounded-md px-6 py-3 text-sm font-bold uppercase tracking-wider text-white transition-transform hover:scale-[1.03] disabled:opacity-50"
         style={{ fontFamily: 'Rajdhani, sans-serif', background: 'var(--lol-violet-strong)', boxShadow: '0 8px 24px var(--lol-glow)' }}
       >
         {loading ? '...' : 'Rechercher'}

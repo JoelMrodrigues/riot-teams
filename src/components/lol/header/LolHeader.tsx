@@ -2,7 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { LolNavLinks } from './LolNavLinks';
-import { ThemeToggle } from '../../layout/ThemeToggle';
+import { BrandLogo } from '../../layout/BrandLogo';
+import { HeaderActions } from '../../layout/HeaderActions';
 
 /** Header dédié à l'écosystème LoL : retour accueil global + nav + thème. */
 export function LolHeader(): React.JSX.Element {
@@ -22,14 +23,11 @@ export function LolHeader(): React.JSX.Element {
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="opacity-50 group-hover:opacity-90 transition-opacity">
           <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        <div
-          className="w-6 h-6 rounded-md flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg, var(--lol-violet-strong), var(--lol-violet-soft))' }}
-        >
-          <span className="text-white font-bold" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '8px' }}>
-            RT
-          </span>
-        </div>
+        <BrandLogo
+          size={24}
+          radius="md"
+          gradient="linear-gradient(135deg, var(--lol-violet-strong), var(--lol-violet-soft))"
+        />
         <span
           className="text-sm font-bold tracking-widest uppercase"
           style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-violet-soft)' }}
@@ -43,8 +41,7 @@ export function LolHeader(): React.JSX.Element {
 
       {/* Droite — thème + auth */}
       <div className="flex items-center justify-end gap-3 w-48">
-        <ThemeToggle />
-        <button className="btn btn-ghost btn-sm">Sign In</button>
+        <HeaderActions />
       </div>
     </header>
   );

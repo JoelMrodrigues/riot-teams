@@ -15,7 +15,7 @@ export function ChampionAvatar({ champKey, label, size = 44, ring }: ChampionAva
 
   return (
     <div
-      className="relative flex flex-shrink-0 items-center justify-center overflow-hidden rounded-xl"
+      className="relative flex flex-shrink-0 items-center justify-center overflow-hidden rounded-md"
       style={{
         width: size,
         height: size,
@@ -23,7 +23,7 @@ export function ChampionAvatar({ champKey, label, size = 44, ring }: ChampionAva
         padding: '2px',
       }}
     >
-      <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-[10px]" style={{ background: 'var(--lol-bg-elevated)' }}>
+      <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-[4px]" style={{ background: 'var(--lol-bg-elevated)' }}>
         {ok ? (
           <img
             src={championIcon(champKey)}

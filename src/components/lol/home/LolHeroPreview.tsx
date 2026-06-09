@@ -19,7 +19,7 @@ export function LolHeroPreview(): React.JSX.Element {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1, y: [0, -14, 0] }}
           transition={{ opacity: { delay: 0.4 + i * 0.2, duration: 0.6 }, y: { duration: f.dur, repeat: Infinity, ease: 'easeInOut' } }}
-          className="absolute flex items-center gap-3 rounded-2xl p-4"
+          className="absolute flex items-center gap-3 rounded-md p-4"
           style={{
             left: f.x,
             top: f.y,
@@ -34,7 +34,7 @@ export function LolHeroPreview(): React.JSX.Element {
             <p className="text-sm font-bold" style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-text)' }}>{f.label}</p>
             <p className="text-xs" style={{ color: 'var(--lol-text-muted)' }}>{f.tag}</p>
           </div>
-          <span className="ml-2 rounded-lg px-2 py-1 text-xs font-bold text-white" style={{ background: f.accent.gradient }}>{f.val}</span>
+          <span className="ml-2 rounded-md px-2 py-1 text-xs font-bold text-white" style={{ background: f.accent.gradient }}>{f.val}</span>
         </motion.div>
       ))}
     </div>

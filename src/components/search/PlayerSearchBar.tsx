@@ -27,7 +27,7 @@ export function PlayerSearchBar({
       <div
         className="flex w-full rounded-sm overflow-hidden border transition-colors duration-200"
         style={{
-          borderColor: error ? '#ef4444' : 'rgba(255,255,255,0.12)',
+          borderColor: error ? 'var(--danger)' : 'var(--border-default)',
           background: 'rgba(0,0,0,0.45)',
           backdropFilter: 'blur(12px)',
         }}
@@ -61,8 +61,8 @@ export function PlayerSearchBar({
       <AnimatePresence>
         {error && (
           <motion.p
-            className="text-xs text-red-400 text-center"
-            style={{ fontFamily: 'Inter, sans-serif' }}
+            className="text-xs text-center"
+            style={{ fontFamily: 'Inter, sans-serif', color: 'var(--danger)' }}
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ChampionAvatar } from '../shared/ChampionAvatar';
-import { LOL_ACCENTS } from '../../../constants/lolTheme';
+import { LOL_ACCENTS, LOL_LOSS } from '../../../constants/lolTheme';
 import type { MatchInfo } from '../../../types/lolApi.types';
 
 interface MatchRowProps {
@@ -14,12 +14,12 @@ const QUEUE_LABELS: Record<MatchInfo['queue'], string> = {
 
 /** Ligne d'historique : champion, file, KDA, CS, résultat. */
 export function MatchRow({ match }: MatchRowProps): React.JSX.Element {
-  const edge = match.win ? LOL_ACCENTS.solo.color : '#fb7185';
+  const edge = match.win ? LOL_ACCENTS.solo.color : LOL_LOSS.color;
   const minutes = Math.floor(match.durationSec / 60);
 
   return (
-    <div className="flex items-center gap-4 rounded-xl p-3" style={{ background: 'var(--lol-surface)', borderLeft: `3px solid ${edge}` }}>
-      <ChampionAvatar champKey={match.champion} label={match.champion} size={44} ring={match.win ? LOL_ACCENTS.solo.gradient : 'rgba(244,63,94,0.8)'} />
+    <div className="flex items-center gap-4 rounded-md p-3" style={{ background: 'var(--lol-surface)', borderLeft: `3px solid ${edge}` }}>
+      <ChampionAvatar champKey={match.champion} label={match.champion} size={44} ring={match.win ? LOL_ACCENTS.solo.gradient : LOL_LOSS.ring} />
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-bold" style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-text)' }}>{match.champion}</p>
         <p className="text-xs" style={{ color: 'var(--lol-text-muted)' }}>{QUEUE_LABELS[match.queue]} · {minutes} min</p>

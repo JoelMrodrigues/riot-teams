@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { TeamCard } from '../teams/TeamCard';
 import { CreateTeamModal } from '../teams/CreateTeamModal';
+import { StorageErrorBanner } from '../feedback/StorageErrorBanner';
 import { useTeams } from '../../hooks/useTeams';
 import type { Game } from '../../types/game.types';
 
@@ -13,7 +14,7 @@ interface GameTeamsTabProps {
 
 export function GameTeamsTab({ game }: GameTeamsTabProps): React.JSX.Element {
   const navigate = useNavigate();
-  const { teams, createTeam } = useTeams();
+  const { teams, createTeam, storageError, dismissStorageError } = useTeams();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const gameTeams = teams.filter((t) => t.game === game.id);
@@ -21,6 +22,8 @@ export function GameTeamsTab({ game }: GameTeamsTabProps): React.JSX.Element {
   return (
     <>
       <div className="flex-1 flex flex-col px-8 py-8 gap-6 overflow-y-auto">
+        <StorageErrorBanner message={storageError} onDismiss={dismissStorageError} />
+
         <motion.div
           className="flex items-center justify-between"
           initial={{ opacity: 0, y: 12 }}
