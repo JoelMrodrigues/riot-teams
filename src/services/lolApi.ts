@@ -11,7 +11,7 @@ interface ApiError {
  * compte + invocateur + rangs + matchs détaillés + maîtrise).
  */
 export async function fetchLolProfile(gameName: string, tagLine: string): Promise<LolProfile> {
-  const query = new URLSearchParams({ gameName, tagLine });
+  const query = new URLSearchParams({ gameName, tagLine, count: '20' });
   const res = await fetch(`${API_BASE}/api/lol/profile?${query.toString()}`);
   if (!res.ok) {
     const body = (await res.json().catch(() => ({ error: 'Erreur réseau.' }))) as ApiError;

@@ -5,6 +5,7 @@ import type { MasteryInfo } from '../../../types/lolApi.types';
 
 interface MasteryStripProps {
   mastery: MasteryInfo[];
+  onTopChampionsClick?: () => void;
 }
 
 function MasteryIcon({ championId }: { championId: number }): React.JSX.Element {
@@ -13,13 +14,30 @@ function MasteryIcon({ championId }: { championId: number }): React.JSX.Element 
   return <img src={championSquareById(championId)} alt="" onError={() => setOk(false)} className="h-full w-full object-cover" />;
 }
 
-/** Top maîtrises : icône champion + niveau + points. */
-export function MasteryStrip({ mastery }: MasteryStripProps): React.JSX.Element | null {
+/** Top maîtrises : icône champion + niveau + points. Bouton optionnel vers le top champions. */
+export function MasteryStrip({ mastery, onTopChampionsClick }: MasteryStripProps): React.JSX.Element | null {
   if (mastery.length === 0) return null;
 
   return (
     <div className="rounded-md p-4" style={{ background: 'var(--lol-surface)', border: '1px solid var(--lol-border)' }}>
-      <p className="mb-3 text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--lol-text-muted)' }}>Maîtrise</p>
+      <div className="mb-3 flex items-center justify-between">
+        <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--lol-text-muted)' }}>Maîtrise</p>
+        {onTopChampionsClick && (
+          <button
+            onClick={onTopChampionsClick}
+            className="rounded-md px-3 py-1 text-xs font-bold uppercase tracking-wider transition-colors"
+            style={{
+              fontFamily: 'Rajdhani, sans-serif',
+              background: 'var(--lol-surface)',
+              border: '1px solid var(--lol-border)',
+              color: 'var(--lol-violet-soft)',
+            }}
+            aria-label="Voir le top 10 des champions joués"
+          >
+            Top champions →
+          </button>
+        )}
+      </div>
       <div className="flex flex-wrap gap-3">
         {mastery.map((m) => (
           <div key={m.championId} className="flex w-16 flex-col items-center gap-1">
