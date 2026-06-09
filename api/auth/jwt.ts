@@ -24,9 +24,10 @@ function getSecret(): string {
  * Le payload ne contient jamais password_hash ni données sensibles.
  */
 export function signToken(payload: Omit<JwtPayload, 'iat' | 'exp'>): string {
+  // `sub` est déjà présent dans le payload ; ne PAS repasser `subject` en option
+  // (jsonwebtoken refuse les deux à la fois).
   return jwt.sign(payload, getSecret(), {
     expiresIn: JWT_EXPIRY,
-    subject: payload.sub,
   });
 }
 
