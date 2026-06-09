@@ -4,43 +4,74 @@ import { motion } from 'framer-motion';
 
 import { LolTeamDetailHeader } from '../../components/lol/teams/LolTeamDetailHeader';
 import { LolTeamRoster } from '../../components/lol/teams/LolTeamRoster';
+import { LolTeamManagersList } from '../../components/lol/teams/LolTeamManagersList';
 import { LolDeleteTeamModal } from '../../components/lol/teams/LolDeleteTeamModal';
-import { AddPlayerModal } from '../../components/teams/AddPlayerModal';
-import { StorageErrorBanner } from '../../components/feedback/StorageErrorBanner';
-import { useTeams } from '../../hooks/useTeams';
+import { LolAddRosterMemberModal } from '../../components/lol/teams/LolAddRosterMemberModal';
+import { ApiErrorBanner } from '../../components/feedback/ApiErrorBanner';
+import { LolTeamDetailSkeleton } from '../../components/lol/teams/LolTeamDetailSkeleton';
+import { useLolTeam } from '../../hooks/useLolTeam';
+import { useAuth } from '../../hooks/useAuth';
+import { getMyRole, isManager as checkIsManager } from '../../utils/lolTeamRole';
 import { resolveAccent } from '../../data/lolTeamAccents.data';
 import { GAMES_DATA } from '../../data/games.data';
 
 /**
- * /lol/team/:teamId — page détail d'une équipe LoL, rendue dans LolLayout.
- * Résout la couleur d'accent ici et la transmet aux composants enfants.
+ * /lol/team/:teamId — page détail d'une équipe LoL, branchée sur l'API backend.
+ * Résout le rôle courant via managers[] + userId, gate les actions de gestion.
  */
 export function LolTeamDetailPage(): React.JSX.Element {
-  const { teamId } = useParams<{ teamId: string }>();
-  const navigate = useNavigate();
-  const { getTeamById, addMember, removeMember, deleteTeam, storageError, dismissStorageError } =
-    useTeams();
+  const { teamId }  = useParams<{ teamId: string }>();
+  const navigate    = useNavigate();
+  const { user }    = useAuth();
+  const {
+    team, managers, roster, loading, error, refresh,
+    addRosterMember, removeRosterMember, deleteTeam,
+  } = useLolTeam(teamId);
+
   const [isAddModalOpen, setIsAddModalOpen]       = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [actionError, setActionError]             = useState<string | null>(null);
 
-  const game = GAMES_DATA.find((g) => g.id === 'lol')!;
-  const team = teamId ? getTeamById(teamId) : undefined;
+  const game          = GAMES_DATA.find((g) => g.id === 'lol')!;
+  const myRole        = getMyRole(managers, user?.id);
+  const managerAccess = checkIsManager(myRole);
 
-  if (!team) {
+  if (loading) return <LolTeamDetailSkeleton />;
+
+  if (error || !team) {
     return (
-      <div className="flex flex-1 items-center justify-center py-20">
-        <p className="text-sm" style={{ fontFamily: 'Inter, sans-serif', color: 'var(--lol-text-muted)' }}>
-          Équipe introuvable.
-        </p>
+      <div className="mx-auto w-full max-w-3xl px-4 pb-8 pt-8 md:px-6 lg:px-8">
+        <ApiErrorBanner message={error ?? 'Équipe introuvable.'} onRetry={refresh} />
       </div>
     );
   }
 
-  const resolvedAccent = resolveAccent(team.accentColor);
+  const resolvedAccent = resolveAccent(team.accentColor ?? undefined);
 
-  const handleDeleteConfirm = () => {
-    deleteTeam(team.id);
-    navigate('/lol/teams');
+  const handleDeleteConfirm = async () => {
+    try {
+      await deleteTeam();
+      navigate('/lol/teams');
+    } catch (err: unknown) {
+      setActionError(err instanceof Error ? err.message : 'Erreur lors de la suppression.');
+      setIsDeleteModalOpen(false);
+    }
+  };
+
+  const handleAddMember = async (gameName: string, tagLine: string) => {
+    try {
+      await addRosterMember({ game_name: gameName, tag_line: tagLine });
+    } catch (err: unknown) {
+      setActionError(err instanceof Error ? err.message : "Erreur lors de l'ajout.");
+    }
+  };
+
+  const handleRemoveMember = async (rosterId: string) => {
+    try {
+      await removeRosterMember(rosterId);
+    } catch (err: unknown) {
+      setActionError(err instanceof Error ? err.message : 'Erreur lors du retrait.');
+    }
   };
 
   return (
@@ -51,37 +82,44 @@ export function LolTeamDetailPage(): React.JSX.Element {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.25 }}
       >
-        <StorageErrorBanner message={storageError} onDismiss={dismissStorageError} />
+        <ApiErrorBanner message={actionError} onRetry={() => setActionError(null)} />
 
         <div className="flex flex-col gap-8">
           <LolTeamDetailHeader
             team={team}
+            rosterCount={roster.length}
             maxMembers={game.maxMembers}
             resolvedAccent={resolvedAccent}
+            isManager={managerAccess}
             onDeleteRequest={() => setIsDeleteModalOpen(true)}
           />
+          <LolTeamManagersList managers={managers} />
           <LolTeamRoster
-            team={team}
+            roster={roster}
             maxMembers={game.maxMembers}
+            isManager={managerAccess}
             onAddPlayer={() => setIsAddModalOpen(true)}
-            onRemoveMember={(memberId) => removeMember(team.id, memberId)}
+            onRemoveMember={handleRemoveMember}
           />
         </div>
       </motion.div>
 
-      <AddPlayerModal
-        isOpen={isAddModalOpen}
-        game={game}
-        onClose={() => setIsAddModalOpen(false)}
-        onAdd={(gameName, tagLine) => addMember(team.id, gameName, tagLine)}
-      />
+      {managerAccess && (
+        <LolAddRosterMemberModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          onAdd={handleAddMember}
+        />
+      )}
 
-      <LolDeleteTeamModal
-        isOpen={isDeleteModalOpen}
-        teamName={team.name}
-        onConfirm={handleDeleteConfirm}
-        onCancel={() => setIsDeleteModalOpen(false)}
-      />
+      {managerAccess && (
+        <LolDeleteTeamModal
+          isOpen={isDeleteModalOpen}
+          teamName={team.name}
+          onConfirm={handleDeleteConfirm}
+          onCancel={() => setIsDeleteModalOpen(false)}
+        />
+      )}
     </>
   );
 }

@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { HomePage } from '../pages/HomePage';
 import { TeamsPage } from '../pages/TeamsPage';
+import { LoginPage } from '../pages/auth/LoginPage';
+import { RegisterPage } from '../pages/auth/RegisterPage';
 
 import { LolLayout } from '../components/lol/layout/LolLayout';
 import { LolHomePage } from '../pages/lol/LolHomePage';
@@ -22,6 +24,8 @@ export function AppRouter(): React.JSX.Element {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/teams" element={<TeamsPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
         {/* Écosystème LoL dédié — header/layout persistant via Outlet */}
         <Route path="/lol" element={<LolLayout />}>

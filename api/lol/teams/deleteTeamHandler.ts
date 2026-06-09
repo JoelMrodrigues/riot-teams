@@ -1,6 +1,7 @@
 // DELETE /api/lol/teams/:teamId
 // Supprime une équipe (CASCADE sur managers + roster côté DB).
-// Réservé au propriétaire (owner strict) — requireOwner appliqué dans le router.
+// Autorisé aux managers (propriétaire OU capitaine) — requireManager dans le router.
+// Décision produit : capitaine = quasi-propriétaire, il peut supprimer l'équipe.
 
 import type { Request, Response } from 'express';
 

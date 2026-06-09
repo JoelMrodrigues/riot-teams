@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { LolSearchHero } from '../../components/lol/home/LolSearchHero';
@@ -6,20 +6,21 @@ import { LolQuickAccess } from '../../components/lol/home/LolQuickAccess';
 import { LolMyTeamsPreview } from '../../components/lol/home/LolMyTeamsPreview';
 import { LolRecentSearches } from '../../components/lol/home/LolRecentSearches';
 import { LolUpcomingBanner } from '../../components/lol/home/LolUpcomingBanner';
-import { useTeams } from '../../hooks/useTeams';
+import { LolCreateTeamModal } from '../../components/lol/teams/LolCreateTeamModal';
+import { useLolTeams } from '../../hooks/useLolTeams';
 import { useRecentSearches } from '../../hooks/useRecentSearches';
 import type { RecentSearch } from '../../hooks/useRecentSearches';
+import type { LolCreateTeamBody } from '../../types/lolTeam.types';
 
 /**
  * Hub LoL — conteneur/layout uniquement.
- * Compose les 5 zones (A→E) définies dans docs/lol-accueil-spec.md.
+ * LolMyTeamsPreview gère elle-même l'état auth/chargement via useLolTeams.
  */
 export function LolHomePage(): React.JSX.Element {
   const navigate = useNavigate();
-  const { teams } = useTeams();
+  const { createTeam } = useLolTeams();
   const { searches, addSearch, clearAll } = useRecentSearches();
-
-  const lolTeams = teams.filter((t) => t.game === 'lol');
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const handleSearch = (riotId: string, tagLine: string): void => {
     addSearch(riotId, tagLine);
@@ -31,23 +32,33 @@ export function LolHomePage(): React.JSX.Element {
     navigate(`/lol/search?riotId=${encoded}`);
   };
 
-  const handleCreateTeam = (): void => {
-    navigate('/lol/teams');
+  const handleCreateTeam = async (body: LolCreateTeamBody): Promise<void> => {
+    const created = await createTeam(body);
+    setIsCreateOpen(false);
+    navigate(`/lol/team/${created.id}`);
   };
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 pb-8 md:px-6 lg:px-8">
-      <div className="flex flex-col gap-6">
-        <LolSearchHero onSearch={handleSearch} />
-        <LolQuickAccess />
-        <LolMyTeamsPreview teams={lolTeams} onCreate={handleCreateTeam} />
-        <LolRecentSearches
-          searches={searches}
-          onSelect={handleSelectRecent}
-          onClear={clearAll}
-        />
-        <LolUpcomingBanner />
+    <>
+      <div className="mx-auto w-full max-w-5xl px-4 pb-8 md:px-6 lg:px-8">
+        <div className="flex flex-col gap-6">
+          <LolSearchHero onSearch={handleSearch} />
+          <LolQuickAccess />
+          <LolMyTeamsPreview onCreate={() => setIsCreateOpen(true)} />
+          <LolRecentSearches
+            searches={searches}
+            onSelect={handleSelectRecent}
+            onClear={clearAll}
+          />
+          <LolUpcomingBanner />
+        </div>
       </div>
-    </div>
+
+      <LolCreateTeamModal
+        isOpen={isCreateOpen}
+        onClose={() => setIsCreateOpen(false)}
+        onCreate={handleCreateTeam}
+      />
+    </>
   );
 }

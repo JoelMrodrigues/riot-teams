@@ -3,24 +3,27 @@ import { motion } from 'framer-motion';
 
 import { ChampionAvatar } from '../shared/ChampionAvatar';
 import { LOL_EMBLEMS } from '../../../data/lolEmblems.data';
-import type { Team } from '../../../types/team.types';
+import type { LolApiTeam } from '../../../types/lolTeam.types';
 
 interface LolTeamDetailHeaderProps {
-  team:           Team;
-  maxMembers:     number;
-  resolvedAccent: string;
+  team:            LolApiTeam;
+  rosterCount:     number;
+  maxMembers:      number;
+  resolvedAccent:  string;
+  isManager:       boolean;
   onDeleteRequest: () => void;
 }
 
 /**
- * En-tête de la page détail d'équipe LoL — icône, tag, région, compteur de joueurs.
- * La suppression déclenche une modale de confirmation (gérée par la page parente).
- * Plus de reset par hover — accessible clavier et tactile.
+ * En-tête de la page détail d'équipe LoL.
+ * Bouton supprimer visible uniquement si isManager === true.
  */
 export function LolTeamDetailHeader({
   team,
+  rosterCount,
   maxMembers,
   resolvedAccent,
+  isManager,
   onDeleteRequest,
 }: LolTeamDetailHeaderProps): React.JSX.Element {
   const renderIcon = () => {
@@ -99,24 +102,26 @@ export function LolTeamDetailHeader({
             className="text-xs uppercase tracking-widest"
             style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-text-muted)' }}
           >
-            LoL · {team.members.length}/{maxMembers} joueurs
+            LoL · {rosterCount}/{maxMembers} joueurs
           </p>
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={onDeleteRequest}
-        className="flex-shrink-0 cursor-pointer rounded-sm border px-4 py-2 text-xs uppercase tracking-widest transition-all duration-150 hover:border-[var(--danger)] hover:text-[var(--danger)]"
-        style={{
-          fontFamily: 'Rajdhani, sans-serif',
-          borderColor: 'var(--lol-border)',
-          color: 'var(--lol-text-muted)',
-          background: 'transparent',
-        }}
-      >
-        Supprimer
-      </button>
+      {isManager && (
+        <button
+          type="button"
+          onClick={onDeleteRequest}
+          className="flex-shrink-0 cursor-pointer rounded-sm border px-4 py-2 text-xs uppercase tracking-widest transition-all duration-150 hover:border-[var(--danger)] hover:text-[var(--danger)]"
+          style={{
+            fontFamily: 'Rajdhani, sans-serif',
+            borderColor: 'var(--lol-border)',
+            color: 'var(--lol-text-muted)',
+            background: 'transparent',
+          }}
+        >
+          Supprimer
+        </button>
+      )}
     </motion.div>
   );
 }

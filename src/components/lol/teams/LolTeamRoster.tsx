@@ -3,27 +3,29 @@ import { motion } from 'framer-motion';
 
 import { LolTeamRosterSlot } from './LolTeamRosterSlot';
 import { LOL_ACCENTS } from '../../../constants/lolTheme';
-import type { Team } from '../../../types/team.types';
+import type { LolApiRosterMember } from '../../../types/lolTeam.types';
 
 interface LolTeamRosterProps {
-  team: Team;
+  roster:     LolApiRosterMember[];
   maxMembers: number;
-  onAddPlayer: () => void;
-  onRemoveMember: (memberId: string) => void;
+  isManager:  boolean;
+  onAddPlayer:    () => void;
+  onRemoveMember: (rosterId: string) => void;
 }
 
 /**
- * Section roster de la page détail LoL.
- * Utilise LolTeamRosterSlot (--lol-*) pour garantir la cohérence clair/sombre.
+ * Section roster de la page détail LoL — branché sur LolApiRosterMember.
+ * Bouton "Ajouter" et bouton "Retirer" visibles uniquement si isManager === true.
  */
 export function LolTeamRoster({
-  team,
+  roster,
   maxMembers,
+  isManager,
   onAddPlayer,
   onRemoveMember,
 }: LolTeamRosterProps): React.JSX.Element {
   const accent = LOL_ACCENTS.team;
-  const slots = Array.from({ length: maxMembers }).map((_, i) => team.members[i] ?? null);
+  const slots  = Array.from({ length: maxMembers }).map((_, i) => roster[i] ?? null);
 
   return (
     <motion.div
@@ -39,7 +41,7 @@ export function LolTeamRoster({
         >
           Roster
         </span>
-        {team.members.length < maxMembers && (
+        {isManager && roster.length < maxMembers && (
           <button
             type="button"
             onClick={onAddPlayer}
@@ -57,8 +59,9 @@ export function LolTeamRoster({
             key={member?.id ?? `empty-${i}`}
             member={member}
             slotIndex={i}
-            onRemove={member ? () => onRemoveMember(member.id) : undefined}
-            onAdd={!member ? onAddPlayer : undefined}
+            isManager={isManager}
+            onRemove={member && isManager ? () => onRemoveMember(member.id) : undefined}
+            onAdd={!member && isManager ? onAddPlayer : undefined}
           />
         ))}
       </div>

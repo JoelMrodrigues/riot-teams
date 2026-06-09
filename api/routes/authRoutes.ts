@@ -15,11 +15,6 @@ import { meHandler, logoutHandler } from '../auth/meHandler.js';
 
 const router = Router();
 
-// Parsing JSON activé uniquement pour ce router (le server.ts global ne le monte pas encore).
-router.use((_req, _res, next) => {
-  next();
-});
-
 router.post('/register', registerHandler);
 router.post('/login', loginHandler);
 router.post('/logout', requireAuth, logoutHandler);

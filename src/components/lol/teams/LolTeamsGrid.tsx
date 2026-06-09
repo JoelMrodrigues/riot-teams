@@ -3,17 +3,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { LolTeamCard } from './LolTeamCard';
 import { LolMyTeamsEmptyState } from '../home/LolMyTeamsEmptyState';
-import type { Team } from '../../../types/team.types';
+import type { LolApiTeam } from '../../../types/lolTeam.types';
 
 interface LolTeamsGridProps {
-  teams: Team[];
+  teams: LolApiTeam[];
   onCreateEmpty: () => void;
 }
 
 /**
- * Grille paginée des équipes LoL (toutes, pas seulement les 3 premières).
- * Réutilise TeamCard (tokens globaux, compatible mode clair/sombre LoL).
- * État vide via LolMyTeamsEmptyState (tokens --lol-*).
+ * Grille des équipes LoL backend.
+ * Réutilise LolTeamCard (tokens --lol-*, compatible clair/sombre).
+ * État vide via LolMyTeamsEmptyState.
  */
 export function LolTeamsGrid({ teams, onCreateEmpty }: LolTeamsGridProps): React.JSX.Element {
   return (

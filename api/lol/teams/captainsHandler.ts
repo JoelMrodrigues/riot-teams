@@ -47,17 +47,14 @@ export async function addCaptainHandler(req: Request, res: Response): Promise<vo
     return;
   }
 
-  try {
-    await query(
-      `INSERT INTO lol_team_managers (team_id, user_id, role)
-       VALUES ($1, $2, 'captain')
-       ON CONFLICT (team_id, user_id) DO NOTHING`,
-      [teamId, targetUserId],
-    );
-    res.status(201).json({ teamId, userId: targetUserId, role: 'captain' });
-  } catch (err) {
-    throw err;
-  }
+  // Express 5 capture les rejets async → le gestionnaire d'erreurs global s'en charge.
+  await query(
+    `INSERT INTO lol_team_managers (team_id, user_id, role)
+     VALUES ($1, $2, 'captain')
+     ON CONFLICT (team_id, user_id) DO NOTHING`,
+    [teamId, targetUserId],
+  );
+  res.status(201).json({ teamId, userId: targetUserId, role: 'captain' });
 }
 
 export async function removeCaptainHandler(req: Request, res: Response): Promise<void> {

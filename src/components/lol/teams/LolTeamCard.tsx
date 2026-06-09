@@ -6,19 +6,20 @@ import { ChampionAvatar } from '../shared/ChampionAvatar';
 import { LOL_EMBLEMS } from '../../../data/lolEmblems.data';
 import { resolveAccent } from '../../../data/lolTeamAccents.data';
 import { GAMES_DATA } from '../../../data/games.data';
-import type { Team } from '../../../types/team.types';
+import type { LolApiTeam } from '../../../types/lolTeam.types';
 
 interface LolTeamCardProps {
-  team: Team;
+  team: LolApiTeam;
+  /** Nombre de membres dans le roster — passé séparément car absent de LolApiTeam. */
+  memberCount?: number;
 }
 
 /** Carte d'équipe enrichie LoL : icône, tag, couleur d'accent dynamique. */
-export function LolTeamCard({ team }: LolTeamCardProps): React.JSX.Element {
-  const navigate    = useNavigate();
-  const game        = GAMES_DATA.find((g) => g.id === 'lol')!;
-  const accent      = resolveAccent(team.accentColor);
-  const maxMembers  = game.maxMembers;
-  const memberCount = team.members.length;
+export function LolTeamCard({ team, memberCount = 0 }: LolTeamCardProps): React.JSX.Element {
+  const navigate   = useNavigate();
+  const game       = GAMES_DATA.find((g) => g.id === 'lol')!;
+  const accent     = resolveAccent(team.accentColor ?? undefined);
+  const maxMembers = game.maxMembers;
 
   const createdDate = new Date(team.createdAt).toLocaleDateString('fr-FR', {
     day: '2-digit', month: 'short', year: 'numeric',

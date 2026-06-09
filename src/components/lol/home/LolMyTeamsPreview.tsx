@@ -2,24 +2,27 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-import { TeamCard } from '../../teams/TeamCard';
+import { LolTeamCard } from '../teams/LolTeamCard';
 import { LolMyTeamsEmptyState } from './LolMyTeamsEmptyState';
-import type { Team } from '../../../types/team.types';
+import { LolAuthPrompt } from '../../auth/LolAuthPrompt';
+import { useLolTeams } from '../../../hooks/useLolTeams';
+import { useAuth } from '../../../hooks/useAuth';
 
 interface LolMyTeamsPreviewProps {
-  teams: Team[];
   onCreate: () => void;
 }
 
 const PREVIEW_LIMIT = 3;
 
 /**
- * Zone C — aperçu des équipes LoL locales (3 max) + état vide.
- * Filtre game === 'lol' effectué en amont (dans LolHomePage).
+ * Zone C du hub — aperçu des équipes LoL via API (3 max).
+ * Affiche une invite de connexion si l'utilisateur est anonyme.
  */
-export function LolMyTeamsPreview({ teams, onCreate }: LolMyTeamsPreviewProps): React.JSX.Element {
-  const preview = teams.slice(0, PREVIEW_LIMIT);
-  const hasMore = teams.length > PREVIEW_LIMIT;
+export function LolMyTeamsPreview({ onCreate }: LolMyTeamsPreviewProps): React.JSX.Element {
+  const { status }              = useAuth();
+  const { teams, loading }      = useLolTeams();
+  const preview                 = teams.slice(0, PREVIEW_LIMIT);
+  const hasMore                 = teams.length > PREVIEW_LIMIT;
 
   return (
     <motion.section
@@ -35,18 +38,31 @@ export function LolMyTeamsPreview({ teams, onCreate }: LolMyTeamsPreviewProps): 
         >
           Mes équipes LoL
         </p>
-        <button type="button" onClick={onCreate} className="btn btn-ghost btn-sm">
-          Nouvelle équipe
-        </button>
+        {status === 'authenticated' && (
+          <button type="button" onClick={onCreate} className="btn btn-ghost btn-sm">
+            Nouvelle équipe
+          </button>
+        )}
       </div>
 
-      {teams.length === 0 ? (
+      {status === 'anonymous' ? (
+        <LolAuthPrompt message="Connecte-toi pour voir tes équipes League of Legends." />
+      ) : loading ? (
+        <div
+          className="flex h-16 items-center justify-center rounded-sm border"
+          style={{ background: 'var(--lol-surface)', borderColor: 'var(--lol-border)' }}
+        >
+          <span className="text-xs animate-pulse" style={{ color: 'var(--lol-text-muted)', fontFamily: 'Inter, sans-serif' }}>
+            Chargement…
+          </span>
+        </div>
+      ) : teams.length === 0 ? (
         <LolMyTeamsEmptyState onCreate={onCreate} />
       ) : (
         <>
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
             {preview.map((team) => (
-              <TeamCard key={team.id} team={team} />
+              <LolTeamCard key={team.id} team={team} />
             ))}
           </div>
 

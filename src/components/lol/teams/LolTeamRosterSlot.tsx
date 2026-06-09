@@ -2,31 +2,50 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-import type { TeamMember } from '../../../types/team.types';
 import { LOL_ACCENTS } from '../../../constants/lolTheme';
+import type { LolApiRosterMember } from '../../../types/lolTeam.types';
 
 interface LolTeamRosterSlotProps {
-  member: TeamMember | null;
-  slotIndex: number;
-  onRemove?: () => void;
-  onAdd?: () => void;
+  member:     LolApiRosterMember | null;
+  slotIndex:  number;
+  isManager:  boolean;
+  onRemove?:  () => void;
+  onAdd?:     () => void;
 }
 
 const accent = LOL_ACCENTS.team.color;
 
 /**
- * Slot de roster thème LoL — utilise var(--lol-text*) pour fonctionner
- * en mode clair ET sombre, contrairement au RosterSlot générique (text-white brut).
+ * Slot de roster thème LoL — branché sur LolApiRosterMember.
+ * Bouton retirer visible uniquement si isManager === true et membre présent.
  */
 export function LolTeamRosterSlot({
   member,
   slotIndex,
+  isManager,
   onRemove,
   onAdd,
 }: LolTeamRosterSlotProps): React.JSX.Element {
   const navigate = useNavigate();
 
   if (!member) {
+    if (!isManager) {
+      return (
+        <div
+          className="flex h-14 w-full items-center justify-center rounded-sm border border-dashed"
+          style={{ borderColor: 'var(--lol-border)' }}
+          aria-label={`Slot ${slotIndex + 1} vide`}
+        >
+          <span
+            className="text-sm"
+            style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-text-muted)', letterSpacing: '0.05em' }}
+          >
+            Slot {slotIndex + 1}
+          </span>
+        </div>
+      );
+    }
+
     return (
       <motion.button
         type="button"
@@ -79,7 +98,7 @@ export function LolTeamRosterSlot({
         </span>
       </button>
 
-      {onRemove && (
+      {isManager && onRemove && (
         <button
           type="button"
           onClick={onRemove}
