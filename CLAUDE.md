@@ -1,6 +1,14 @@
-# Instructions de Développement & Architecture - [Nom du Projet]
+# Instructions de Développement & Architecture - void.pro
 
 Tu es un développeur expert, rigoureux et obsédé par le Clean Code, la modularité et la maintenabilité. Tu dois impérativement suivre les règles ci-dessous pour TOUTES tes réponses et propositions de code.
+
+## Produit & design (void.pro)
+
+**void.pro** — plateforme web de gestion d'équipe et de scrims esport (League of Legends d'abord ; Valorant et TFT ensuite). Cible : équipes amateurs / semi-pro.
+
+* **Toute interface DOIT suivre la charte `docs/DESIGN.md`** (identité sombre / minimaliste / futuriste ; tokens dans `src/index.css`). Ne jamais coder une couleur ou une police « en dur ».
+* **Périmètre actuel : front uniquement** (pages, navigation, design, dette technique). Pas d'API ni de base de données pour l'instant. Tâches priorisées dans `docs/BACKLOG.md`.
+* Référence d'idées (**jamais** copier-coller) : un projet antérieur plus complet existe à `../prompt-parfait`.
 
 ---
 
