@@ -8,6 +8,7 @@ import { LolLayout } from '../components/lol/layout/LolLayout';
 import { LolHomePage } from '../pages/lol/LolHomePage';
 import { LolSearchPage } from '../pages/lol/LolSearchPage';
 import { LolTeamsHomePage } from '../pages/lol/LolTeamsHomePage';
+import { LolTeamDetailPage } from '../pages/lol/LolTeamDetailPage';
 import { LolStatsPage } from '../pages/lol/LolStatsPage';
 import { LolPlayerRedirect } from '../components/lol/LolPlayerRedirect';
 
@@ -34,8 +35,8 @@ export function AppRouter(): React.JSX.Element {
            * → une seule expérience profil, cohérente, dans la coquille LoL.
            */}
           <Route path="player/:gameName/:tagLine" element={<LolPlayerRedirect />} />
+          <Route path="team/:teamId" element={<LolTeamDetailPage />} />
         </Route>
-        <Route path="/lol/team/:teamId" element={<GameTeamPage gameId="lol" />} />
 
         <Route path="/valorant" element={<GameLandingPage gameId="valorant" />} />
         <Route path="/valorant/player/:gameName/:tagLine" element={<GamePlayerPage gameId="valorant" phaseLabel="Phase 4/5" />} />
