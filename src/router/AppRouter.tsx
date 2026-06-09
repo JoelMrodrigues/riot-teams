@@ -8,6 +8,7 @@ import { LolLayout } from '../components/lol/layout/LolLayout';
 import { LolHomePage } from '../pages/lol/LolHomePage';
 import { LolSearchPage } from '../pages/lol/LolSearchPage';
 import { LolTeamsHomePage } from '../pages/lol/LolTeamsHomePage';
+import { LolStatsPage } from '../pages/lol/LolStatsPage';
 
 import { GameLandingPage } from '../pages/game/GameLandingPage';
 import { GamePlayerPage } from '../pages/game/GamePlayerPage';
@@ -25,6 +26,7 @@ export function AppRouter(): React.JSX.Element {
           <Route index element={<LolHomePage />} />
           <Route path="search" element={<LolSearchPage />} />
           <Route path="teams" element={<LolTeamsHomePage />} />
+          <Route path="stats" element={<LolStatsPage />} />
         </Route>
         <Route path="/lol/player/:gameName/:tagLine" element={<GamePlayerPage gameId="lol" phaseLabel="Phase 4" />} />
         <Route path="/lol/team/:teamId" element={<GameTeamPage gameId="lol" />} />

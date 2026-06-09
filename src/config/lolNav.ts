@@ -7,7 +7,8 @@ export interface LolNavItem {
 }
 
 export const LOL_NAV: LolNavItem[] = [
-  { label: 'Accueil LoL', to: '/lol', end: true },
-  { label: 'Recherche Solo', to: '/lol/search', end: false },
-  { label: 'Gestion Équipe', to: '/lol/teams', end: false },
+  { label: 'Accueil', to: '/lol', end: true },
+  { label: 'Solo', to: '/lol/search', end: false },
+  { label: 'Équipes', to: '/lol/teams', end: false },
+  { label: 'Stats', to: '/lol/stats', end: false },
 ];
