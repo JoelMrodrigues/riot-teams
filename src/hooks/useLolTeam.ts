@@ -1,7 +1,9 @@
 /**
  * Hook pour le DÉTAIL d'une équipe LoL (id en paramètre).
- * État : { team, managers, roster, loading, error, refresh, addRosterMember,
- *          removeRosterMember, updateTeam, deleteTeam }
+ * État : { team, members, roster, loading, error, refresh, addRosterMember,
+ *          removeRosterMember, updateTeam, deleteTeam,
+ *          addMember, updateMemberRole, removeMember, transferOwnership }
+ * Les actions membres sont déléguées à useLolMemberActions.
  */
 import { useState, useEffect, useCallback } from 'react';
 
@@ -12,19 +14,21 @@ import {
   addLolRosterMember,
   removeLolRosterMember,
 } from '../services/lolTeamsApi';
+import { useLolMemberActions } from './useLolMemberActions';
 import { useAuth } from './useAuth';
 import type {
   LolApiTeam,
   LolApiTeamDetail,
-  LolApiManager,
+  LolApiMember,
   LolApiRosterMember,
   LolUpdateTeamBody,
   LolAddRosterMemberBody,
+  LolAssignableRole,
 } from '../types/lolTeam.types';
 
 export interface UseLolTeamReturn {
   team:     LolApiTeam | null;
-  managers: LolApiManager[];
+  members:  LolApiMember[];
   roster:   LolApiRosterMember[];
   loading:  boolean;
   error:    string | null;
@@ -33,6 +37,10 @@ export interface UseLolTeamReturn {
   removeRosterMember: (rosterId: string) => Promise<void>;
   updateTeam:         (body: LolUpdateTeamBody) => Promise<void>;
   deleteTeam:         () => Promise<void>;
+  addMember:          (userId: string, role: LolAssignableRole) => Promise<void>;
+  updateMemberRole:   (userId: string, role: LolAssignableRole) => Promise<void>;
+  removeMember:       (userId: string) => Promise<void>;
+  transferOwnership:  (userId: string) => Promise<void>;
 }
 
 export function useLolTeam(teamId: string | undefined): UseLolTeamReturn {
@@ -62,6 +70,9 @@ export function useLolTeam(teamId: string | undefined): UseLolTeamReturn {
   }, [teamId, token, rev]);
 
   const refresh = useCallback(() => setRev((v) => v + 1), []);
+  const bumpRev = useCallback(() => setRev((v) => v + 1), []);
+
+  const memberActions = useLolMemberActions({ teamId, token, onSuccess: bumpRev });
 
   const addRosterMember = useCallback(
     async (body: LolAddRosterMemberBody): Promise<void> => {
@@ -99,9 +110,9 @@ export function useLolTeam(teamId: string | undefined): UseLolTeamReturn {
   );
 
   return {
-    team:     detail,
-    managers: detail?.managers ?? [],
-    roster:   detail?.roster ?? [],
+    team:    detail,
+    members: detail?.members ?? [],
+    roster:  detail?.roster ?? [],
     loading,
     error,
     refresh,
@@ -109,5 +120,6 @@ export function useLolTeam(teamId: string | undefined): UseLolTeamReturn {
     removeRosterMember,
     updateTeam,
     deleteTeam,
+    ...memberActions,
   };
 }

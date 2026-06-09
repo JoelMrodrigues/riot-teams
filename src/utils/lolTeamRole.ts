@@ -1,23 +1,36 @@
 /**
  * Utilitaire de résolution du rôle de l'utilisateur courant sur une équipe LoL.
- * Ne se fie PAS au champ `myRole` backend (non fiable) — croise managers[] + userId.
+ * Se base sur `members[]` (contrat E1+) pour déduire le rôle par userId.
  */
-import type { LolApiManager, LolTeamRole } from '../types/lolTeam.types';
+import type { LolApiMember, LolTeamRole } from '../types/lolTeam.types';
 
 /**
- * Détermine le rôle de `userId` dans la liste des managers.
- * Retourne 'owner', 'captain' ou null (non-manager / non-connecté).
+ * Détermine le rôle de `userId` dans la liste des membres.
+ * Retourne le rôle trouvé ou null (non-membre / non-connecté).
  */
 export function getMyRole(
-  managers: LolApiManager[],
+  members: LolApiMember[],
   userId: string | null | undefined,
 ): LolTeamRole {
   if (!userId) return null;
-  const found = managers.find((m) => m.userId === userId);
+  const found = members.find((m) => m.userId === userId);
   return found?.role ?? null;
 }
 
-/** Retourne true si le rôle permet des actions de gestion. */
+/** Retourne true si le rôle permet des actions de gestion (modifier/supprimer l'équipe). */
 export function isManager(role: LolTeamRole): role is 'owner' | 'captain' {
   return role === 'owner' || role === 'captain';
+}
+
+/** Label lisible en français pour chaque rôle. */
+export function roleLabelFr(role: LolTeamRole): string {
+  switch (role) {
+    case 'owner':   return 'Propriétaire';
+    case 'captain': return 'Capitaine';
+    case 'manager': return 'Manager';
+    case 'coach':   return 'Coach';
+    case 'staff':   return 'Staff';
+    case 'player':  return 'Joueur';
+    default:        return '—';
+  }
 }

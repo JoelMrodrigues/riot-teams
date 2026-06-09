@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 import { LolTeamDetailHeader } from '../../components/lol/teams/LolTeamDetailHeader';
 import { LolTeamRoster } from '../../components/lol/teams/LolTeamRoster';
-import { LolTeamManagersList } from '../../components/lol/teams/LolTeamManagersList';
+import { LolMembersPanel } from '../../components/lol/teams/LolMembersPanel';
 import { LolDeleteTeamModal } from '../../components/lol/teams/LolDeleteTeamModal';
 import { LolAddRosterMemberModal } from '../../components/lol/teams/LolAddRosterMemberModal';
 import { ApiErrorBanner } from '../../components/feedback/ApiErrorBanner';
@@ -24,8 +24,9 @@ export function LolTeamDetailPage(): React.JSX.Element {
   const navigate    = useNavigate();
   const { user }    = useAuth();
   const {
-    team, managers, roster, loading, error, refresh,
+    team, members, roster, loading, error, refresh,
     addRosterMember, removeRosterMember, deleteTeam,
+    addMember, updateMemberRole, removeMember, transferOwnership,
   } = useLolTeam(teamId);
 
   const [isAddModalOpen, setIsAddModalOpen]       = useState(false);
@@ -33,7 +34,7 @@ export function LolTeamDetailPage(): React.JSX.Element {
   const [actionError, setActionError]             = useState<string | null>(null);
 
   const game          = GAMES_DATA.find((g) => g.id === 'lol')!;
-  const myRole        = getMyRole(managers, user?.id);
+  const myRole        = getMyRole(members, user?.id);
   const managerAccess = checkIsManager(myRole);
 
   if (loading) return <LolTeamDetailSkeleton />;
@@ -93,7 +94,15 @@ export function LolTeamDetailPage(): React.JSX.Element {
             isManager={managerAccess}
             onDeleteRequest={() => setIsDeleteModalOpen(true)}
           />
-          <LolTeamManagersList managers={managers} />
+          <LolMembersPanel
+            members={members}
+            ownerId={team.ownerId}
+            myRole={myRole}
+            onAddMember={addMember}
+            onChangeRole={updateMemberRole}
+            onRemoveMember={removeMember}
+            onTransfer={transferOwnership}
+          />
           <LolTeamRoster
             roster={roster}
             maxMembers={game.maxMembers}

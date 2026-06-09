@@ -13,12 +13,22 @@ import {
 } from '../services/authApi';
 import type { AuthStatus, User } from '../types/auth';
 
+export interface RegisterOptions {
+  riotId?: string;
+  noRiotId?: boolean;
+}
+
 export interface AuthContextValue {
   user: User | null;
   token: string | null;
   status: AuthStatus;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, pseudo: string) => Promise<void>;
+  register: (
+    email: string,
+    password: string,
+    pseudo: string,
+    options?: RegisterOptions,
+  ) => Promise<void>;
   logout: () => void;
 }
 
@@ -60,9 +70,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
   }, []);
 
   const register = useCallback(
-    async (email: string, password: string, pseudo: string): Promise<void> => {
-      // Le backend register renvoie { token, user } directement (HTTP 201).
-      const data = await apiRegister(email, password, pseudo);
+    async (
+      email: string,
+      password: string,
+      pseudo: string,
+      options?: RegisterOptions,
+    ): Promise<void> => {
+      const data = await apiRegister({
+        email,
+        password,
+        pseudo,
+        riotId: options?.riotId,
+        noRiotId: options?.noRiotId,
+      });
       writeStoredToken(data.token);
       setToken(data.token);
       setUser(data.user);

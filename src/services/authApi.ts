@@ -49,16 +49,23 @@ async function extractError(res: Response): Promise<string> {
   }
 }
 
+export interface RegisterParams {
+  email: string;
+  password: string;
+  pseudo: string;
+  /** Riot ID au format "gameName#tagLine" — vérifié par le backend via l'API Riot. */
+  riotId?: string;
+  /** true si l'utilisateur est staff et ne souhaite pas renseigner son Riot ID. */
+  noRiotId?: boolean;
+}
+
 /** POST /api/auth/register — crée un compte et retourne token + user. */
-export async function register(
-  email: string,
-  password: string,
-  pseudo: string,
-): Promise<RegisterResponse> {
+export async function register(params: RegisterParams): Promise<RegisterResponse> {
+  const { email, password, pseudo, riotId, noRiotId } = params;
   const res = await fetch(`${API_BASE}/api/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password, pseudo }),
+    body: JSON.stringify({ email, password, pseudo, riotId, noRiotId }),
   });
 
   if (!res.ok) {

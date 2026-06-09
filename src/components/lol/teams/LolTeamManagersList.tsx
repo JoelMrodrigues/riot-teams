@@ -1,17 +1,30 @@
+/**
+ * Liste des membres de l'équipe (tous rôles : owner → player).
+ * Affiche pseudo + badge de rôle en lecture seule.
+ * L'UI d'attribution / modification de rôle est réservée au Lot E2.
+ */
 import React from 'react';
 
-import type { LolApiManager } from '../../../types/lolTeam.types';
+import { roleLabelFr } from '../../../utils/lolTeamRole';
+import type { LolApiMember, LolTeamRole } from '../../../types/lolTeam.types';
 
-interface LolTeamManagersListProps {
-  managers: LolApiManager[];
+interface LolTeamMembersListProps {
+  members: LolApiMember[];
 }
 
-/**
- * Affiche la liste des managers (owner + captains) d'une équipe LoL.
- * Lecture seule — l'UI d'ajout de capitaine est hors périmètre C2.
- */
-export function LolTeamManagersList({ managers }: LolTeamManagersListProps): React.JSX.Element | null {
-  if (managers.length === 0) return null;
+/** Couleur d'accent du badge selon le rôle. */
+function badgeColor(role: LolTeamRole): string {
+  switch (role) {
+    case 'owner':   return 'var(--lol-violet-strong)';
+    case 'captain': return 'var(--lol-violet-soft)';
+    case 'manager': return 'var(--brand-soft)';
+    case 'coach':   return 'var(--lol-accent)';
+    default:        return 'var(--text-muted)';
+  }
+}
+
+export function LolTeamManagersList({ members }: LolTeamMembersListProps): React.JSX.Element | null {
+  if (members.length === 0) return null;
 
   return (
     <div className="flex flex-col gap-2">
@@ -19,29 +32,29 @@ export function LolTeamManagersList({ managers }: LolTeamManagersListProps): Rea
         className="text-xs uppercase tracking-widest"
         style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-text-muted)' }}
       >
-        Staff
+        Membres
       </span>
       <div className="flex flex-col gap-1.5">
-        {managers.map((m) => (
+        {members.map((m) => (
           <div
             key={m.userId}
             className="flex h-10 items-center gap-3 rounded-sm border px-4"
             style={{ background: 'var(--lol-surface)', borderColor: 'var(--lol-border)' }}
           >
             <span
-              className="text-xs font-bold uppercase tracking-widest"
+              className="w-24 flex-shrink-0 text-xs font-bold uppercase tracking-widest"
               style={{
                 fontFamily: 'Rajdhani, sans-serif',
-                color: m.role === 'owner' ? 'var(--lol-violet-soft)' : 'var(--lol-text-muted)',
+                color: badgeColor(m.role),
               }}
             >
-              {m.role === 'owner' ? 'Owner' : 'Captain'}
+              {roleLabelFr(m.role)}
             </span>
             <span
-              className="text-xs"
-              style={{ fontFamily: 'Inter, sans-serif', color: 'var(--lol-text-muted)' }}
+              className="truncate text-sm"
+              style={{ fontFamily: 'Inter, sans-serif', color: 'var(--lol-text)' }}
             >
-              {m.userId}
+              {m.pseudo}
             </span>
           </div>
         ))}

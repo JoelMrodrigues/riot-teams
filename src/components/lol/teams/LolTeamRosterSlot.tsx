@@ -98,6 +98,20 @@ export function LolTeamRosterSlot({
         </span>
       </button>
 
+      {member.userId && (
+        <span
+          title="Compte void.pro lié"
+          aria-label="Compte void.pro lié"
+          className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-sm"
+          style={{ background: 'var(--lol-violet-soft)', opacity: 0.85 }}
+        >
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M2 6.5L4.5 9L10 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"
+              style={{ color: 'var(--lol-violet-strong)' }} />
+          </svg>
+        </span>
+      )}
+
       {isManager && onRemove && (
         <button
           type="button"

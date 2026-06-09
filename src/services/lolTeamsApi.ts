@@ -4,8 +4,10 @@
  * - Réponses lues en camelCase (contrat backend).
  * - Header Authorization: Bearer ajouté automatiquement via le token passé en argument.
  * - Aucune dépendance UI.
+ * Les endpoints membres sont dans lolMembersApi.ts.
  */
 import { API_BASE } from './apiBase';
+import { authHeaders, extractError } from './apiHelpers';
 import type {
   LolApiTeam,
   LolApiTeamDetail,
@@ -15,23 +17,8 @@ import type {
   LolAddRosterMemberBody,
 } from '../types/lolTeam.types';
 
-/** Extrait le message d'erreur depuis une réponse non-ok. */
-async function extractError(res: Response): Promise<string> {
-  try {
-    const body = (await res.json()) as { error?: string };
-    return body.error ?? `Erreur HTTP ${res.status}`;
-  } catch {
-    return `Erreur HTTP ${res.status}`;
-  }
-}
-
-/** Headers communs authentifiés. */
-function authHeaders(token: string): HeadersInit {
-  return {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  };
-}
+export { addLolMember, updateLolMemberRole, removeLolMember, transferLolOwnership } from './lolMembersApi';
+export { searchUsers } from './usersApi';
 
 /** GET /api/lol/teams — liste des équipes de l'utilisateur connecté. */
 export async function fetchMyLolTeams(token: string): Promise<LolApiTeam[]> {

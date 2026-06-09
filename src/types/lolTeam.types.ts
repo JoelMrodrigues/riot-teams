@@ -5,11 +5,20 @@
  */
 import type { LolTeamIcon, LolRegion } from './team.types';
 
-/** Manager d'une équipe — owner ou captain. */
-export interface LolApiManager {
+/**
+ * Membre de l'équipe côté gestion (liste `members` du détail).
+ * role : owner | captain | manager | coach | staff | player
+ */
+export interface LolApiMember {
   userId: string;
-  role: 'owner' | 'captain';
+  pseudo: string;
+  role: LolTeamRole;
 }
+
+/**
+ * @deprecated Utiliser LolApiMember — conservé le temps de la migration E1.
+ */
+export type LolApiManager = LolApiMember;
 
 /** Membre du roster d'une équipe. */
 export interface LolApiRosterMember {
@@ -34,16 +43,28 @@ export interface LolApiTeam {
   ownerId: string;
   createdAt: string;
   updatedAt: string;
+  /** Rôle de l'utilisateur courant sur cette équipe (présent dans GET /api/lol/teams). */
+  myRole?: LolTeamRole;
 }
 
 /** Réponse complète de GET /api/lol/teams/:id */
 export interface LolApiTeamDetail extends LolApiTeam {
-  managers: LolApiManager[];
+  members: LolApiMember[];
   roster: LolApiRosterMember[];
 }
 
-/** Rôle de l'utilisateur courant sur une équipe — null = non-manager. */
-export type LolTeamRole = 'owner' | 'captain' | null;
+/**
+ * Rôle de l'utilisateur courant sur une équipe.
+ * null = non-membre ou non-connecté.
+ */
+export type LolTeamRole =
+  | 'owner'
+  | 'captain'
+  | 'manager'
+  | 'coach'
+  | 'staff'
+  | 'player'
+  | null;
 
 /** Corps de POST /api/lol/teams (snake_case, envoyé au backend). */
 export interface LolCreateTeamBody {
@@ -71,4 +92,33 @@ export interface LolAddRosterMemberBody {
   tag_line: string;
   role_in_game?: string;
   user_id?: string;
+}
+
+/**
+ * Rôles attribuables manuellement (owner exclu — il est propriétaire ;
+ * player exclu — il vient du roster automatiquement).
+ */
+export type LolAssignableRole = 'captain' | 'manager' | 'coach' | 'staff';
+
+/** Corps de POST /api/lol/teams/:id/members (snake_case). */
+export interface LolAddMemberBody {
+  user_id: string;
+  role: LolAssignableRole;
+}
+
+/** Corps de PATCH /api/lol/teams/:id/members/:userId (snake_case). */
+export interface LolUpdateMemberRoleBody {
+  role: LolAssignableRole;
+}
+
+/** Corps de POST /api/lol/teams/:id/transfer (snake_case). */
+export interface LolTransferOwnershipBody {
+  user_id: string;
+}
+
+/** Résultat d'un utilisateur renvoyé par GET /api/users/search. */
+export interface UserSearchResult {
+  id: string;
+  pseudo: string;
+  riotId: string | null;
 }

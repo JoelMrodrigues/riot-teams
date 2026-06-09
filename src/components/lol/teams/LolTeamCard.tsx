@@ -6,6 +6,7 @@ import { ChampionAvatar } from '../shared/ChampionAvatar';
 import { LOL_EMBLEMS } from '../../../data/lolEmblems.data';
 import { resolveAccent } from '../../../data/lolTeamAccents.data';
 import { GAMES_DATA } from '../../../data/games.data';
+import { roleLabelFr } from '../../../utils/lolTeamRole';
 import type { LolApiTeam } from '../../../types/lolTeam.types';
 
 interface LolTeamCardProps {
@@ -91,9 +92,24 @@ export function LolTeamCard({ team, memberCount = 0 }: LolTeamCardProps): React.
               </span>
             )}
           </div>
-          <span className="text-xs" style={{ fontFamily: 'Inter, sans-serif', color: 'var(--lol-text-muted)' }}>
-            {team.region ? `${team.region} · ` : ''}Créée le {createdDate}
-          </span>
+          <div className="mt-0.5 flex items-center gap-2">
+            <span className="text-xs" style={{ fontFamily: 'Inter, sans-serif', color: 'var(--lol-text-muted)' }}>
+              {team.region ? `${team.region} · ` : ''}Créée le {createdDate}
+            </span>
+            {team.myRole && (
+              <span
+                className="flex-shrink-0 rounded-sm px-1.5 py-0.5 text-xs font-bold uppercase tracking-wider"
+                style={{
+                  fontFamily: 'Rajdhani, sans-serif',
+                  background: 'var(--brand-muted)',
+                  border: '1px solid rgba(124,58,237,0.25)',
+                  color: 'var(--brand-soft)',
+                }}
+              >
+                {roleLabelFr(team.myRole)}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
