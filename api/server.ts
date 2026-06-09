@@ -9,6 +9,7 @@ import { RiotError } from './_core/riotClient';
 import accountRoutes from './routes/accountRoutes';
 import lolRoutes from './routes/lolRoutes';
 import authRoutes from './routes/authRoutes';
+import lolTeamsRoutes from './routes/lolTeamsRoutes';
 
 const app = express();
 app.use(cors());
@@ -22,6 +23,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api', accountRoutes);
 app.use('/api/lol', lolRoutes);
+app.use('/api/lol/teams', lolTeamsRoutes);
 
 // Production (Railway) : sert le front buildé + fallback SPA, même origine que l'API.
 const distDir = resolve(process.cwd(), 'dist');
@@ -34,6 +36,15 @@ if (existsSync(distDir)) {
 
 // Gestion d'erreur centralisée (Express 5 capture les rejets async).
 const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
+  // JSON malformé (body-parser) : err.status ou err.statusCode = 400, type entity.parse.failed.
+  const bodyParserStatus = (err as { status?: number; statusCode?: number; type?: string }).status
+    ?? (err as { statusCode?: number }).statusCode;
+  const bodyParserType = (err as { type?: string }).type;
+  if (bodyParserStatus === 400 && bodyParserType === 'entity.parse.failed') {
+    res.status(400).json({ error: 'Corps de requête JSON invalide.' });
+    return;
+  }
+
   if (err instanceof RiotError) {
     res.status(err.status).json({ error: err.message, detail: err.detail });
     return;
