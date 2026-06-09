@@ -1,3 +1,4 @@
+import { API_BASE } from './apiBase';
 import type { LolProfile } from '../types/lolApi.types';
 
 interface ApiError {
@@ -11,7 +12,7 @@ interface ApiError {
  */
 export async function fetchLolProfile(gameName: string, tagLine: string): Promise<LolProfile> {
   const query = new URLSearchParams({ gameName, tagLine });
-  const res = await fetch(`/api/lol/profile?${query.toString()}`);
+  const res = await fetch(`${API_BASE}/api/lol/profile?${query.toString()}`);
   if (!res.ok) {
     const body = (await res.json().catch(() => ({ error: 'Erreur réseau.' }))) as ApiError;
     throw new Error(body.error ?? 'Erreur inconnue.');
