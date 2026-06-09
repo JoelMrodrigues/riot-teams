@@ -14,8 +14,8 @@ import usersRoutes from './routes/usersRoutes';
 
 const app = express();
 app.use(cors());
-// Parsing JSON global — nécessaire pour les routes auth (et futures routes métier).
-app.use(express.json());
+// Parsing JSON global — limite à 1 Mo pour autoriser l'upload d'un logo en base64.
+app.use(express.json({ limit: '1mb' }));
 
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, keyMode: CONFIG.keyMode, platform: CONFIG.defaultPlatform });

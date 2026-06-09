@@ -66,6 +66,41 @@ export interface RosterPublic {
   addedAt: string;
 }
 
+/** Ligne brute de la table lol_team_logos. */
+export interface LogoRow {
+  team_id: string;
+  mime: string;
+  data: Buffer;
+  updated_at: Date;
+}
+
+/** Top champion agrégé sur les dernières parties d'un joueur. */
+export interface TopChampionStat {
+  champion: string;
+  championId: number;
+  games: number;
+  winrate: number;
+  kda: number;
+}
+
+/** Stats d'un joueur du roster calculées depuis l'API Riot. */
+export interface PlayerTeamStats {
+  gameName: string;
+  tagLine: string;
+  rank: import('../profile/profileTypes.js').RankInfo | null;
+  topChampions: TopChampionStat[];
+}
+
+/** Entrée dans la réponse du endpoint player-stats (avec gestion d'erreur par joueur). */
+export interface PlayerStatsEntry {
+  rosterId: string;
+  gameName: string;
+  tagLine: string;
+  rank: import('../profile/profileTypes.js').RankInfo | null;
+  topChampions: TopChampionStat[];
+  error?: string;
+}
+
 /** Réponse détail équipe renvoyée au client. */
 export interface TeamDetailResponse {
   id: string;

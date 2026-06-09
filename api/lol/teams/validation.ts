@@ -106,4 +106,13 @@ export type PatchTeamInput = z.infer<typeof patchTeamSchema>;
 export type AddRosterInput = z.infer<typeof addRosterSchema>;
 export type AddMemberInput = z.infer<typeof addMemberSchema>;
 export type PatchMemberInput = z.infer<typeof patchMemberSchema>;
+/** Corps attendu pour PUT /api/lol/teams/:teamId/logo. */
+export const uploadLogoSchema = z.object({
+  dataBase64: z.string().min(1, 'dataBase64 requis.'),
+  mime: z.enum(['image/png', 'image/jpeg', 'image/webp'], {
+    errorMap: () => ({ message: 'mime doit être image/png, image/jpeg ou image/webp.' }),
+  }),
+});
+
+export type UploadLogoInput = z.infer<typeof uploadLogoSchema>;
 export type TransferOwnerInput = z.infer<typeof transferOwnerSchema>;

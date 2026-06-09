@@ -6,6 +6,9 @@
 //   roster POST/DELETE  → requireCanManageRoster (owner | captain | manager | coach)
 //   members CRUD        → requireCanManageRoles  (owner | captain)
 //   transfer            → requireOwner           (owner strict)
+//   logo PUT/DELETE     → requireCanEditTeam    (owner | captain | manager)
+//   logo GET            → public
+//   player-stats GET    → requireAuth (tout membre authentifié)
 
 import { Router } from 'express';
 
@@ -28,6 +31,10 @@ import { addMemberHandler } from '../lol/teams/addMemberHandler.js';
 import { patchMemberHandler } from '../lol/teams/patchMemberHandler.js';
 import { removeMemberHandler } from '../lol/teams/removeMemberHandler.js';
 import { transferHandler } from '../lol/teams/transferHandler.js';
+import { uploadLogoHandler } from '../lol/teams/uploadLogoHandler.js';
+import { serveLogoHandler } from '../lol/teams/serveLogoHandler.js';
+import { deleteLogoHandler } from '../lol/teams/deleteLogoHandler.js';
+import { playerStatsHandler } from '../lol/teams/playerStatsHandler.js';
 
 const router = Router();
 
@@ -67,5 +74,19 @@ router.delete('/:teamId/members/:userId', requireAuth, requireCanManageRoles, re
 // --- Transfert de propriété ---
 // POST /api/lol/teams/:teamId/transfer           — owner strict uniquement
 router.post('/:teamId/transfer', requireAuth, requireOwner, transferHandler);
+
+// --- Logo d'équipe ---
+// PUT    /api/lol/teams/:teamId/logo  — upload / remplacement (owner | captain | manager)
+router.put('/:teamId/logo', requireAuth, requireCanEditTeam, uploadLogoHandler);
+
+// GET    /api/lol/teams/:teamId/logo  — serve le logo (public)
+router.get('/:teamId/logo', serveLogoHandler);
+
+// DELETE /api/lol/teams/:teamId/logo  — suppression (owner | captain | manager)
+router.delete('/:teamId/logo', requireAuth, requireCanEditTeam, deleteLogoHandler);
+
+// --- Stats joueurs du roster ---
+// GET /api/lol/teams/:teamId/player-stats — rang + top champions (auth requise)
+router.get('/:teamId/player-stats', requireAuth, playerStatsHandler);
 
 export default router;
