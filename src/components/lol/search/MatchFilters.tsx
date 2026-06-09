@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useTheme } from '../../../context/ThemeContext';
 import type { MatchFilters as Filters } from '../../../hooks/useMatchFilters';
 import type { QueueKind, RoleKind } from '../../../types/lolApi.types';
 
@@ -21,26 +22,28 @@ const ROLES: { v: RoleKind | 'all'; l: string }[] = [
   { v: 'MIDDLE', l: 'Mid' }, { v: 'BOTTOM', l: 'ADC' }, { v: 'UTILITY', l: 'Support' },
 ];
 
-/**
- * Fond SOLIDE (pas translucide) pour que le menu natif ne soit pas illisible
- * en mode sombre. colorScheme: 'dark' + style inline sur <option> couvrent
- * Chrome, Firefox et Safari.
- */
-const selectStyle: React.CSSProperties = {
-  fontFamily: 'Rajdhani, sans-serif',
-  background: 'var(--lol-bg-elevated)',
-  border: '1px solid var(--lol-border)',
-  color: 'var(--lol-text)',
-  colorScheme: 'dark',
-};
-
 const optionStyle: React.CSSProperties = {
   background: 'var(--lol-bg-elevated)',
   color: 'var(--lol-text)',
 };
 
-/** Barre de filtres compacte (selects) pour l'historique de matchs. */
+/**
+ * Barre de filtres compacte (selects) pour l'historique de matchs.
+ * Le colorScheme du <select> suit le thème courant pour que la liste native
+ * soit lisible aussi bien en clair qu'en sombre.
+ * Le fond solide --lol-bg-elevated (déjà thème-aware) complète le dispositif.
+ */
 export function MatchFilters({ filters, setFilter, champions }: MatchFiltersProps): React.JSX.Element {
+  const { theme } = useTheme();
+
+  const selectStyle: React.CSSProperties = {
+    fontFamily: 'Rajdhani, sans-serif',
+    background: 'var(--lol-bg-elevated)',
+    border: '1px solid var(--lol-border)',
+    color: 'var(--lol-text)',
+    colorScheme: theme === 'light' ? 'light' : 'dark',
+  };
+
   return (
     <div className="flex flex-wrap gap-2">
       <select

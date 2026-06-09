@@ -47,17 +47,21 @@ function HeaderSkeleton(): React.JSX.Element {
   );
 }
 
-/** Bloc squelette de MasteryStrip. */
-function MasterySkeleton(): React.JSX.Element {
+/** Carte squelette générique (colonne gauche). */
+function CardSkeleton({ rows, rowWidths }: { rows: number; rowWidths?: string[] }): React.JSX.Element {
   return (
-    <div className="rounded-md p-4" style={{ background: 'var(--lol-surface)', border: '1px solid var(--lol-border)' }}>
-      <SkeletonBar w="w-20" h="h-2" />
-      <div className="mt-3 flex gap-3">
-        {[0, 1, 2, 3, 4].map((i) => (
-          <div key={i} className="flex flex-col items-center gap-1">
-            <div className="h-12 w-12 rounded-md animate-pulse" style={{ background: 'var(--lol-border)', animationDelay: `${i * 0.07}s` }} />
-            <SkeletonBar w="w-10" h="h-2" />
-            <SkeletonBar w="w-8" h="h-2" />
+    <div
+      className="rounded-md p-4 flex flex-col gap-3"
+      style={{ background: 'var(--lol-surface)', border: '1px solid var(--lol-border)' }}
+    >
+      <SkeletonBar w="w-24" h="h-2" />
+      <div className="flex flex-col gap-2">
+        {Array.from({ length: rows }).map((_, i) => (
+          <div key={i} className="flex items-center gap-2 rounded px-2 py-1.5"
+            style={{ background: 'var(--lol-bg-elevated)' }}
+          >
+            <div className="h-8 w-8 rounded animate-pulse shrink-0" style={{ background: 'var(--lol-border)' }} />
+            <SkeletonBar w={rowWidths?.[i % rowWidths.length] ?? 'w-full'} h="h-2" />
           </div>
         ))}
       </div>
@@ -72,7 +76,10 @@ function MatchRowSkeleton({ delay }: { delay: number }): React.JSX.Element {
       className="flex items-center gap-4 rounded-md p-3"
       style={{ background: 'var(--lol-surface)', borderLeft: '3px solid var(--lol-border)' }}
     >
-      <div className="h-11 w-11 rounded-md animate-pulse shrink-0" style={{ background: 'var(--lol-border)', animationDelay: `${delay}s` }} />
+      <div
+        className="h-11 w-11 rounded-md animate-pulse shrink-0"
+        style={{ background: 'var(--lol-border)', animationDelay: `${delay}s` }}
+      />
       <div className="flex-1 flex flex-col gap-2">
         <SkeletonBar w="w-24" h="h-3" />
         <SkeletonBar w="w-32" h="h-2" />
@@ -81,28 +88,58 @@ function MatchRowSkeleton({ delay }: { delay: number }): React.JSX.Element {
         <SkeletonBar w="w-16" h="h-3" />
         <SkeletonBar w="w-24" h="h-2" />
       </div>
-      <div className="h-5 w-6 rounded-sm animate-pulse" style={{ background: 'var(--lol-border)', animationDelay: `${delay}s` }} />
+      <div
+        className="h-5 w-6 rounded-sm animate-pulse"
+        style={{ background: 'var(--lol-border)', animationDelay: `${delay}s` }}
+      />
+    </div>
+  );
+}
+
+/** Squelette de la barre de filtres (MatchFilters). */
+function FilterBarSkeleton(): React.JSX.Element {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {[0, 1, 2, 3].map((i) => (
+        <div
+          key={i}
+          className="h-7 rounded-md animate-pulse"
+          style={{ background: 'var(--lol-surface)', border: '1px solid var(--lol-border)', width: i === 3 ? '140px' : '120px' }}
+        />
+      ))}
     </div>
   );
 }
 
 /**
- * Skeleton complet de la page profil : ProfileHeader + MasteryStrip + liste de matchs.
- * Calqué sur la structure de ProfileView pour une transition naturelle.
+ * Skeleton complet calqué sur le layout 2 colonnes de ProfileView :
+ * en-tête pleine largeur, puis lg:grid-cols-[320px_1fr].
+ * Gauche : classement, champions récents, maîtrise, winrate 7j.
+ * Droite : titre + filtres + 6 lignes de matchs.
  */
 export function LolProfileSkeleton(): React.JSX.Element {
   return (
-    <div className="flex flex-col gap-6" aria-busy="true" aria-label="Chargement du profil">
+    <div className="flex flex-col gap-4" aria-busy="true" aria-label="Chargement du profil">
       <HeaderSkeleton />
-      <MasterySkeleton />
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[300px_1fr]">
-        {/* Filtres squelette */}
-        <div className="rounded-md p-4 flex flex-col gap-3" style={{ background: 'var(--lol-surface)', border: '1px solid var(--lol-border)' }}>
-          {[0, 1, 2, 3].map((i) => <SkeletonBar key={i} w={i % 2 === 0 ? 'w-full' : 'w-3/4'} />)}
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[320px_1fr]">
+        {/* Colonne gauche */}
+        <div className="flex flex-col gap-4">
+          <CardSkeleton rows={2} rowWidths={['w-3/4', 'w-2/3']} />
+          <CardSkeleton rows={5} rowWidths={['w-full', 'w-4/5', 'w-3/4', 'w-4/5', 'w-full']} />
+          <CardSkeleton rows={5} rowWidths={['w-full', 'w-4/5', 'w-3/4', 'w-2/3', 'w-4/5']} />
+          <CardSkeleton rows={3} rowWidths={['w-full', 'w-3/4', 'w-2/3']} />
         </div>
-        {/* Matchs squelette */}
-        <div className="flex flex-col gap-2">
-          {[0, 1, 2, 3, 4, 5].map((i) => <MatchRowSkeleton key={i} delay={i * 0.05} />)}
+
+        {/* Colonne droite */}
+        <div className="flex flex-col gap-3">
+          <SkeletonBar w="w-32" h="h-2" />
+          <FilterBarSkeleton />
+          <div className="flex flex-col gap-2">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <MatchRowSkeleton key={i} delay={i * 0.05} />
+            ))}
+          </div>
         </div>
       </div>
     </div>
