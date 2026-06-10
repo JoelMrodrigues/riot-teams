@@ -26,8 +26,19 @@ export function winrateColor(wr: number): string {
 /** Tiers sans division (apex) : on n'affiche pas le chiffre romain. */
 const APEX = new Set(['MASTER', 'GRANDMASTER', 'CHALLENGER']);
 
-/** Label lisible : "Master", "Diamond II"… */
-export function formatRank(tier: string, rank: string): string {
-  const t = tier.charAt(0).toUpperCase() + tier.slice(1).toLowerCase();
-  return APEX.has(tier.toUpperCase()) ? t : `${t} ${rank}`;
+/** Abréviations des tiers longs (pour ne pas casser la mise en page des cartes). */
+const TIER_SHORT: Record<string, string> = {
+  IRON: 'Iron', BRONZE: 'Bronze', SILVER: 'Silver', GOLD: 'Gold',
+  PLATINUM: 'Plat', EMERALD: 'Emer', DIAMOND: 'Diam',
+  MASTER: 'Master', GRANDMASTER: 'GM', CHALLENGER: 'Chall',
+};
+
+/**
+ * Label de rang en forme courte : "GM", "Chall", "Diam II", "Plat IV"…
+ * Apex (Master/GM/Chall) sans division.
+ */
+export function formatRankShort(tier: string, rank: string): string {
+  const up = tier.toUpperCase();
+  const t = TIER_SHORT[up] ?? (tier.charAt(0).toUpperCase() + tier.slice(1).toLowerCase());
+  return APEX.has(up) ? t : `${t} ${rank}`;
 }

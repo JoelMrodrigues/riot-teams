@@ -5,44 +5,58 @@ import { LolNavLinks } from './LolNavLinks';
 import { BrandLogo } from '../../layout/BrandLogo';
 import { HeaderActions } from '../../layout/HeaderActions';
 
-/** Header dédié à l'écosystème LoL : retour accueil global + nav + thème. */
+/**
+ * Header dédié à l'écosystème LoL : retour accueil global + nav + thème.
+ * Responsive : sur mobile la nav passe en barre horizontale scrollable
+ * sous la barre principale (logo + actions restent sur une ligne).
+ */
 export function LolHeader(): React.JSX.Element {
+  const barStyle: React.CSSProperties = {
+    borderBottom: '1px solid var(--lol-border)',
+    background: 'var(--lol-header)',
+    backdropFilter: 'blur(16px)',
+    WebkitBackdropFilter: 'blur(16px)',
+  };
+
   return (
-    <header
-      className="relative z-50 flex items-center justify-between px-8 flex-shrink-0"
-      style={{
-        height: '60px',
-        borderBottom: '1px solid var(--lol-border)',
-        background: 'var(--lol-header)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-      }}
-    >
-      {/* Gauche — logo + retour multi-jeux */}
-      <Link to="/" className="flex items-center gap-3 w-48 group">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="opacity-50 group-hover:opacity-90 transition-opacity">
-          <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <BrandLogo
-          size={24}
-          radius="md"
-          gradient="linear-gradient(135deg, var(--lol-violet-strong), var(--lol-violet-soft))"
-        />
-        <span
-          className="text-sm font-bold tracking-widest uppercase"
-          style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-violet-soft)' }}
-        >
-          League
-        </span>
-      </Link>
+    <div className="relative z-50 flex-shrink-0">
+      <header
+        className="flex items-center justify-between gap-2 px-4 sm:px-6 lg:px-8"
+        style={{ height: '60px', ...barStyle }}
+      >
+        {/* Gauche — logo + retour multi-jeux */}
+        <Link to="/" className="group flex min-w-0 items-center gap-2 sm:gap-3">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="flex-shrink-0 opacity-50 transition-opacity group-hover:opacity-90">
+            <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <BrandLogo
+            size={24}
+            radius="md"
+            gradient="linear-gradient(135deg, var(--lol-violet-strong), var(--lol-violet-soft))"
+          />
+          <span
+            className="hidden text-sm font-bold uppercase tracking-widest sm:inline"
+            style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-violet-soft)' }}
+          >
+            League
+          </span>
+        </Link>
 
-      {/* Centre — navigation */}
-      <LolNavLinks />
+        {/* Centre — navigation (desktop) */}
+        <div className="hidden md:flex md:h-full">
+          <LolNavLinks />
+        </div>
 
-      {/* Droite — thème + auth */}
-      <div className="flex items-center justify-end gap-3 w-48">
-        <HeaderActions />
+        {/* Droite — thème + auth */}
+        <div className="flex flex-shrink-0 items-center justify-end gap-2 sm:gap-3">
+          <HeaderActions />
+        </div>
+      </header>
+
+      {/* Navigation mobile — barre scrollable sous le header */}
+      <div className="md:hidden" style={barStyle}>
+        <LolNavLinks mobile />
       </div>
-    </header>
+    </div>
   );
 }

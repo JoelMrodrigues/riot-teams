@@ -20,16 +20,26 @@ export function TopChampionsModal({ isOpen, onClose, matches }: TopChampionsModa
 
   return (
     <BaseModal isOpen={isOpen} onClose={onClose} maxWidth="max-w-lg" panelStyle={vars}>
-      <div>
-        <h2
-          className="text-lg font-bold uppercase tracking-widest"
-          style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-text)' }}
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <h2
+            className="text-lg font-bold uppercase tracking-widest"
+            style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-text)' }}
+          >
+            Top champions
+          </h2>
+          <p className="mt-0.5 text-xs" style={{ color: 'var(--lol-text-muted)' }}>
+            Sur les {matches.length} dernières parties chargées
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="btn btn-text btn-sm text-lg leading-none"
+          aria-label="Fermer"
         >
-          Top champions
-        </h2>
-        <p className="mt-0.5 text-xs" style={{ color: 'var(--lol-text-muted)' }}>
-          Sur les {matches.length} dernières parties chargées
-        </p>
+          ✕
+        </button>
       </div>
 
       <div className="flex flex-col gap-2 mt-4">

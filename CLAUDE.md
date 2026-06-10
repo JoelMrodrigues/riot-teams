@@ -112,3 +112,11 @@ Le projet étant massif, la base de données doit refléter fidèlement l'indép
 * **Toujours activer RLS :** Chaque table créée doit être accompagnée de ses politiques de sécurité (Row Level Security) : qui peut lire, qui peut modifier (ex: seul le capitaine de `lol_teams` peut modifier son équipe).
 * **Clés étrangères (Foreign Keys) :** Assure toujours l'intégrité référentielle avec des `ON DELETE CASCADE` ou `ON DELETE SET NULL` appropriés pour éviter les données orphelines.
 * **Historisation :** Ajoute systématiquement les colonnes `created_at` et `updated_at` (avec un trigger d'auto-update si nécessaire) sur toutes les tables.
+
+---
+
+## 7. Standards UI / UX (obligatoires)
+
+* **Modals — fermeture :** toute modale DOIT être fermable de **3 façons** : (1) une **croix (✕)** visible en haut à droite, (2) un **clic sur l'arrière-plan** (overlay), (3) la touche **Échap**. Utiliser systématiquement le composant partagé `BaseModal` (`src/components/ui/BaseModal.tsx`) qui gère déjà l'overlay + Échap ; il reste à ajouter la croix dans l'en-tête de chaque modale.
+* **Responsive 100 % :** chaque page, composant et modale DOIT être **mobile-first** et rester utilisable de **320 px** à grand écran : aucun débordement horizontal, cibles tactiles ≥ 40 px, textes lisibles, grilles qui se réorganisent (1 colonne sur mobile). Vérifier au moins un point mobile (~375 px) et un point desktop avant de valider une UI.
+* **Rangs LoL — forme courte :** sur les cartes, afficher les tiers longs en abrégé pour ne pas casser la mise en page — GM (Grandmaster), Chall (Challenger), Plat, Emer, Diam… via `formatRankShort` (`src/utils/lolRank.ts`).
