@@ -13,6 +13,9 @@ import { LolTeamsHomePage } from '../pages/lol/LolTeamsHomePage';
 import { LolTeamLayout } from '../pages/lol/team/LolTeamLayout';
 import { LolTeamOverviewPage } from '../pages/lol/team/LolTeamOverviewPage';
 import { LolTeamMembersPage } from '../pages/lol/team/LolTeamMembersPage';
+import { LolTeamScrimsPage } from '../pages/lol/team/LolTeamScrimsPage';
+import { LolTeamStatsPage } from '../pages/lol/team/LolTeamStatsPage';
+import { LolTeamCalendarPage } from '../pages/lol/team/LolTeamCalendarPage';
 import { LolStatsPage } from '../pages/lol/LolStatsPage';
 import { LolPlayerRedirect } from '../components/lol/LolPlayerRedirect';
 
@@ -44,6 +47,9 @@ export function AppRouter(): React.JSX.Element {
           <Route path="team/:teamId" element={<LolTeamLayout />}>
             <Route index element={<LolTeamOverviewPage />} />
             <Route path="membres" element={<LolTeamMembersPage />} />
+            <Route path="scrims" element={<LolTeamScrimsPage />} />
+            <Route path="stats" element={<LolTeamStatsPage />} />
+            <Route path="calendrier" element={<LolTeamCalendarPage />} />
           </Route>
         </Route>
 
