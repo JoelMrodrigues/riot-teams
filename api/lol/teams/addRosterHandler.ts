@@ -8,6 +8,7 @@ import type { Request, Response } from 'express';
 
 import { withTransaction } from '../../_core/db.js';
 import { addRosterSchema } from './validation.js';
+import { toRosterPublic } from './rosterMapper.js';
 import type { RosterRow } from './types.js';
 
 interface UserConnectionRow {
@@ -22,7 +23,10 @@ export async function addRosterHandler(req: Request, res: Response): Promise<voi
   }
 
   const { teamId } = req.params as { teamId: string };
-  const { game_name, tag_line, user_id, role_in_game } = parsed.data;
+  const {
+    game_name, tag_line, user_id, role_in_game,
+    display_name, region, secondary_game_name, secondary_tag_line, is_substitute,
+  } = parsed.data;
 
   try {
     const entry = await withTransaction(async (q) => {
@@ -32,10 +36,16 @@ export async function addRosterHandler(req: Request, res: Response): Promise<voi
 
       // 2. Insère l'entrée roster. user_id explicite si fourni, sinon on tentera l'auto-lien.
       const { rows } = await q<RosterRow>(
-        `INSERT INTO lol_rosters (team_id, user_id, game_name, tag_line, role_in_game)
-         VALUES ($1, $2, $3, $4, $5)
+        `INSERT INTO lol_rosters
+           (team_id, user_id, game_name, tag_line, role_in_game,
+            display_name, region, secondary_game_name, secondary_tag_line, is_substitute)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
          RETURNING *`,
-        [teamId, user_id ?? null, game_name, tag_line, role_in_game ?? null],
+        [
+          teamId, user_id ?? null, game_name, tag_line, role_in_game ?? null,
+          display_name ?? null, region ?? null,
+          secondary_game_name ?? null, secondary_tag_line ?? null, is_substitute ?? false,
+        ],
       );
       const roster = rows[0];
       if (!roster) throw new Error('Entrée roster non créée.');
@@ -77,15 +87,7 @@ export async function addRosterHandler(req: Request, res: Response): Promise<voi
       return;
     }
 
-    res.status(201).json({
-      id: entry.id,
-      gameName: entry.game_name,
-      tagLine: entry.tag_line,
-      puuid: entry.puuid,
-      roleInGame: entry.role_in_game,
-      userId: entry.user_id,
-      addedAt: entry.created_at,
-    });
+    res.status(201).json(toRosterPublic(entry));
   } catch (err) {
     // Violation de la contrainte UNIQUE (team_id, game_name, tag_line).
     if (err instanceof Error && err.message.includes('lol_rosters_riot_id_per_team_unique')) {

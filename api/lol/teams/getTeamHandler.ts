@@ -6,6 +6,7 @@ import type { Request, Response } from 'express';
 
 import { query } from '../../_core/db.js';
 import { getTeamRole } from './teamAuth.js';
+import { toRosterPublic } from './rosterMapper.js';
 import type { TeamRow, MemberRole, RosterRow, TeamDetailResponse } from './types.js';
 
 interface MemberWithPseudo {
@@ -60,15 +61,7 @@ export async function getTeamHandler(req: Request, res: Response): Promise<void>
     createdAt: team.created_at.toISOString(),
     updatedAt: team.updated_at.toISOString(),
     members: members.map((m) => ({ userId: m.user_id, pseudo: m.pseudo, role: m.role })),
-    roster: roster.map((r) => ({
-      id: r.id,
-      gameName: r.game_name,
-      tagLine: r.tag_line,
-      puuid: r.puuid,
-      roleInGame: r.role_in_game,
-      userId: r.user_id,
-      addedAt: r.created_at.toISOString(),
-    })),
+    roster: roster.map(toRosterPublic),
     myRole,
   };
 

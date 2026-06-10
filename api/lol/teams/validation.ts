@@ -71,6 +71,11 @@ export const addRosterSchema = z.object({
   tag_line: z.string().min(1, 'tag_line requis.').max(8),
   user_id: z.string().uuid('user_id doit être un UUID valide.').optional(),
   role_in_game: z.enum(LOL_ROLES).optional(),
+  display_name: z.string().max(64).optional(),
+  region: z.enum(LOL_REGIONS).optional(),
+  secondary_game_name: z.string().max(64).optional(),
+  secondary_tag_line: z.string().max(8).optional(),
+  is_substitute: z.boolean().optional(),
 });
 
 /** Corps attendu pour POST /api/lol/teams/:teamId/members. */

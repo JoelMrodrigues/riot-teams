@@ -8,13 +8,15 @@ import type { TeamRow, MemberRole } from './types.js';
 
 interface TeamWithRole extends TeamRow {
   my_role: MemberRole;
+  has_logo: boolean;
 }
 
 export async function listTeamsHandler(req: Request, res: Response): Promise<void> {
   const userId = req.user!.sub;
 
   const { rows } = await query<TeamWithRole>(
-    `SELECT t.*, m.role AS my_role
+    `SELECT t.*, m.role AS my_role,
+            EXISTS (SELECT 1 FROM lol_team_logos l WHERE l.team_id = t.id) AS has_logo
      FROM lol_teams t
      INNER JOIN lol_team_members m
        ON m.team_id = t.id AND m.user_id = $1
@@ -32,6 +34,7 @@ export async function listTeamsHandler(req: Request, res: Response): Promise<voi
     icon: t.icon_kind ? { kind: t.icon_kind, value: t.icon_value } : null,
     ownerId: t.owner_id,
     myRole: t.my_role,
+    hasLogo: t.has_logo,
     createdAt: t.created_at,
     updatedAt: t.updated_at,
   }));

@@ -37,6 +37,11 @@ export interface RosterRow {
   tag_line: string;
   puuid: string | null;
   role_in_game: string | null;
+  display_name: string | null;
+  region: string | null;
+  secondary_game_name: string | null;
+  secondary_tag_line: string | null;
+  is_substitute: boolean;
   created_at: Date;
   updated_at: Date;
 }
@@ -62,6 +67,11 @@ export interface RosterPublic {
   tagLine: string;
   puuid: string | null;
   roleInGame: string | null;
+  displayName: string | null;
+  region: string | null;
+  secondaryGameName: string | null;
+  secondaryTagLine: string | null;
+  isSubstitute: boolean;
   userId: string | null;
   addedAt: string;
 }
