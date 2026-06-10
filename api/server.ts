@@ -8,6 +8,7 @@ import { CONFIG } from './_core/config';
 import { RiotError } from './_core/riotClient';
 import accountRoutes from './routes/accountRoutes';
 import lolRoutes from './routes/lolRoutes';
+import lolExtraRoutes from './routes/lolExtraRoutes';
 import authRoutes from './routes/authRoutes';
 import lolTeamsRoutes from './routes/lolTeamsRoutes';
 import usersRoutes from './routes/usersRoutes';
@@ -24,6 +25,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api', accountRoutes);
 app.use('/api/lol', lolRoutes);
+app.use('/api/lol', lolExtraRoutes);
 app.use('/api/lol/teams', lolTeamsRoutes);
 app.use('/api/users', usersRoutes);
 
