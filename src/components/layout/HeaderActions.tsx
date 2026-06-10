@@ -57,7 +57,7 @@ export function HeaderActions({ buttonSize = 'sm' }: HeaderActionsProps): React.
         className={btnClass}
         onClick={() => navigate('/login')}
       >
-        Sign In
+        Connexion
       </button>
     </>
   );
