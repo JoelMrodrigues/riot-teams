@@ -1,8 +1,7 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import { HomePage } from '../pages/HomePage';
-import { TeamsPage } from '../pages/TeamsPage';
 import { LoginPage } from '../pages/auth/LoginPage';
 import { RegisterPage } from '../pages/auth/RegisterPage';
 
@@ -31,7 +30,8 @@ export function AppRouter(): React.JSX.Element {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/teams" element={<TeamsPage />} />
+        {/* Ancien hub multi-jeux supprimé → redirige vers les équipes LoL. */}
+        <Route path="/teams" element={<Navigate to="/lol/teams" replace />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 

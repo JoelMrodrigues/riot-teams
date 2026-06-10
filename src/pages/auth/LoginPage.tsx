@@ -35,8 +35,9 @@ export function LoginPage(): React.JSX.Element {
   const [apiError, setApiError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
 
-  // Redirige vers la page d'origine ou l'accueil après connexion.
-  const from = (location.state as { from?: string } | null)?.from ?? '/';
+  // Redirige après connexion : ?redirect=… (prioritaire) > state.from > accueil.
+  const redirectParam = new URLSearchParams(location.search).get('redirect');
+  const from = redirectParam ?? (location.state as { from?: string } | null)?.from ?? '/';
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
