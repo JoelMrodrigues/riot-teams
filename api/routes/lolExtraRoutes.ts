@@ -13,7 +13,7 @@ import { getMatchTimeline } from '../lol/matches/getMatchTimeline';
 import { getTopMastery } from '../lol/mastery/getTopMastery';
 import { getMasteryScore } from '../lol/mastery/getMasteryScore';
 import { getMasteryByChampion } from '../lol/mastery/getMasteryByChampion';
-import { getApexLeague } from '../lol/ranked/getApexLeague';
+import { buildLeaderboard } from '../lol/ranked/buildLeaderboard';
 import type { ApexTier } from '../lol/ranked/apexTypes';
 
 const router = Router();
@@ -77,7 +77,8 @@ router.get('/leaderboard', async (req, res) => {
     return;
   }
   const queue = String(req.query.queue ?? 'RANKED_SOLO_5x5');
-  res.json(await getApexLeague(tier as ApexTier, queue));
+  const count = Math.min(Math.max(Number(req.query.count ?? 20), 1), 50);
+  res.json(await buildLeaderboard(tier as ApexTier, queue, count));
 });
 
 export default router;
