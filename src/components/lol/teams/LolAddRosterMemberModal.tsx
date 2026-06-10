@@ -1,106 +1,117 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { BaseModal } from '../../ui/BaseModal';
+import { LolAddRosterFields } from './LolAddRosterFields';
 import { useLolTheme } from '../../../hooks/useLolTheme';
-import { parseRiotId, RIOT_ID_ERROR } from '../../../utils/riotId';
+import { parseRiotId } from '../../../utils/riotId';
+import type { AddRosterFormState } from './LolAddRosterFields';
+import type { LolRegion } from '../../../types/team.types';
+import type { LolAddRosterMemberBody } from '../../../types/lolTeam.types';
 
 interface LolAddRosterMemberModalProps {
-  isOpen:  boolean;
-  onClose: () => void;
-  onAdd:   (gameName: string, tagLine: string) => Promise<void>;
+  isOpen:        boolean;
+  onClose:       () => void;
+  onAdd:         (body: LolAddRosterMemberBody) => Promise<void>;
+  defaultRegion?: LolRegion;
 }
 
-/**
- * Modal d'ajout d'un joueur au roster LoL via Riot ID.
- * Remplace AddPlayerModal (générique) pour brancher l'API backend.
- */
+const initialState = (region: LolRegion): AddRosterFormState => ({
+  displayName: '', riotId: '', region, secondaryRiotId: '', role: null, isSub: false,
+});
+
+/** Modal d'ajout d'un joueur au roster LoL (formulaire complet : identité + rôle/profil). */
 export function LolAddRosterMemberModal({
-  isOpen,
-  onClose,
-  onAdd,
+  isOpen, onClose, onAdd, defaultRegion = 'EUW',
 }: LolAddRosterMemberModalProps): React.JSX.Element {
   const { vars }                    = useLolTheme();
-  const [input, setInput]           = useState('');
-  const [error, setError]           = useState<string | null>(null);
+  const [state, setState]           = useState<AddRosterFormState>(initialState(defaultRegion));
+  const [errors, setErrors]         = useState<Partial<Record<'displayName' | 'riotId', string>>>({});
+  const [apiError, setApiError]     = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const nameTouched = useRef(false);
 
   useEffect(() => {
-    if (!isOpen) { setInput(''); setError(null); setSubmitting(false); }
-  }, [isOpen]);
+    if (!isOpen) {
+      setState(initialState(defaultRegion));
+      setErrors({}); setApiError(null); setSubmitting(false);
+      nameTouched.current = false;
+    }
+  }, [isOpen, defaultRegion]);
+
+  const patch = (p: Partial<AddRosterFormState>) => {
+    if ('displayName' in p) nameTouched.current = true;
+    // Auto-remplit le Nom depuis le Riot ID tant qu'il n'a pas été édité manuellement.
+    if ('riotId' in p && !nameTouched.current) {
+      const game = p.riotId!.split('#')[0]?.trim() ?? '';
+      setState((s) => ({ ...s, ...p, displayName: game }));
+    } else {
+      setState((s) => ({ ...s, ...p }));
+    }
+    setApiError(null);
+  };
 
   const handleSubmit = async () => {
-    const parsed = parseRiotId(input);
-    if (!parsed) { setError(RIOT_ID_ERROR); return; }
+    const parsed = parseRiotId(state.riotId);
+    const nextErrors: typeof errors = {};
+    if (!state.displayName.trim()) nextErrors.displayName = 'Nom requis.';
+    if (!parsed) nextErrors.riotId = 'Format requis : NomJoueur#TAG';
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0 || !parsed) return;
+
+    const secondary = state.secondaryRiotId.trim() ? parseRiotId(state.secondaryRiotId) : null;
+    const body: LolAddRosterMemberBody = {
+      game_name: parsed.gameName,
+      tag_line: parsed.tagLine,
+      display_name: state.displayName.trim(),
+      region: state.region,
+      role_in_game: state.role ?? undefined,
+      is_substitute: state.isSub,
+      secondary_game_name: secondary?.gameName,
+      secondary_tag_line: secondary?.tagLine,
+    };
 
     setSubmitting(true);
-    setError(null);
     try {
-      await onAdd(parsed.gameName, parsed.tagLine);
+      await onAdd(body);
       onClose();
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Erreur lors de l'ajout.");
+      setApiError(err instanceof Error ? err.message : "Erreur lors de l'ajout.");
       setSubmitting(false);
     }
   };
 
   return (
-    <BaseModal isOpen={isOpen} onClose={onClose} panelStyle={vars}>
-      <div className="flex items-center justify-between">
-        <h2
-          className="text-xl font-bold uppercase tracking-widest"
-          style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-text)' }}
+    <BaseModal isOpen={isOpen} onClose={onClose} maxWidth="max-w-2xl" noPadding panelStyle={vars}>
+      <div className="flex max-h-[90vh] flex-col" style={{ background: 'var(--bg-modal)' }}>
+        <div
+          className="flex items-center justify-between px-6 py-4"
+          style={{ borderBottom: '1px solid var(--lol-border)' }}
         >
-          Ajouter un joueur
-        </h2>
-        <button onClick={onClose} className="btn btn-text btn-sm text-lg leading-none" aria-label="Fermer">
-          ✕
-        </button>
-      </div>
+          <h2 className="text-xl font-bold uppercase tracking-widest" style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-text)' }}>
+            Ajouter un joueur
+          </h2>
+          <button onClick={onClose} className="btn btn-text btn-sm text-lg leading-none" aria-label="Fermer">✕</button>
+        </div>
 
-      <div className="flex flex-col gap-2">
-        <label
-          htmlFor="lol-add-player-input"
-          className="text-xs uppercase tracking-widest"
-          style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-text-muted)' }}
-        >
-          Riot ID
-        </label>
-        <input
-          id="lol-add-player-input"
-          type="text"
-          value={input}
-          onChange={(e) => { setInput(e.target.value); setError(null); }}
-          onKeyDown={(e) => { if (e.key === 'Enter') { void handleSubmit(); } }}
-          placeholder="NomJoueur#TAG"
-          autoFocus
-          autoComplete="off"
-          spellCheck={false}
-          className="rounded-sm px-4 py-3 text-sm outline-none transition-colors"
-          style={{
-            background: 'var(--bg-elevated)',
-            border: '1px solid var(--border-default)',
-            color: 'var(--lol-text)',
-            fontFamily: 'Inter, sans-serif',
-          }}
-          onFocus={(e) => (e.target.style.borderColor = 'var(--lol-violet)')}
-          onBlur={(e)  => (e.target.style.borderColor = 'var(--border-default)')}
-        />
-        {error && (
-          <p className="text-xs" style={{ fontFamily: 'Inter, sans-serif', color: 'var(--danger)' }}>
-            {error}
-          </p>
-        )}
-      </div>
+        <div className="overflow-y-auto px-6 py-5">
+          <LolAddRosterFields state={state} errors={errors} patch={patch} />
+          {apiError && (
+            <p className="mt-3 text-xs" style={{ fontFamily: 'Inter, sans-serif', color: 'var(--danger)' }}>{apiError}</p>
+          )}
+        </div>
 
-      <button
-        type="button"
-        onClick={() => { void handleSubmit(); }}
-        disabled={submitting}
-        className="btn btn-solid btn-md w-full justify-center disabled:opacity-60"
-        style={{ background: 'var(--lol-violet)', color: '#fff' }}
-      >
-        {submitting ? 'Ajout…' : 'Ajouter au roster'}
-      </button>
+        <div className="px-6 py-4" style={{ borderTop: '1px solid var(--lol-border)' }}>
+          <button
+            type="button"
+            onClick={() => { void handleSubmit(); }}
+            disabled={submitting}
+            className="btn btn-solid btn-md w-full justify-center disabled:opacity-60"
+            style={{ background: 'var(--lol-violet)', color: '#fff' }}
+          >
+            {submitting ? 'Ajout…' : 'Ajouter au roster'}
+          </button>
+        </div>
+      </div>
     </BaseModal>
   );
 }

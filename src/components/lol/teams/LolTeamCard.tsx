@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -7,6 +7,7 @@ import { LOL_EMBLEMS } from '../../../data/lolEmblems.data';
 import { resolveAccent } from '../../../data/lolTeamAccents.data';
 import { GAMES_DATA } from '../../../data/games.data';
 import { roleLabelFr } from '../../../utils/lolTeamRole';
+import { teamLogoUrl } from '../../../services/lolPlayerStatsApi';
 import type { LolApiTeam } from '../../../types/lolTeam.types';
 
 interface LolTeamCardProps {
@@ -21,12 +22,27 @@ export function LolTeamCard({ team, memberCount = 0 }: LolTeamCardProps): React.
   const game       = GAMES_DATA.find((g) => g.id === 'lol')!;
   const accent     = resolveAccent(team.accentColor ?? undefined);
   const maxMembers = game.maxMembers;
+  const [logoError, setLogoError] = useState(false);
 
   const createdDate = new Date(team.createdAt).toLocaleDateString('fr-FR', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
 
   const renderIcon = () => {
+    if (team.hasLogo && !logoError) {
+      return (
+        <img
+          src={teamLogoUrl(team.id)}
+          alt={`Logo ${team.name}`}
+          width={40}
+          height={40}
+          loading="lazy"
+          onError={() => setLogoError(true)}
+          className="h-10 w-10 rounded-sm object-cover"
+          style={{ border: `1px solid ${accent}40` }}
+        />
+      );
+    }
     if (team.icon?.kind === 'champion') {
       return <ChampionAvatar champKey={team.icon.value} label={team.icon.value} size={40} ring={accent} />;
     }

@@ -4,16 +4,18 @@ import { BaseModal } from '../../ui/BaseModal';
 import { useLolTheme } from '../../../hooks/useLolTheme';
 import { LolTeamPreview } from './LolTeamPreview';
 import { LolTeamFormFields } from './LolTeamFormFields';
+import { LolCreateLogoField } from './LolCreateLogoField';
 import { resolveAccent, DEFAULT_ACCENT_KEY } from '../../../data/lolTeamAccents.data';
 import type { LolRegion } from '../../../types/team.types';
 import type { LolCreateTeamBody } from '../../../types/lolTeam.types';
 import type { LolTeamFormState, LolTeamFormErrors } from './LolTeamFormFields';
+import type { ResizedImage } from '../../../utils/resizeImage';
 
 interface LolCreateTeamModalProps {
   isOpen:   boolean;
   onClose:  () => void;
-  /** Peut être async — la modal gère l'état de soumission. */
-  onCreate: (body: LolCreateTeamBody) => Promise<void>;
+  /** Peut être async — la modal gère l'état de soumission. Le logo (optionnel) est uploadé après création. */
+  onCreate: (body: LolCreateTeamBody, logo?: ResizedImage) => Promise<void>;
 }
 
 const INITIAL_STATE: LolTeamFormState = {
@@ -40,6 +42,7 @@ function validate(state: LolTeamFormState): LolTeamFormErrors {
 export function LolCreateTeamModal({ isOpen, onClose, onCreate }: LolCreateTeamModalProps): React.JSX.Element {
   const { vars }   = useLolTheme();
   const [formState, setFormState] = useState<LolTeamFormState>(INITIAL_STATE);
+  const [logo, setLogo]           = useState<ResizedImage | null>(null);
   const [errors, setErrors]       = useState<LolTeamFormErrors>({});
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -48,6 +51,7 @@ export function LolCreateTeamModal({ isOpen, onClose, onCreate }: LolCreateTeamM
   useEffect(() => {
     if (!isOpen) {
       setFormState(INITIAL_STATE);
+      setLogo(null);
       setErrors({});
       setSubmitted(false);
       setSubmitting(false);
@@ -80,7 +84,7 @@ export function LolCreateTeamModal({ isOpen, onClose, onCreate }: LolCreateTeamM
     setSubmitting(true);
     setApiError(null);
     try {
-      await onCreate(body);
+      await onCreate(body, logo ?? undefined);
     } catch (err: unknown) {
       setApiError(err instanceof Error ? err.message : 'Erreur lors de la création.');
       setSubmitting(false);
@@ -123,6 +127,9 @@ export function LolCreateTeamModal({ isOpen, onClose, onCreate }: LolCreateTeamM
 
         <div className="overflow-y-auto px-6 py-5">
           <LolTeamFormFields state={formState} errors={errors} onChange={handleChange} />
+          <div className="mt-4">
+            <LolCreateLogoField value={logo} onChange={setLogo} />
+          </div>
           {apiError && (
             <p className="mt-3 text-xs" style={{ fontFamily: 'Inter, sans-serif', color: 'var(--danger)' }}>
               {apiError}

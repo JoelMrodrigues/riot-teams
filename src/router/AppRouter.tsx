@@ -10,7 +10,9 @@ import { LolLayout } from '../components/lol/layout/LolLayout';
 import { LolHomePage } from '../pages/lol/LolHomePage';
 import { LolSearchPage } from '../pages/lol/LolSearchPage';
 import { LolTeamsHomePage } from '../pages/lol/LolTeamsHomePage';
-import { LolTeamDetailPage } from '../pages/lol/LolTeamDetailPage';
+import { LolTeamLayout } from '../pages/lol/team/LolTeamLayout';
+import { LolTeamOverviewPage } from '../pages/lol/team/LolTeamOverviewPage';
+import { LolTeamMembersPage } from '../pages/lol/team/LolTeamMembersPage';
 import { LolStatsPage } from '../pages/lol/LolStatsPage';
 import { LolPlayerRedirect } from '../components/lol/LolPlayerRedirect';
 
@@ -39,7 +41,10 @@ export function AppRouter(): React.JSX.Element {
            * → une seule expérience profil, cohérente, dans la coquille LoL.
            */}
           <Route path="player/:gameName/:tagLine" element={<LolPlayerRedirect />} />
-          <Route path="team/:teamId" element={<LolTeamDetailPage />} />
+          <Route path="team/:teamId" element={<LolTeamLayout />}>
+            <Route index element={<LolTeamOverviewPage />} />
+            <Route path="membres" element={<LolTeamMembersPage />} />
+          </Route>
         </Route>
 
         <Route path="/valorant" element={<GameLandingPage gameId="valorant" />} />

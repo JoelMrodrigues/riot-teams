@@ -27,6 +27,14 @@ export interface LolApiRosterMember {
   tagLine: string;
   puuid: string | null;
   roleInGame: string | null;
+  /** Surnom du joueur dans l'équipe (libre). */
+  displayName?: string | null;
+  region?: string | null;
+  /** Compte secondaire (smurf). */
+  secondaryGameName?: string | null;
+  secondaryTagLine?: string | null;
+  /** true = remplaçant (Sub), false/absent = titulaire. */
+  isSubstitute?: boolean;
   userId: string | null;
   addedAt: string;
 }
@@ -45,6 +53,8 @@ export interface LolApiTeam {
   updatedAt: string;
   /** Rôle de l'utilisateur courant sur cette équipe (présent dans GET /api/lol/teams). */
   myRole?: LolTeamRole;
+  /** true si un logo a été uploadé (présent dans GET /api/lol/teams). */
+  hasLogo?: boolean;
 }
 
 /** Réponse complète de GET /api/lol/teams/:id */
@@ -92,6 +102,11 @@ export interface LolAddRosterMemberBody {
   tag_line: string;
   role_in_game?: string;
   user_id?: string;
+  display_name?: string;
+  region?: string;
+  secondary_game_name?: string;
+  secondary_tag_line?: string;
+  is_substitute?: boolean;
 }
 
 /**

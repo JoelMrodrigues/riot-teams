@@ -9,9 +9,11 @@ import { ApiErrorBanner } from '../../components/feedback/ApiErrorBanner';
 import { LolAuthPrompt } from '../../components/auth/LolAuthPrompt';
 import { useLolTeams } from '../../hooks/useLolTeams';
 import { useAuth } from '../../hooks/useAuth';
+import { uploadTeamLogo } from '../../services/lolPlayerStatsApi';
 import { LOL_ACCENTS } from '../../constants/lolTheme';
 import { GAMES_DATA } from '../../data/games.data';
 import type { LolCreateTeamBody } from '../../types/lolTeam.types';
+import type { ResizedImage } from '../../utils/resizeImage';
 
 /**
  * /lol/teams — liste des équipes LoL backend (auth requise).
@@ -19,15 +21,23 @@ import type { LolCreateTeamBody } from '../../types/lolTeam.types';
  */
 export function LolTeamsHomePage(): React.JSX.Element {
   const navigate                    = useNavigate();
-  const { status }                  = useAuth();
+  const { status, token }           = useAuth();
   const { teams, loading, error, refresh, createTeam } = useLolTeams();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const lolGame = GAMES_DATA.find((g) => g.id === 'lol')!;
   const accent  = LOL_ACCENTS.team;
 
-  const handleCreate = async (body: LolCreateTeamBody): Promise<void> => {
+  const handleCreate = async (body: LolCreateTeamBody, logo?: ResizedImage): Promise<void> => {
     const created = await createTeam(body);
+    // Le logo (optionnel) s'envoie après création : il a besoin de l'id d'équipe.
+    if (logo && token) {
+      try {
+        await uploadTeamLogo(created.id, { dataBase64: logo.dataBase64, mime: logo.mime }, token);
+      } catch {
+        // Échec non bloquant : l'équipe est créée, le logo pourra être ajouté depuis le détail.
+      }
+    }
     setIsCreateOpen(false);
     navigate(`/lol/team/${created.id}`);
   };
