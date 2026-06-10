@@ -1,17 +1,19 @@
 import { useState, useCallback } from 'react';
 
-const STORAGE_KEY = 'lol:recent-searches';
+// v2 : le champ `riotId` a été renommé `gameName` (clarté). Nouvelle clé pour
+// ignorer proprement les anciennes entrées au format précédent.
+const STORAGE_KEY = 'lol:recent-searches:v2';
 const MAX_ENTRIES = 5;
 
 export interface RecentSearch {
-  riotId: string;
+  gameName: string;
   tagLine: string;
   addedAt: string;
 }
 
 interface UseRecentSearchesReturn {
   searches: RecentSearch[];
-  addSearch: (riotId: string, tagLine: string) => void;
+  addSearch: (gameName: string, tagLine: string) => void;
   clearAll: () => void;
 }
 
@@ -40,13 +42,13 @@ function writeToStorage(entries: RecentSearch[]): void {
 export function useRecentSearches(): UseRecentSearchesReturn {
   const [searches, setSearches] = useState<RecentSearch[]>(readFromStorage);
 
-  const addSearch = useCallback((riotId: string, tagLine: string) => {
+  const addSearch = useCallback((gameName: string, tagLine: string) => {
     setSearches((prev) => {
       const deduped = prev.filter(
-        (s) => !(s.riotId === riotId && s.tagLine === tagLine),
+        (s) => !(s.gameName === gameName && s.tagLine === tagLine),
       );
       const updated = [
-        { riotId, tagLine, addedAt: new Date().toISOString() },
+        { gameName, tagLine, addedAt: new Date().toISOString() },
         ...deduped,
       ].slice(0, MAX_ENTRIES);
       writeToStorage(updated);

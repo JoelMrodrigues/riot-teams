@@ -6,13 +6,16 @@ import { RecentChampionsCard } from './RecentChampionsCard';
 import { MasteryCard } from './MasteryCard';
 import { WinrateLast7Card } from './WinrateLast7Card';
 import { MatchFilters } from './MatchFilters';
-import { MatchRow } from './MatchRow';
+import { LolMatchHistory } from './LolMatchHistory';
 import { TopChampionsModal } from './TopChampionsModal';
 import { useMatchFilters } from '../../../hooks/useMatchFilters';
 import type { LolProfile } from '../../../types/lolApi.types';
+import type { MatchDetail } from '../../../types/lolMatchDetail.types';
 
 interface ProfileViewProps {
   profile: LolProfile;
+  /** Chargeur de détail de match injectable (mock en sandbox). */
+  loadDetail?: (matchId: string) => Promise<MatchDetail>;
 }
 
 /**
@@ -20,7 +23,7 @@ interface ProfileViewProps {
  * - Gauche (320 px) : classement, champions récents, maîtrise, winrate 7j.
  * - Droite : historique filtrable des 20 dernières parties.
  */
-export function ProfileView({ profile }: ProfileViewProps): React.JSX.Element {
+export function ProfileView({ profile, loadDetail }: ProfileViewProps): React.JSX.Element {
   const { filters, setFilter, filtered, champions } = useMatchFilters(profile.matches);
   const [topChampionsOpen, setTopChampionsOpen] = useState(false);
 
@@ -57,18 +60,7 @@ export function ProfileView({ profile }: ProfileViewProps): React.JSX.Element {
 
           <MatchFilters filters={filters} setFilter={setFilter} champions={champions} />
 
-          <div className="flex flex-col gap-2">
-            {filtered.length > 0 ? (
-              filtered.map((m) => <MatchRow key={m.matchId} match={m} />)
-            ) : (
-              <p
-                className="py-12 text-center text-sm"
-                style={{ color: 'var(--lol-text-muted)' }}
-              >
-                Aucune partie ne correspond à ces filtres.
-              </p>
-            )}
-          </div>
+          <LolMatchHistory matches={filtered} loadDetail={loadDetail} />
         </section>
       </div>
 

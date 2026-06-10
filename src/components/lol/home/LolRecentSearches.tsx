@@ -38,10 +38,16 @@ export function LolRecentSearches({
         </button>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div
+        className="flex gap-2 overflow-x-auto pb-1"
+        style={{
+          maskImage: 'linear-gradient(to right, #000 92%, transparent)',
+          WebkitMaskImage: 'linear-gradient(to right, #000 92%, transparent)',
+        }}
+      >
         {searches.map((s) => (
           <button
-            key={`${s.riotId}#${s.tagLine}-${s.addedAt}`}
+            key={`${s.gameName}#${s.tagLine}-${s.addedAt}`}
             type="button"
             onClick={() => onSelect(s)}
             className="shrink-0 rounded-sm border px-3 py-1.5 text-xs font-semibold transition-colors duration-150"
@@ -60,7 +66,7 @@ export function LolRecentSearches({
               e.currentTarget.style.color = 'var(--lol-text)';
             }}
           >
-            {s.riotId}#{s.tagLine}
+            {s.gameName}#{s.tagLine}
           </button>
         ))}
       </div>

@@ -17,6 +17,9 @@ import { LolTeamScrimsPage } from '../pages/lol/team/LolTeamScrimsPage';
 import { LolTeamStatsPage } from '../pages/lol/team/LolTeamStatsPage';
 import { LolTeamCalendarPage } from '../pages/lol/team/LolTeamCalendarPage';
 import { LolStatsPage } from '../pages/lol/LolStatsPage';
+import { LolTestHubPage } from '../pages/lol/test/LolTestHubPage';
+import { LolTestSoloPage } from '../pages/lol/test/LolTestSoloPage';
+import { LolTestTeamPage } from '../pages/lol/test/LolTestTeamPage';
 import { LolPlayerRedirect } from '../components/lol/LolPlayerRedirect';
 
 import { GameLandingPage } from '../pages/game/GameLandingPage';
@@ -38,6 +41,11 @@ export function AppRouter(): React.JSX.Element {
           <Route path="search" element={<LolSearchPage />} />
           <Route path="teams" element={<LolTeamsHomePage />} />
           <Route path="stats" element={<LolStatsPage />} />
+
+          {/* Espace test (brouillons design) — hors navigation, données fictives. */}
+          <Route path="test" element={<LolTestHubPage />} />
+          <Route path="test/solo" element={<LolTestSoloPage />} />
+          <Route path="test/team" element={<LolTestTeamPage />} />
           {/*
            * /lol/player/:gameName/:tagLine est maintenant DANS LolLayout.
            * LolPlayerRedirect fait un <Navigate> vers /lol/search?riotId=...

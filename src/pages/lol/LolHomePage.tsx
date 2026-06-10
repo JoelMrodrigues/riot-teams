@@ -6,9 +6,12 @@ import { LolQuickAccess } from '../../components/lol/home/LolQuickAccess';
 import { LolMyTeamsPreview } from '../../components/lol/home/LolMyTeamsPreview';
 import { LolRecentSearches } from '../../components/lol/home/LolRecentSearches';
 import { LolUpcomingBanner } from '../../components/lol/home/LolUpcomingBanner';
+import { LolLeaderboard } from '../../components/lol/leaderboard/LolLeaderboard';
 import { LolCreateTeamModal } from '../../components/lol/teams/LolCreateTeamModal';
 import { useLolTeams } from '../../hooks/useLolTeams';
 import { useRecentSearches } from '../../hooks/useRecentSearches';
+import { useLolLeaderboard } from '../../hooks/useLolLeaderboard';
+import { LOL_ACCENTS } from '../../constants/lolTheme';
 import type { RecentSearch } from '../../hooks/useRecentSearches';
 import type { LolCreateTeamBody } from '../../types/lolTeam.types';
 
@@ -20,6 +23,7 @@ export function LolHomePage(): React.JSX.Element {
   const navigate = useNavigate();
   const { createTeam } = useLolTeams();
   const { searches, addSearch, clearAll } = useRecentSearches();
+  const { entries: leaderboard } = useLolLeaderboard();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const handleSearch = (riotId: string, tagLine: string): void => {
@@ -27,8 +31,8 @@ export function LolHomePage(): React.JSX.Element {
   };
 
   const handleSelectRecent = (s: RecentSearch): void => {
-    addSearch(s.riotId, s.tagLine);
-    const encoded = encodeURIComponent(`${s.riotId}#${s.tagLine}`);
+    addSearch(s.gameName, s.tagLine);
+    const encoded = encodeURIComponent(`${s.gameName}#${s.tagLine}`);
     navigate(`/lol/search?riotId=${encoded}`);
   };
 
@@ -49,6 +53,11 @@ export function LolHomePage(): React.JSX.Element {
             searches={searches}
             onSelect={handleSelectRecent}
             onClear={clearAll}
+          />
+          <LolLeaderboard
+            entries={leaderboard}
+            accent={LOL_ACCENTS.stats.color}
+            title="Classement Challenger · EUW"
           />
           <LolUpcomingBanner />
         </div>

@@ -32,9 +32,9 @@ export function LolSearchPage(): React.JSX.Element {
     void search(input);
   };
 
-  const handleSelectRecent = (s: { riotId: string; tagLine: string }): void => {
-    addSearch(s.riotId, s.tagLine);
-    void search(`${s.riotId}#${s.tagLine}`);
+  const handleSelectRecent = (s: { gameName: string; tagLine: string }): void => {
+    addSearch(s.gameName, s.tagLine);
+    void search(`${s.gameName}#${s.tagLine}`);
   };
 
   const isIdle = !loading && !error && !profile;
