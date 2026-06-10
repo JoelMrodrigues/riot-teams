@@ -35,6 +35,12 @@ import { uploadLogoHandler } from '../lol/teams/uploadLogoHandler.js';
 import { serveLogoHandler } from '../lol/teams/serveLogoHandler.js';
 import { deleteLogoHandler } from '../lol/teams/deleteLogoHandler.js';
 import { playerStatsHandler } from '../lol/teams/playerStatsHandler.js';
+import {
+  listEventsHandler,
+  createEventHandler,
+  patchEventHandler,
+  deleteEventHandler,
+} from '../lol/teams/eventsHandlers.js';
 
 const router = Router();
 
@@ -88,5 +94,15 @@ router.delete('/:teamId/logo', requireAuth, requireCanEditTeam, deleteLogoHandle
 // --- Stats joueurs du roster ---
 // GET /api/lol/teams/:teamId/player-stats — rang + top champions (auth requise)
 router.get('/:teamId/player-stats', requireAuth, playerStatsHandler);
+
+// --- Agenda d'équipe (scrims, entraînements, reviews…) ---
+// GET    /:teamId/events            — liste (tout membre)
+// POST   /:teamId/events            — créer  (owner|captain|manager|coach)
+// PATCH  /:teamId/events/:eventId   — modifier
+// DELETE /:teamId/events/:eventId   — supprimer
+router.get('/:teamId/events', requireAuth, listEventsHandler);
+router.post('/:teamId/events', requireAuth, requireCanManageRoster, createEventHandler);
+router.patch('/:teamId/events/:eventId', requireAuth, requireCanManageRoster, patchEventHandler);
+router.delete('/:teamId/events/:eventId', requireAuth, requireCanManageRoster, deleteEventHandler);
 
 export default router;

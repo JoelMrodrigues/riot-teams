@@ -20,16 +20,11 @@ export const LOL_TEAM_NAV: LolTeamNavGroup[] = [
   {
     group: 'Équipe',
     items: [
-      { id: 'overview', label: 'Aperçu',       sub: '',        end: true },
+      { id: 'overview', label: 'Aperçu',       sub: '',           end: true },
       { id: 'stats',    label: 'Statistiques', sub: 'stats' },
-      { id: 'members',  label: 'Membres',      sub: 'membres', managerOnly: true },
-    ],
-  },
-  {
-    group: 'Brouillons',
-    items: [
-      { id: 'scrims',   label: 'Scrims',     sub: 'scrims',     draft: true },
-      { id: 'calendar', label: 'Calendrier', sub: 'calendrier', draft: true },
+      { id: 'scrims',   label: 'Scrims',       sub: 'scrims' },
+      { id: 'calendar', label: 'Calendrier',   sub: 'calendrier' },
+      { id: 'members',  label: 'Membres',      sub: 'membres',    managerOnly: true },
     ],
   },
 ];

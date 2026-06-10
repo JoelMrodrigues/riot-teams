@@ -1,84 +1,81 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
-import { LolDraftBanner } from '../../../components/lol/teams/drafts/LolDraftBanner';
-import {
-  DRAFT_WEEK_DAYS, DRAFT_EVENTS, DRAFT_EVENT_COLORS,
-} from '../../../data/lolTeamDraftsDemo.data';
-import type { DraftEventType } from '../../../data/lolTeamDraftsDemo.data';
+import { LolCreateEventModal } from '../../../components/lol/teams/events/LolCreateEventModal';
+import { useTeamEvents } from '../../../hooks/useTeamEvents';
+import { EVENT_TYPE_COLOR, EVENT_TYPE_LABEL, EVENT_TYPES } from '../../../utils/lolEventMeta';
 import { useTeamOutlet } from './teamOutletContext';
 
-const TYPE_LABEL: Record<DraftEventType, string> = {
-  scrim: 'Scrim', training: 'Entraînement', review: 'Review VOD', soloq: 'SoloQ groupée',
-};
+const DAY_MS = 86_400_000;
 
-/** BROUILLON — calendrier hebdomadaire d'équipe (design proposé, données fictives). */
+function startOfWeek(): Date {
+  const d = new Date();
+  const offset = (d.getDay() + 6) % 7; // 0 = lundi
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - offset);
+  return d;
+}
+
+/** Calendrier d'équipe — semaine courante, événements réels (lol_events). */
 export function LolTeamCalendarPage(): React.JSX.Element {
-  const { resolvedAccent } = useTeamOutlet();
+  const { teamId, isManager, resolvedAccent } = useTeamOutlet();
+  const { events, loading, create } = useTeamEvents(teamId);
+  const [addOpen, setAddOpen] = useState(false);
+
+  const week = startOfWeek();
+  const days = Array.from({ length: 7 }, (_, i) => new Date(week.getTime() + i * DAY_MS));
+  const eventsOfDay = (day: Date) =>
+    events
+      .filter((e) => { const t = +new Date(e.startsAt); return t >= +day && t < +day + DAY_MS; })
+      .sort((a, b) => +new Date(a.startsAt) - +new Date(b.startsAt));
 
   return (
-    <motion.div
-      className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 pb-10 pt-6 md:px-6 lg:px-8"
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.25 }}
-    >
-      <LolDraftBanner
-        title="Calendrier"
-        subtitle="Planning de la semaine : scrims, entraînements, reviews et sessions SoloQ."
-        accent={resolvedAccent}
-      />
+    <motion.div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 pb-10 pt-6 md:px-6 lg:px-8"
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.25 }}>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold md:text-3xl" style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-text)' }}>Calendrier</h1>
+        {isManager && (
+          <button type="button" onClick={() => setAddOpen(true)} className="cursor-pointer rounded-sm px-4 py-2 text-sm font-bold uppercase tracking-widest active:scale-95"
+            style={{ fontFamily: 'Rajdhani, sans-serif', background: resolvedAccent, color: '#0A1428' }}>+ Ajouter</button>
+        )}
+      </div>
 
-      {/* Légende */}
       <div className="flex flex-wrap gap-3">
-        {(Object.keys(TYPE_LABEL) as DraftEventType[]).map((t) => (
+        {EVENT_TYPES.map((t) => (
           <span key={t} className="flex items-center gap-1.5 text-xs" style={{ fontFamily: 'Inter, sans-serif', color: 'var(--lol-text-muted)' }}>
-            <span className="h-2.5 w-2.5 rounded-full" style={{ background: DRAFT_EVENT_COLORS[t] }} />
-            {TYPE_LABEL[t]}
+            <span className="h-2.5 w-2.5 rounded-full" style={{ background: EVENT_TYPE_COLOR[t] }} />{EVENT_TYPE_LABEL[t]}
           </span>
         ))}
       </div>
 
-      {/* Grille hebdo — responsive : 2 → 4 → 7 colonnes */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
-        {DRAFT_WEEK_DAYS.map((day, i) => {
-          const ev = DRAFT_EVENTS.find((e) => e.day === i);
-          return (
-            <div
-              key={day}
-              className="flex min-h-[120px] flex-col gap-2 rounded-md border p-3"
-              style={{ background: 'var(--lol-surface)', borderColor: 'var(--lol-border)' }}
-            >
-              <span className="text-[11px] font-bold uppercase tracking-widest" style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-text-muted)' }}>
-                {day}
-              </span>
-              {ev ? (
-                <div
-                  className="flex flex-1 flex-col gap-1 rounded-sm p-2"
-                  style={{ background: `${DRAFT_EVENT_COLORS[ev.type]}14`, borderLeft: `3px solid ${DRAFT_EVENT_COLORS[ev.type]}` }}
-                >
-                  <span className="text-[11px] font-bold" style={{ fontFamily: 'Rajdhani, sans-serif', color: DRAFT_EVENT_COLORS[ev.type] }}>
-                    {ev.time}
-                  </span>
-                  <span className="text-xs leading-tight" style={{ fontFamily: 'Inter, sans-serif', color: 'var(--lol-text)' }}>
-                    {ev.label}
-                  </span>
-                </div>
-              ) : (
-                <span className="flex flex-1 items-center justify-center text-xs" style={{ color: 'var(--lol-text-muted)', opacity: 0.5 }}>
-                  —
+      {loading ? (
+        <p className="py-12 text-center text-sm" style={{ color: 'var(--lol-text-muted)' }}>Chargement…</p>
+      ) : (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+          {days.map((day) => {
+            const dayEvents = eventsOfDay(day);
+            return (
+              <div key={day.toISOString()} className="flex min-h-[120px] flex-col gap-2 rounded-md border p-3" style={{ background: 'var(--lol-surface)', borderColor: 'var(--lol-border)' }}>
+                <span className="text-[11px] font-bold uppercase tracking-widest" style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-text-muted)' }}>
+                  {day.toLocaleDateString('fr-FR', { weekday: 'short' })} {day.getDate()}
                 </span>
-              )}
-            </div>
-          );
-        })}
-      </div>
+                {dayEvents.length === 0 ? (
+                  <span className="flex flex-1 items-center justify-center text-xs" style={{ color: 'var(--lol-text-muted)', opacity: 0.4 }}>—</span>
+                ) : dayEvents.map((e) => (
+                  <div key={e.id} className="flex flex-col gap-0.5 rounded-sm p-2" style={{ background: `${EVENT_TYPE_COLOR[e.type]}14`, borderLeft: `3px solid ${EVENT_TYPE_COLOR[e.type]}` }}>
+                    <span className="text-[11px] font-bold" style={{ fontFamily: 'Rajdhani, sans-serif', color: EVENT_TYPE_COLOR[e.type] }}>
+                      {new Date(e.startsAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                    <span className="text-xs leading-tight" style={{ fontFamily: 'Inter, sans-serif', color: 'var(--lol-text)' }}>{e.title}</span>
+                  </div>
+                ))}
+              </div>
+            );
+          })}
+        </div>
+      )}
 
-      <button
-        type="button"
-        className="w-fit cursor-pointer rounded-sm px-4 py-2 text-sm font-bold uppercase tracking-widest"
-        style={{ fontFamily: 'Rajdhani, sans-serif', background: `${resolvedAccent}1A`, border: `1px solid ${resolvedAccent}40`, color: resolvedAccent }}
-      >
-        + Ajouter un événement
-      </button>
+      {isManager && <LolCreateEventModal isOpen={addOpen} onClose={() => setAddOpen(false)} onCreate={create} defaultType="training" />}
     </motion.div>
   );
 }
