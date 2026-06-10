@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { LolNavLinks } from './LolNavLinks';
 import { BrandLogo } from '../../layout/BrandLogo';
 import { HeaderActions } from '../../layout/HeaderActions';
+import { isDemoMode } from '../../../utils/demoMode';
 
 /**
  * Header dédié à l'écosystème LoL : retour accueil global + nav + thème.
@@ -49,6 +50,15 @@ export function LolHeader(): React.JSX.Element {
 
         {/* Droite — thème + auth */}
         <div className="flex flex-shrink-0 items-center justify-end gap-2 sm:gap-3">
+          {isDemoMode() && (
+            <span
+              className="hidden rounded-sm px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest sm:inline"
+              style={{ fontFamily: 'Rajdhani, sans-serif', background: 'var(--lol-surface)', border: '1px solid var(--lol-border)', color: 'var(--lol-violet-soft)' }}
+              title="Données fictives — aucun serveur"
+            >
+              Démo
+            </span>
+          )}
           <HeaderActions />
         </div>
       </header>

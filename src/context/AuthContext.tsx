@@ -11,6 +11,8 @@ import {
   removeStoredToken,
   writeStoredToken,
 } from '../services/authApi';
+import { isDemoMode } from '../utils/demoMode';
+import { DEMO_USER, DEMO_TOKEN } from '../data/lolDemoTeam.data';
 import type { AuthStatus, User } from '../types/auth';
 
 export interface RegisterOptions {
@@ -42,6 +44,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
 
   // Réhydratation au montage : si un token est stocké, on récupère le profil frais.
   useEffect(() => {
+    // Mode démo : utilisateur fictif, aucune requête réseau.
+    if (isDemoMode()) {
+      setToken(DEMO_TOKEN);
+      setUser(DEMO_USER);
+      setStatus('authenticated');
+      return;
+    }
+
     const stored = readStoredToken();
     if (!stored) {
       setStatus('anonymous');

@@ -9,6 +9,8 @@ import { useState, useEffect, useCallback } from 'react';
 
 import { fetchTeamPlayerStats } from '../services/lolPlayerStatsApi';
 import { useAuth } from './useAuth';
+import { isDemoMode } from '../utils/demoMode';
+import { DEMO_STATS } from '../data/lolDemoTeam.data';
 import type { LolPlayerRank, LolTopChampion } from '../types/lolTeam.types';
 
 export interface PlayerStatEntry {
@@ -34,6 +36,13 @@ export function useTeamPlayerStats(
   const [rev, setRev] = useState(0);
 
   useEffect(() => {
+    if (isDemoMode()) {
+      setStatsByRosterId(DEMO_STATS);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
     if (!teamId || !token) return;
 
     let cancelled = false;

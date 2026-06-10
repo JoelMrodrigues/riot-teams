@@ -7,6 +7,8 @@ import { useState, useEffect, useCallback } from 'react';
 
 import { fetchMyLolTeams, createLolTeam } from '../services/lolTeamsApi';
 import { useAuth } from './useAuth';
+import { isDemoMode } from '../utils/demoMode';
+import { DEMO_TEAMS_LIST } from '../data/lolDemoTeam.data';
 import type { LolApiTeam, LolCreateTeamBody } from '../types/lolTeam.types';
 
 export interface UseLolTeamsReturn {
@@ -25,6 +27,13 @@ export function useLolTeams(): UseLolTeamsReturn {
   const [rev, setRev]         = useState(0);
 
   useEffect(() => {
+    if (isDemoMode()) {
+      setTeams(DEMO_TEAMS_LIST);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
     if (status !== 'authenticated' || !token) {
       setTeams([]);
       setLoading(false);

@@ -16,6 +16,8 @@ import {
 } from '../services/lolTeamsApi';
 import { useLolMemberActions } from './useLolMemberActions';
 import { useAuth } from './useAuth';
+import { isDemoMode } from '../utils/demoMode';
+import { DEMO_TEAM_DETAIL } from '../data/lolDemoTeam.data';
 import type {
   LolApiTeam,
   LolApiTeamDetail,
@@ -51,6 +53,13 @@ export function useLolTeam(teamId: string | undefined): UseLolTeamReturn {
   const [rev, setRev]         = useState(0);
 
   useEffect(() => {
+    if (isDemoMode()) {
+      setDetail(DEMO_TEAM_DETAIL);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
     if (!teamId || !token) return;
 
     let cancelled = false;
