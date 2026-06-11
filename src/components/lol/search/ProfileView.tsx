@@ -11,11 +11,13 @@ import { TopChampionsModal } from './TopChampionsModal';
 import { useMatchFilters } from '../../../hooks/useMatchFilters';
 import type { LolProfile } from '../../../types/lolApi.types';
 import type { MatchDetail } from '../../../types/lolMatchDetail.types';
+import type { MatchTimeline } from '../../../types/lolTimeline.types';
 
 interface ProfileViewProps {
   profile: LolProfile;
-  /** Chargeur de détail de match injectable (mock en sandbox). */
+  /** Chargeurs injectables (mock en sandbox). Défaut : API réelle. */
   loadDetail?: (matchId: string) => Promise<MatchDetail>;
+  loadTimeline?: (matchId: string) => Promise<MatchTimeline>;
 }
 
 /**
@@ -23,7 +25,7 @@ interface ProfileViewProps {
  * - Gauche (320 px) : classement, champions récents, maîtrise, winrate 7j.
  * - Droite : historique filtrable des 20 dernières parties.
  */
-export function ProfileView({ profile, loadDetail }: ProfileViewProps): React.JSX.Element {
+export function ProfileView({ profile, loadDetail, loadTimeline }: ProfileViewProps): React.JSX.Element {
   const { filters, setFilter, filtered, champions } = useMatchFilters(profile.matches);
   const [topChampionsOpen, setTopChampionsOpen] = useState(false);
 
@@ -60,7 +62,7 @@ export function ProfileView({ profile, loadDetail }: ProfileViewProps): React.JS
 
           <MatchFilters filters={filters} setFilter={setFilter} champions={champions} />
 
-          <LolMatchHistory matches={filtered} loadDetail={loadDetail} />
+          <LolMatchHistory matches={filtered} loadDetail={loadDetail} loadTimeline={loadTimeline} />
         </section>
       </div>
 

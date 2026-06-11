@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ProfileView } from '../../../components/lol/search/ProfileView';
 import { DEMO_PROFILE } from '../../../data/lolDemoProfile.data';
 import { DEMO_MATCH_DETAIL } from '../../../data/lolDemoMatch.data';
+import { DEMO_TIMELINE } from '../../../data/lolDemoTimeline.data';
 import { LOL_ACCENTS } from '../../../constants/lolTheme';
 
 /** Espace test — profil Solo (mock) ; clic sur une partie = détail déroulant (mock). */
@@ -20,7 +21,11 @@ export function LolTestSoloPage(): React.JSX.Element {
         Espace test · Solo — clique une partie pour déplier le détail
       </span>
 
-      <ProfileView profile={DEMO_PROFILE} loadDetail={() => Promise.resolve(DEMO_MATCH_DETAIL)} />
+      <ProfileView
+        profile={DEMO_PROFILE}
+        loadDetail={() => Promise.resolve(DEMO_MATCH_DETAIL)}
+        loadTimeline={() => Promise.resolve(DEMO_TIMELINE)}
+      />
     </motion.div>
   );
 }
