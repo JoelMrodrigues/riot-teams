@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { LolTeamOverviewHeader } from '../../../components/lol/teams/overview/LolTeamOverviewHeader';
 import { LolRosterByRole } from '../../../components/lol/teams/overview/LolRosterByRole';
 import { LolAddRosterMemberModal } from '../../../components/lol/teams/LolAddRosterMemberModal';
+import { LolStatsRefresh } from '../../../components/lol/teams/LolStatsRefresh';
 import { ApiErrorBanner } from '../../../components/feedback/ApiErrorBanner';
 import { GAMES_DATA } from '../../../data/games.data';
 import { useTeamOutlet } from './teamOutletContext';
@@ -15,7 +16,8 @@ import type { LolRegion } from '../../../types/team.types';
 export function LolTeamOverviewPage(): React.JSX.Element {
   const navigate = useNavigate();
   const {
-    teamId, team, actions, isManager, statsByRosterId, statsLoading, resolvedAccent, logoHook,
+    teamId, team, actions, isManager, statsByRosterId, statsLoading,
+    statsUpdatedAt, refreshStats, resolvedAccent, logoHook,
   } = useTeamOutlet();
 
   const [isAddOpen, setIsAddOpen]   = useState(false);
@@ -58,6 +60,10 @@ export function LolTeamOverviewPage(): React.JSX.Element {
           logoHook={logoHook}
           onInvite={() => navigate(`/lol/team/${teamId}/membres`)}
         />
+
+        <div className="-mb-2 flex justify-end">
+          <LolStatsRefresh updatedAt={statsUpdatedAt} loading={statsLoading} onRefresh={refreshStats} />
+        </div>
 
         <LolRosterByRole
           roster={actions.roster}

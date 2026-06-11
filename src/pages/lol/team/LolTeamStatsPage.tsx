@@ -5,11 +5,12 @@ import { ChampionAvatar } from '../../../components/lol/shared/ChampionAvatar';
 import { tierColor, formatRankShort, winrateColor } from '../../../utils/lolRank';
 import { normalizeRole, ROLE_LABEL } from '../../../utils/organizeRosterByRole';
 import { sortPlayersByRank, aggregateTeamChampions } from '../../../utils/lolTeamAggregate';
+import { LolStatsRefresh } from '../../../components/lol/teams/LolStatsRefresh';
 import { useTeamOutlet } from './teamOutletContext';
 
 /** Statistiques d'équipe — données réelles (rangs + champions des comptes liés). */
 export function LolTeamStatsPage(): React.JSX.Element {
-  const { actions, statsByRosterId, statsLoading, resolvedAccent } = useTeamOutlet();
+  const { actions, statsByRosterId, statsLoading, statsUpdatedAt, refreshStats, resolvedAccent } = useTeamOutlet();
   const roster = actions.roster;
 
   const ranked = sortPlayersByRank(roster, statsByRosterId);
@@ -20,13 +21,16 @@ export function LolTeamStatsPage(): React.JSX.Element {
       className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 pb-10 pt-6 md:px-6 lg:px-8"
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.25 }}
     >
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold md:text-3xl" style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-text)' }}>
-          Statistiques d'équipe
-        </h1>
-        <p className="text-sm" style={{ fontFamily: 'Inter, sans-serif', color: 'var(--lol-text-muted)' }}>
-          Basé sur les comptes SoloQ du roster. Les stats de parties d'équipe arriveront plus tard.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold md:text-3xl" style={{ fontFamily: 'Rajdhani, sans-serif', color: 'var(--lol-text)' }}>
+            Statistiques d'équipe
+          </h1>
+          <p className="text-sm" style={{ fontFamily: 'Inter, sans-serif', color: 'var(--lol-text-muted)' }}>
+            Basé sur les comptes SoloQ du roster. Les stats de parties d'équipe arriveront plus tard.
+          </p>
+        </div>
+        <LolStatsRefresh updatedAt={statsUpdatedAt} loading={statsLoading} onRefresh={refreshStats} />
       </div>
 
       {statsLoading ? (

@@ -21,7 +21,7 @@ export function LolTeamLayout(): React.JSX.Element {
   const { teamId } = useParams<{ teamId: string }>();
   const { user }   = useAuth();
   const actions    = useLolTeam(teamId);
-  const { statsByRosterId, loading: statsLoading } = useTeamPlayerStats(teamId);
+  const { statsByRosterId, loading: statsLoading, lastUpdated: statsUpdatedAt, refresh: refreshStats } = useTeamPlayerStats(teamId);
   const logoHook   = useTeamLogo(teamId);
 
   if (actions.loading) return <LolTeamDetailSkeleton />;
@@ -40,7 +40,7 @@ export function LolTeamLayout(): React.JSX.Element {
 
   const ctx: TeamOutletContext = {
     teamId, team: actions.team, actions, myRole, isManager,
-    logoHook, statsByRosterId, statsLoading, resolvedAccent,
+    logoHook, statsByRosterId, statsLoading, statsUpdatedAt, refreshStats, resolvedAccent,
   };
 
   return (

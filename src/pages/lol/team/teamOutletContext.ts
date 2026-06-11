@@ -20,6 +20,10 @@ export interface TeamOutletContext {
   logoHook: UseTeamLogoReturn;
   statsByRosterId: Map<string, PlayerStatEntry>;
   statsLoading: boolean;
+  /** Horodatage de la dernière remontée des rangs (ms epoch) ou null. */
+  statsUpdatedAt: number | null;
+  /** Force une remontée des rangs/champions de l'équipe. */
+  refreshStats: () => void;
   resolvedAccent: string;
 }
 
