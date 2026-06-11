@@ -7,6 +7,7 @@ import { getLeagueByPuuid } from '../lol/ranked/getLeagueByPuuid';
 import { getMatchIds } from '../lol/matches/getMatchIds';
 import { getMatch } from '../lol/matches/getMatch';
 import { getMasteryByPuuid } from '../lol/mastery/getMasteryByPuuid';
+import { ingestPlayerMatches } from '../lol/timeline/ingestPlayerMatches';
 
 const router = Router();
 
@@ -27,7 +28,12 @@ router.get('/profile', async (req, res) => {
     return;
   }
   const count = Math.min(Math.max(Number(req.query.count ?? 8), 1), 20);
-  res.json(await buildLolProfile(gameName, tagLine, count));
+  const profile = await buildLolProfile(gameName, tagLine, count);
+  res.json(profile);
+
+  // Ingestion en arrière-plan (non bloquant) des tranches pour la timeline agrégée.
+  void ingestPlayerMatches(profile.riotId, profile.tagLine, profile.matches.map((m) => m.matchId))
+    .catch(() => { /* best-effort */ });
 });
 
 // SUMMONER-V4 — /api/lol/summoner
