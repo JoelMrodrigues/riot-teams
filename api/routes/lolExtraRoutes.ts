@@ -1,10 +1,9 @@
-// Endpoints LoL complémentaires (rotation, live, statut, détail/timeline de match,
+// Endpoints LoL complémentaires (live, statut, détail/timeline de match,
 // maîtrise top/score/par-champion, classements apex). Monté sur /api/lol.
 
 import { Router, type Request } from 'express';
 
 import { resolvePuuid } from '../_core/resolvePuuid';
-import { getChampionRotations } from '../lol/champion/getChampionRotations';
 import { buildLiveGame } from '../lol/spectator/buildLiveGame';
 import { getPlatformStatus } from '../lol/status/getPlatformStatus';
 import { getMatch } from '../lol/matches/getMatch';
@@ -30,9 +29,6 @@ const requireId = (req: Request, res: import('express').Response): string | null
   if (!id) { res.status(400).json({ error: 'id requis.' }); return null; }
   return id;
 };
-
-// CHAMPION-V3 — rotation gratuite
-router.get('/rotation', async (_req, res) => { res.json(await getChampionRotations()); });
 
 // LOL-STATUS-V4 — statut serveur
 router.get('/status', async (_req, res) => { res.json(await getPlatformStatus()); });
