@@ -16,6 +16,7 @@ import { LolTeamScrimsPage } from '../pages/lol/team/LolTeamScrimsPage';
 import { LolTeamStatsPage } from '../pages/lol/team/LolTeamStatsPage';
 import { LolTeamCalendarPage } from '../pages/lol/team/LolTeamCalendarPage';
 import { LolStatsPage } from '../pages/lol/LolStatsPage';
+import { LolLivePage } from '../pages/lol/LolLivePage';
 import { LolTestHubPage } from '../pages/lol/test/LolTestHubPage';
 import { LolTestSoloPage } from '../pages/lol/test/LolTestSoloPage';
 import { LolTestTeamPage } from '../pages/lol/test/LolTestTeamPage';
@@ -52,6 +53,7 @@ export function AppRouter(): React.JSX.Element {
            * → une seule expérience profil, cohérente, dans la coquille LoL.
            */}
           <Route path="player/:gameName/:tagLine" element={<LolPlayerRedirect />} />
+          <Route path="live/:gameName/:tagLine" element={<LolLivePage />} />
           <Route path="team/:teamId" element={<LolTeamLayout />}>
             <Route index element={<LolTeamOverviewPage />} />
             <Route path="membres" element={<LolTeamMembersPage />} />

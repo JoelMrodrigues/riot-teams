@@ -5,7 +5,7 @@ import { Router, type Request } from 'express';
 
 import { resolvePuuid } from '../_core/resolvePuuid';
 import { getChampionRotations } from '../lol/champion/getChampionRotations';
-import { getActiveGame } from '../lol/spectator/getActiveGame';
+import { buildLiveGame } from '../lol/spectator/buildLiveGame';
 import { getPlatformStatus } from '../lol/status/getPlatformStatus';
 import { getMatch } from '../lol/matches/getMatch';
 import { mapMatchDetail } from '../lol/matches/mapMatchDetail';
@@ -39,7 +39,7 @@ router.get('/status', async (_req, res) => { res.json(await getPlatformStatus())
 
 // SPECTATOR-V5 — partie en cours (inGame:false si hors-partie)
 router.get('/live', async (req, res) => {
-  const game = await getActiveGame(await puuidOf(req));
+  const game = await buildLiveGame(await puuidOf(req));
   res.json({ inGame: game !== null, game });
 });
 

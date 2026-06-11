@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 import { RankBadge } from './RankBadge';
+import { LolLiveBadge } from '../live/LolLiveBadge';
 import { profileIcon, bigChampionImage } from '../../../utils/lolAssets';
+import { useLiveGame } from '../../../hooks/useLiveGame';
 import type { LolProfile } from '../../../types/lolApi.types';
 
 interface ProfileHeaderProps {
@@ -14,6 +17,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps): React.JSX.Elemen
   const [iconOk, setIconOk] = useState(true);
   const [bannerOk, setBannerOk] = useState(true);
   const bannerChampion = profile.matches[0]?.champion;
+  const { inGame } = useLiveGame(profile.riotId, profile.tagLine);
 
   return (
     <motion.div
@@ -51,6 +55,14 @@ export function ProfileHeader({ profile }: ProfileHeaderProps): React.JSX.Elemen
           <p className="text-sm uppercase tracking-wider" style={{ color: 'var(--lol-violet-soft)' }}>
             Niveau {profile.summonerLevel} · {profile.platform.toUpperCase()}
           </p>
+          {inGame && (
+            <Link
+              to={`/lol/live/${encodeURIComponent(profile.riotId)}/${encodeURIComponent(profile.tagLine)}`}
+              className="mt-2 inline-block transition-opacity hover:opacity-80"
+            >
+              <LolLiveBadge inGame label="En partie — voir" />
+            </Link>
+          )}
         </div>
       </div>
 
