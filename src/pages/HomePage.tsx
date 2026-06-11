@@ -21,9 +21,9 @@ export function HomePage(): React.JSX.Element {
       <div className="relative z-10 flex min-h-full flex-col">
         <HomeHeader />
 
-        {/* Hero : les 3 cartes occupent ~tout l'écran sous le header fixe
-            (la 1re section « Le site en bref » reste sous la ligne de flottaison). */}
-        <section className="relative min-h-[calc(100vh-72px)] w-full flex-shrink-0">
+        {/* Hero : les 3 cartes occupent ~tout l'écran sous le header fixe.
+            Hauteur DÉFINIE (pas min-h) pour que le `h-full` des cartes se résolve. */}
+        <section className="relative h-[calc(100vh-72px)] min-h-[440px] w-full flex-shrink-0">
           <HeroSection />
           <div className="pointer-events-none absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-1">
             <span
